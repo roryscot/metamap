@@ -17,6 +17,7 @@ export * from "./constraints.js";
 export * from "./impact.js";
 export * from "./viability.js";
 export * from "./activation.js";
+export * from "./projection.js";
 export * from "./adapters/types.js";
 export * from "./adapters/prisma.js";
 export * from "./adapters/typescript-zod.js";

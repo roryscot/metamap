@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
+  "activeMappings": [
+    "urn:example:mapping:create-user-endpoint",
+    "urn:example:mapping:create-user-event",
+    "urn:example:mapping:create-user-handler",
+    "urn:example:mapping:create-user-input",
+    "urn:example:mapping:create-user-policy"
+  ],
+  "context": {},
+  "digest": "sha256:7bd731b7d0231eb91785a2bf3a92e54f70a7bcba9309614924b5cf541f9c871e",
+  "evaluatedAt": "2026-09-02T00:00:00.000Z",
+  "evidence": [],
+  "graph": {
+    "digest": "sha256:4a031408b9deee864a1032dcf4763c1e13740d525a7d65ae858a83b98822d0d8",
+    "id": "urn:example:routing:graph",
+    "revision": "1"
+  },
+  "id": "urn:metamap:generation:7bd731b7d0231eb91785a2bf3a92e54f70a7bcba9309614924b5cf541f9c871e",
+  "inactiveMappings": [],
+  "policy": {
+    "digest": "sha256:5919c591490705cb338506b9636845e7899c2cdd895c63b097d74049a52277d8",
+    "id": "urn:example:routing:viability"
+  },
+  "schemaVersion": "1.0.0",
+  "waiversApplied": []
+}

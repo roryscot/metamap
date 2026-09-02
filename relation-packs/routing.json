@@ -1,0 +1,63 @@
+{
+  "$schema": "../schemas/relation-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:metamap:relation-pack:routing",
+  "version": "1.0.0",
+  "description": "Semantic relations for commands, events, routes, handlers, schemas, policies, and endpoints.",
+  "relations": [
+    {
+      "id": "routing:handled_by",
+      "description": "The target handler executes the source command, event, or route.",
+      "sourceKinds": ["routing:command", "routing:event", "routing:route"],
+      "targetKinds": ["routing:handler"],
+      "cardinalities": ["one-to-one", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "routing:accepts",
+      "description": "The source accepts input conforming to the target schema.",
+      "sourceKinds": ["routing:command", "routing:event", "routing:route"],
+      "targetKinds": ["routing:schema"],
+      "cardinalities": ["one-to-one", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "routing:authorized_by",
+      "description": "The source is gated by the target authorization policy.",
+      "sourceKinds": ["routing:command", "routing:event", "routing:route"],
+      "targetKinds": ["routing:policy"],
+      "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "routing:emits",
+      "description": "Executing the source may emit the target event.",
+      "sourceKinds": ["routing:command", "routing:handler", "routing:route"],
+      "targetKinds": ["routing:event"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "allow",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "routing:exposed_as",
+      "description": "The source semantic operation is exposed through the target transport endpoint.",
+      "sourceKinds": ["routing:command", "routing:event", "routing:route"],
+      "targetKinds": ["routing:endpoint"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "both"
+    },
+    {
+      "id": "routing:transitions_to",
+      "description": "The source workflow state permits a transition to the target state.",
+      "sourceKinds": ["routing:state"],
+      "targetKinds": ["routing:state"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "allow",
+      "impactDirection": "both"
+    }
+  ]
+}

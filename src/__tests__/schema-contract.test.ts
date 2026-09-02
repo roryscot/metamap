@@ -38,6 +38,30 @@ describe("portable JSON contracts", () => {
         document: "../../relation-packs/research.json",
       },
       {
+        schema: "../../schemas/relation-pack.schema.json",
+        document: "../../relation-packs/routing.json",
+      },
+      {
+        schema: "../../schemas/metamap-graph.schema.json",
+        document: "../../examples/routing/graph.json",
+      },
+      {
+        schema: "../../schemas/metamap-viability.schema.json",
+        document: "../../examples/routing/viability-policy.json",
+      },
+      {
+        schema: "../../schemas/metamap-projection-spec.schema.json",
+        document: "../../examples/routing/projection.json",
+      },
+      {
+        schema: "../../schemas/metamap-generation.schema.json",
+        document: "../../examples/routing/generated/generation.json",
+      },
+      {
+        schema: "../../schemas/metamap-projection.schema.json",
+        document: "../../examples/routing/generated/command-router.json",
+      },
+      {
         schema: "../../schemas/metamap-config.schema.json",
         document: "../../examples/research/metamap.config.json",
       },

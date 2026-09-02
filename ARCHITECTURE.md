@@ -20,7 +20,9 @@ domain sources -> language/domain adapters -> independent graph shards
 viability policy + evaluation context -------+-> viability compiler
                                                   -> immutable generation
                                                   -> atomic activation
-                                                  -> queries, reports, projections
+                                                  -> projection compiler
+                                                  -> static runtime structures
+                                                  -> queries and reports
 ```
 
 Parsing is necessarily source-specific. A TypeScript adapter may use the
@@ -91,6 +93,38 @@ This separation permits variation without permissiveness: one graph can have
 different valid expressions in development and production while missing
 context, unknown lossiness, contradictory evidence, and invalid composition
 fail immediately.
+
+### Semantic linking and static projections
+
+A viable generation says which mappings may exist in one explicit context. A
+projection specification says which semantic subjects to select and which
+named relation slots each subject must resolve. Slot cardinality is independent
+of a mapping's internal cardinality: `exactly-one` can therefore reject two
+separately declared handler mappings even when both mappings are individually
+well formed.
+
+Projection compilation binds the exact graph digest, generation digest, and
+specification digest into a content-addressed artifact. It rejects stale
+generations, inactive required links, missing and ambiguous targets, target-kind
+mismatches, unknown relations, and lossy runtime links by default. The generic
+JSON artifact is the language-neutral boundary. Emitters may translate it into
+native lookup tables, unions, registries, or build-system inputs.
+Active mappings are indexed once by subject, direction, and relation; slot
+resolution does not rescan the complete graph for every projected entity.
+
+This separates the control plane from the data plane:
+
+```text
+distributed declarations -> semantic graph -> viable generation
+                                             -> checked projection
+                                             -> static native artifact
+                                             -> constant-time runtime lookup
+```
+
+Metamap does not replace local collections or closed protocol constants. It
+replaces duplicated, independently evolving structures that encode semantic
+relationships across packages, repositories, languages, or organizational
+boundaries.
 
 ## Discovery and correspondence
 
@@ -180,7 +214,8 @@ reports the path through each mapping to the affected structure.
 ## Consumer boundary
 
 The reusable repository owns schemas, core semantics, generic adapters, the
-CLI, and the reference implementation. A consuming repository owns its:
+projection compiler, CLI, and the reference implementation. A consuming
+repository owns its:
 
 - `metamap.config.json`;
 - semantic correspondences and authority decisions;
@@ -188,6 +223,7 @@ CLI, and the reference implementation. A consuming repository owns its:
 - generated graph, snapshot, drift report, and documentation;
 - CI policy deciding which drift severities fail.
 - viability policies, contexts, evidence producers, and activation state.
+- projection specifications and generated runtime artifacts.
 
 This keeps the engine general while the structural source of truth remains next
 to the system it describes.

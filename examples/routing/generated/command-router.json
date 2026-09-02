@@ -1,0 +1,113 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.4.0/schemas/metamap-projection.schema.json",
+  "digest": "sha256:dc5cf93905304d145c523501daf04d3315c989b255dbad1d3b7eeec218481b65",
+  "entries": [
+    {
+      "slots": [
+        {
+          "cardinality": "exactly-one",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:create-user-policy"],
+          "name": "authorization",
+          "relation": "routing:authorized_by",
+          "targets": [
+            {
+              "id": "urn:example:policy:identity-admin",
+              "kind": "routing:policy",
+              "label": "Identity administrator"
+            }
+          ]
+        },
+        {
+          "cardinality": "many",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:create-user-event"],
+          "name": "emits",
+          "relation": "routing:emits",
+          "targets": [
+            {
+              "id": "urn:example:event:user-created",
+              "kind": "routing:event",
+              "label": "User created"
+            }
+          ]
+        },
+        {
+          "cardinality": "one-or-more",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:create-user-endpoint"],
+          "name": "endpoints",
+          "relation": "routing:exposed_as",
+          "targets": [
+            {
+              "attributes": {
+                "method": "POST",
+                "path": "/users"
+              },
+              "id": "urn:example:endpoint:create-user",
+              "kind": "routing:endpoint",
+              "label": "POST /users"
+            }
+          ]
+        },
+        {
+          "cardinality": "exactly-one",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:create-user-handler"],
+          "name": "handler",
+          "relation": "routing:handled_by",
+          "targets": [
+            {
+              "id": "urn:example:handler:create-user",
+              "kind": "routing:handler",
+              "label": "Create user handler",
+              "locators": [
+                {
+                  "uri": "typescript:src/identity/create-user.ts#handleCreateUser"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "cardinality": "exactly-one",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:create-user-input"],
+          "name": "input",
+          "relation": "routing:accepts",
+          "targets": [
+            {
+              "id": "urn:example:schema:create-user",
+              "kind": "routing:schema",
+              "label": "Create user input",
+              "locators": [
+                {
+                  "uri": "json-schema:schemas/create-user.json"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "subject": {
+        "id": "urn:example:command:create-user",
+        "kind": "routing:command",
+        "label": "Create user"
+      }
+    }
+  ],
+  "generation": {
+    "digest": "sha256:7bd731b7d0231eb91785a2bf3a92e54f70a7bcba9309614924b5cf541f9c871e",
+    "id": "urn:metamap:generation:7bd731b7d0231eb91785a2bf3a92e54f70a7bcba9309614924b5cf541f9c871e"
+  },
+  "graph": {
+    "digest": "sha256:4a031408b9deee864a1032dcf4763c1e13740d525a7d65ae858a83b98822d0d8",
+    "id": "urn:example:routing:graph"
+  },
+  "id": "urn:metamap:projection:dc5cf93905304d145c523501daf04d3315c989b255dbad1d3b7eeec218481b65",
+  "schemaVersion": "1.0.0",
+  "spec": {
+    "digest": "sha256:bf6e91aeace72be57917aa095c18047d77a065418ffce69ddb390a7b392a932a",
+    "id": "urn:example:projection:command-router"
+  }
+}

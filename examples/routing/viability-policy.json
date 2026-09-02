@@ -1,0 +1,70 @@
+{
+  "$schema": "../../schemas/metamap-viability.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:routing:viability",
+  "graph": {
+    "id": "urn:example:routing:graph",
+    "revision": "1"
+  },
+  "mappings": [
+    {
+      "mapping": "urn:example:mapping:create-user-handler",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:create-user-input",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:create-user-policy",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:create-user-endpoint",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:create-user-event",
+      "coverage": "partial",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "urn:example:constraint:create-user-handler-required",
+      "kind": "core:requires-mapping",
+      "subjects": ["urn:example:command:create-user"],
+      "parameters": {
+        "relation": "routing:handled_by",
+        "direction": "source"
+      }
+    },
+    {
+      "id": "urn:example:constraint:create-user-handler-unique",
+      "kind": "core:unique-target",
+      "subjects": ["urn:example:command:create-user"],
+      "parameters": {
+        "relation": "routing:handled_by",
+        "direction": "source"
+      }
+    },
+    {
+      "id": "urn:example:constraint:create-user-routing-authority",
+      "kind": "core:requires-authority",
+      "subjects": ["urn:example:command:create-user"],
+      "parameters": {
+        "fact": "routing-identity"
+      }
+    }
+  ],
+  "evidence": []
+}

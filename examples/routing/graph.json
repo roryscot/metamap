@@ -1,0 +1,139 @@
+{
+  "$schema": "../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:example:routing:graph",
+  "namespace": "routing-example",
+  "label": "Example semantic command router",
+  "revision": "1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:routing",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:example:command:create-user",
+      "kind": "routing:command",
+      "label": "Create user"
+    },
+    {
+      "id": "urn:example:handler:create-user",
+      "kind": "routing:handler",
+      "label": "Create user handler",
+      "locators": [
+        {
+          "uri": "typescript:src/identity/create-user.ts#handleCreateUser"
+        }
+      ]
+    },
+    {
+      "id": "urn:example:schema:create-user",
+      "kind": "routing:schema",
+      "label": "Create user input",
+      "locators": [
+        {
+          "uri": "json-schema:schemas/create-user.json"
+        }
+      ]
+    },
+    {
+      "id": "urn:example:policy:identity-admin",
+      "kind": "routing:policy",
+      "label": "Identity administrator"
+    },
+    {
+      "id": "urn:example:endpoint:create-user",
+      "kind": "routing:endpoint",
+      "label": "POST /users",
+      "attributes": {
+        "method": "POST",
+        "path": "/users"
+      }
+    },
+    {
+      "id": "urn:example:event:user-created",
+      "kind": "routing:event",
+      "label": "User created"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:example:mapping:create-user-handler",
+      "relation": "routing:handled_by",
+      "sources": ["urn:example:command:create-user"],
+      "targets": ["urn:example:handler:create-user"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:identity"
+      }
+    },
+    {
+      "id": "urn:example:mapping:create-user-input",
+      "relation": "routing:accepts",
+      "sources": ["urn:example:command:create-user"],
+      "targets": ["urn:example:schema:create-user"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:identity"
+      }
+    },
+    {
+      "id": "urn:example:mapping:create-user-policy",
+      "relation": "routing:authorized_by",
+      "sources": ["urn:example:command:create-user"],
+      "targets": ["urn:example:policy:identity-admin"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:security"
+      }
+    },
+    {
+      "id": "urn:example:mapping:create-user-endpoint",
+      "relation": "routing:exposed_as",
+      "sources": ["urn:example:command:create-user"],
+      "targets": ["urn:example:endpoint:create-user"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:api"
+      }
+    },
+    {
+      "id": "urn:example:mapping:create-user-event",
+      "relation": "routing:emits",
+      "sources": ["urn:example:command:create-user"],
+      "targets": ["urn:example:event:user-created"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:identity"
+      }
+    }
+  ],
+  "authorities": [
+    {
+      "id": "urn:example:authority:create-user-routing",
+      "concept": "urn:example:command:create-user",
+      "source": "urn:example:command:create-user",
+      "facts": ["routing-identity"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:identity"
+      }
+    }
+  ]
+}

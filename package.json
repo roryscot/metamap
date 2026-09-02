@@ -1,7 +1,7 @@
 {
   "name": "@roryscot/metamap",
-  "version": "0.3.0",
-  "description": "Language-neutral authority and structural correspondence graph",
+  "version": "0.4.0",
+  "description": "Language-neutral semantic linker, authority graph, and static projection compiler",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,6 +15,7 @@
     "examples",
     "README.md",
     "ARCHITECTURE.md",
+    "ROUTING.md",
     "VIABILITY.md",
     "CHANGELOG.md"
   ],
@@ -28,6 +29,7 @@
     "example:check": "npm run build && node dist/cli.js check examples/workspace/metamap.config.json --no-cache",
     "example:compile": "npm run build && node dist/cli.js compile examples/example-authority-graph.json examples/example-viability-policy.json examples/example-generation.json --context examples/example-context.json --as-of 2026-09-02T00:00:00.000Z && prettier --write examples/example-generation.json",
     "example:research": "npm run build && node dist/cli.js generate examples/research/metamap.config.json --no-cache && node dist/cli.js compile examples/research/generated/graph.json examples/research/viability-policy.json examples/research/generated/generation.json --relation-pack relation-packs/research.json --as-of 2026-09-02T00:00:00.000Z && prettier --write examples/research/generated",
+    "example:routing": "npm run build && node dist/cli.js compile examples/routing/graph.json examples/routing/viability-policy.json examples/routing/generated/generation.json --relation-pack relation-packs/routing.json --as-of 2026-09-02T00:00:00.000Z && node dist/cli.js link examples/routing/graph.json examples/routing/generated/generation.json examples/routing/projection.json examples/routing/generated/command-router.json --relation-pack relation-packs/routing.json && node dist/cli.js link examples/routing/graph.json examples/routing/generated/generation.json examples/routing/projection.json examples/routing/generated/command-router.ts --format typescript --export commandRoutes --relation-pack relation-packs/routing.json && prettier --write examples/routing/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/routing/generated/command-router.ts",
     "prepare": "npm run build"
   },
   "dependencies": {
@@ -89,13 +91,20 @@
       "import": "./dist/relation-pack.js",
       "types": "./dist/relation-pack.d.ts"
     },
+    "./projection": {
+      "import": "./dist/projection.js",
+      "types": "./dist/projection.d.ts"
+    },
     "./schemas/metamap-graph.schema.json": "./schemas/metamap-graph.schema.json",
     "./schemas/metamap-config.schema.json": "./schemas/metamap-config.schema.json",
     "./schemas/relation-pack.schema.json": "./schemas/relation-pack.schema.json",
     "./schemas/metamap-viability.schema.json": "./schemas/metamap-viability.schema.json",
     "./schemas/metamap-generation.schema.json": "./schemas/metamap-generation.schema.json",
+    "./schemas/metamap-projection-spec.schema.json": "./schemas/metamap-projection-spec.schema.json",
+    "./schemas/metamap-projection.schema.json": "./schemas/metamap-projection.schema.json",
     "./relation-packs/core.json": "./relation-packs/core.json",
-    "./relation-packs/research.json": "./relation-packs/research.json"
+    "./relation-packs/research.json": "./relation-packs/research.json",
+    "./relation-packs/routing.json": "./relation-packs/routing.json"
   },
   "repository": {
     "type": "git",
@@ -113,6 +122,8 @@
     "authority",
     "graph",
     "schema",
-    "source-of-truth"
+    "source-of-truth",
+    "routing",
+    "semantic-linker"
   ]
 }

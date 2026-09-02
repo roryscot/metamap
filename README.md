@@ -1,13 +1,19 @@
 # Metamap
 
-Metamap is a language-neutral graph for describing references between
+Metamap is a language-neutral semantic linker. It describes references between
 structures, their explicit correspondences, and authority over individual
-facts. It helps large systems detect structural drift without copying every
-source into one universal data model.
+facts, then compiles viable graph generations into static runtime projections.
+It helps large systems replace duplicated cross-system enums and registries
+without copying every source into one universal data model.
 
 The governing rule is:
 
 > One authority per fact and scope; many validated or generated projections.
+
+The practical runtime rule is:
+
+> Dynamic composition in the control plane; immutable generated structures in
+> the data plane.
 
 ## What it provides
 
@@ -30,6 +36,10 @@ The governing rule is:
 - Executable constraints, first-class evidence, and exact expiring waivers.
 - Fail-closed compilation into immutable viable generations with causal impact
   paths and atomic last-known-good activation.
+- Cardinality-checked static projections that turn active semantic mappings
+  into content-addressed JSON manifests or typed TypeScript lookup tables.
+- A routing relation pack for commands, events, routes, handlers, schemas,
+  authorization policies, endpoints, and workflow transitions.
 - Read-only Prisma, TypeScript/Zod, JSON collection, legacy catalog, and
   portable Metamap shard adapters.
 - A CLI and TypeScript API for generation, checking, traversal, diffing, and
@@ -50,6 +60,7 @@ npm run example:generate
 npm run example:check
 npm run example:compile
 npm run example:research
+npm run example:routing
 ```
 
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
@@ -60,7 +71,7 @@ For a consuming repository, install the tagged public archive:
 ```json
 {
   "dependencies": {
-    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.3.0.tar.gz"
+    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.4.0.tar.gz"
   }
 }
 ```
@@ -87,6 +98,7 @@ metamap validate <graph.json> [--relation-pack pack.json]...
 metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
 metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
 metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
+metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript] [--export name] [--relation-pack pack.json]...
 metamap generate <metamap.config.json> [--no-cache]
 metamap check <metamap.config.json> [--no-cache]
 metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -102,7 +114,9 @@ import {
   MetamapActivator,
   MetamapGraph,
   compileMetamap,
+  compileProjection,
   composeMetamapDocuments,
+  emitTypeScriptProjection,
   validateMetamapDocument,
 } from "@roryscot/metamap";
 
@@ -125,7 +139,46 @@ const activator = new MetamapActivator();
 const activation = activator.activate(document, viabilityPolicy, {
   context: { environment: "production" },
 });
+
+if (compiled.status === "viable") {
+  const linked = compileProjection(
+    document,
+    compiled.generation,
+    projectionSpec,
+  );
+  if (linked.status === "projected") {
+    const source = emitTypeScriptProjection(linked.projection, {
+      exportName: "commandRoutes",
+    });
+  }
+}
 ```
+
+## Replacing enums and routing registries
+
+Use Metamap for open, cross-boundary identities and relationships: commands,
+events, handlers, schemas, permissions, endpoints, plugin capabilities, and
+workflow transitions. Keep native enums and data structures for closed local
+values and hot-path computation.
+
+A projection specification selects semantic subjects and names relation slots
+with explicit cardinality. `metamap link` resolves only mappings active in the
+provided viable generation. It rejects stale generations, missing or ambiguous
+required targets, wrong target kinds, unknown relations, and lossy links unless
+the slot explicitly permits them.
+
+```bash
+metamap compile graph.json viability.json generation.json \
+  --relation-pack relation-packs/routing.json
+metamap link graph.json generation.json projection.json command-router.ts \
+  --format typescript --export commandRoutes \
+  --relation-pack relation-packs/routing.json
+```
+
+The generated object keys become a TypeScript identity union, so consumers do
+not maintain a second enum. The runtime performs a constant-time lookup and
+never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
+[`examples/routing`](examples/routing) project.
 
 ## Extending discovery and relations
 

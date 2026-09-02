@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0
+
+- Reframe Metamap as a language-neutral semantic linker with a dynamic control
+  plane and immutable generated runtime structures.
+- Add a generic, fail-closed static projection compiler bound to exact graph,
+  viability-generation, and projection-specification digests.
+- Enforce projection selection, relation registration, runtime cardinality,
+  target kinds, active mappings, and lossless-by-default linkage.
+- Add `metamap link` with content-addressed JSON and typed, dependency-free
+  TypeScript output.
+- Add portable projection-specification and projection schemas plus runtime
+  parsing and integrity validation.
+- Add a routing relation pack and an end-to-end command-routing example that
+  replaces a duplicated enum and registry with a generated lookup table.
+
 ## 0.3.0
 
 - Replace the hard-coded workspace adapter switch with an extensible runtime

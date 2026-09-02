@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/metamap-projection-spec.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:projection:command-router",
+  "select": {
+    "kinds": ["routing:command"]
+  },
+  "slots": [
+    {
+      "name": "handler",
+      "relation": "routing:handled_by",
+      "direction": "outgoing",
+      "cardinality": "exactly-one",
+      "targetKinds": ["routing:handler"]
+    },
+    {
+      "name": "input",
+      "relation": "routing:accepts",
+      "direction": "outgoing",
+      "cardinality": "exactly-one",
+      "targetKinds": ["routing:schema"]
+    },
+    {
+      "name": "authorization",
+      "relation": "routing:authorized_by",
+      "direction": "outgoing",
+      "cardinality": "exactly-one",
+      "targetKinds": ["routing:policy"]
+    },
+    {
+      "name": "endpoints",
+      "relation": "routing:exposed_as",
+      "direction": "outgoing",
+      "cardinality": "one-or-more",
+      "targetKinds": ["routing:endpoint"]
+    },
+    {
+      "name": "emits",
+      "relation": "routing:emits",
+      "direction": "outgoing",
+      "cardinality": "many",
+      "targetKinds": ["routing:event"]
+    }
+  ]
+}

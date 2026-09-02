@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection/v1.schema.json",
+  "title": "Metamap static projection",
+  "description": "A content-addressed static view compiled from a viable Metamap generation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "generation",
+    "graph",
+    "spec",
+    "entries"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "$ref": "#/$defs/identifier" },
+    "digest": { "$ref": "#/$defs/digest" },
+    "generation": { "$ref": "#/$defs/binding" },
+    "graph": { "$ref": "#/$defs/binding" },
+    "spec": { "$ref": "#/$defs/binding" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["subject", "slots"],
+        "properties": {
+          "subject": { "$ref": "#/$defs/entity" },
+          "slots": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/slot" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "relationIdentifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+    },
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string" },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "$ref": "#/$defs/jsonObject" }
+      ]
+    },
+    "jsonObject": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri"],
+      "properties": {
+        "uri": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string", "minLength": 1 }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "kind": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "schema": { "$ref": "#/$defs/identifier" },
+        "locators": { "type": "array", "items": { "$ref": "#/$defs/locator" } },
+        "attributes": { "$ref": "#/$defs/jsonObject" }
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "relation",
+        "direction",
+        "cardinality",
+        "mappings",
+        "targets"
+      ],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "relation": { "$ref": "#/$defs/relationIdentifier" },
+        "direction": { "enum": ["outgoing", "incoming"] },
+        "cardinality": {
+          "enum": ["exactly-one", "zero-or-one", "one-or-more", "many"]
+        },
+        "mappings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "targets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/entity" }
+        }
+      }
+    }
+  }
+}

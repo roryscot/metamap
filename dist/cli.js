@@ -12,7 +12,8 @@ import { RelationRegistry } from "./relations.js";
 import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
-import { compileMetamap, parseViabilityPolicy } from "./viability.js";
+import { compileMetamap, parseViabilityPolicy, parseViableGeneration, } from "./viability.js";
+import { compileProjection, emitTypeScriptProjection, parseProjectionSpec, } from "./projection.js";
 import { checkWorkspace, discoverWorkspace, workspaceHasErrors, writeWorkspaceOutputs, } from "./workspace.js";
 function usage() {
     return `Usage:
@@ -20,6 +21,7 @@ function usage() {
   metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
+  metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript] [--export name] [--relation-pack pack.json]...
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -76,6 +78,14 @@ function printViabilityIssues(issues) {
             : "";
         const waiver = entry.waivedBy ? ` waived by ${entry.waivedBy}` : "";
         console.error(`${entry.severity.toUpperCase()} ${entry.code}${location}${subject}: ${entry.message}${causalPath}${waiver}`);
+    }
+}
+function printProjectionIssues(issues) {
+    for (const entry of issues) {
+        const location = entry.path ? ` ${entry.path}` : "";
+        const subject = entry.subjectId ? ` [${entry.subjectId}]` : "";
+        const slot = entry.slot ? ` slot=${entry.slot}` : "";
+        console.error(`${entry.severity.toUpperCase()} ${entry.code}${location}${subject}${slot}: ${entry.message}`);
     }
 }
 async function main(args) {
@@ -152,6 +162,45 @@ async function main(args) {
         if (outputPath) {
             await writeFile(resolve(outputPath), serialized, "utf8");
             console.error(`Wrote viable generation ${outputPath}`);
+        }
+        else {
+            process.stdout.write(serialized);
+        }
+        return 0;
+    }
+    if (command === "link") {
+        const parsed = parseArguments(rest, new Set(["--format", "--export", "--relation-pack"]));
+        const [graphPath, generationPath, specPath, outputPath] = parsed.positionals;
+        if (!graphPath ||
+            !generationPath ||
+            !specPath ||
+            parsed.positionals.length > 4) {
+            console.error(usage());
+            return 2;
+        }
+        const format = parsed.options.get("--format")?.[0] ?? "json";
+        if (!new Set(["json", "typescript"]).has(format)) {
+            throw new Error(`Unsupported link format ${format}`);
+        }
+        const exportName = parsed.options.get("--export")?.[0];
+        const relationRegistry = await relationRegistryFrom(parsed);
+        const graph = (await readJson(graphPath));
+        const generation = parseViableGeneration(await readJson(generationPath));
+        const spec = parseProjectionSpec(await readJson(specPath));
+        const result = compileProjection(graph, generation, spec, {
+            relationRegistry,
+        });
+        printProjectionIssues(result.issues);
+        if (result.status === "rejected") {
+            console.error(`REJECTED: static projection has ${result.issues.length} error(s)`);
+            return 1;
+        }
+        const serialized = format === "typescript"
+            ? emitTypeScriptProjection(result.projection, { exportName })
+            : stableJson(result.projection, true);
+        if (outputPath) {
+            await writeFile(resolve(outputPath), serialized, "utf8");
+            console.error(`Wrote static ${format} projection ${outputPath}`);
         }
         else {
             process.stdout.write(serialized);
