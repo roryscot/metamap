@@ -63,6 +63,9 @@
             "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
           },
           "uniqueItems": true
+        },
+        "impactDirection": {
+          "enum": ["source-to-target", "target-to-source", "both", "none"]
         }
       }
     }

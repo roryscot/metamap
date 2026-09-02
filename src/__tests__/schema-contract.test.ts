@@ -35,6 +35,14 @@ describe("portable JSON contracts", () => {
         schema: "../../schemas/relation-pack.schema.json",
         document: "../../relation-packs/core.json",
       },
+      {
+        schema: "../../schemas/metamap-viability.schema.json",
+        document: "../../examples/example-viability-policy.json",
+      },
+      {
+        schema: "../../schemas/metamap-generation.schema.json",
+        document: "../../examples/example-generation.json",
+      },
     ];
 
     for (const entry of cases) {

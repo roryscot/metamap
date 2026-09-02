@@ -9,22 +9,26 @@ export const coreRelationPack = {
             id: "core:contains",
             cyclePolicy: "forbid",
             transitive: true,
+            impactDirection: "both",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:implements",
             cyclePolicy: "forbid",
+            impactDirection: "source-to-target",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:conforms_to",
             cyclePolicy: "forbid",
+            impactDirection: "target-to-source",
             cardinalities: ["one-to-one", "many-to-one", "many-to-many"],
         },
         {
             id: "core:derives_from",
             cyclePolicy: "forbid",
             transitive: true,
+            impactDirection: "target-to-source",
             cardinalities: [
                 "one-to-one",
                 "one-to-many",
@@ -35,38 +39,45 @@ export const coreRelationPack = {
         {
             id: "core:generates",
             cyclePolicy: "forbid",
+            impactDirection: "source-to-target",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:depends_on",
             cyclePolicy: "forbid",
             transitive: true,
+            impactDirection: "target-to-source",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:mirrors",
             cyclePolicy: "allow",
             symmetric: true,
+            impactDirection: "both",
             cardinalities: ["one-to-one", "many-to-many"],
         },
         {
             id: "core:documents",
             cyclePolicy: "allow",
+            impactDirection: "target-to-source",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:tests",
             cyclePolicy: "allow",
+            impactDirection: "target-to-source",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:exposes",
             cyclePolicy: "forbid",
+            impactDirection: "both",
             cardinalities: ["one-to-one", "one-to-many", "many-to-many"],
         },
         {
             id: "core:references",
             cyclePolicy: "allow",
+            impactDirection: "target-to-source",
             cardinalities: [
                 "one-to-one",
                 "one-to-many",
@@ -77,6 +88,7 @@ export const coreRelationPack = {
         {
             id: "core:specified_by",
             cyclePolicy: "forbid",
+            impactDirection: "target-to-source",
             cardinalities: ["one-to-one", "many-to-one", "many-to-many"],
         },
     ],

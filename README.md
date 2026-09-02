@@ -19,6 +19,11 @@ The governing rule is:
 - Deterministic composition and validation of independently emitted shards.
 - Content-addressed adapter caching, snapshots, stable-ID diffs, and drift
   reports.
+- Context-dependent mapping activation and inhibition without changing the
+  underlying identity graph.
+- Executable constraints, first-class evidence, and exact expiring waivers.
+- Fail-closed compilation into immutable viable generations with causal impact
+  paths and atomic last-known-good activation.
 - Read-only Prisma, TypeScript/Zod, JSON collection, and legacy catalog
   adapters.
 - A CLI and TypeScript API for generation, checking, traversal, diffing, and
@@ -37,6 +42,7 @@ npm install
 npm test
 npm run example:generate
 npm run example:check
+npm run example:compile
 ```
 
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
@@ -47,7 +53,7 @@ For a consuming repository, install the tagged public archive:
 ```json
 {
   "dependencies": {
-    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.1.1.tar.gz"
+    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.2.0.tar.gz"
   }
 }
 ```
@@ -71,6 +77,9 @@ drift.
 
 ```text
 metamap validate <graph.json>
+metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]...
+metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]...
+metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp]
 metamap generate <metamap.config.json> [--no-cache]
 metamap check <metamap.config.json> [--no-cache]
 metamap diff <before.json> <after.json>
@@ -83,7 +92,9 @@ metamap migrate-sources <sources-of-truth.json> [output.json]
 
 ```typescript
 import {
+  MetamapActivator,
   MetamapGraph,
+  compileMetamap,
   composeMetamapDocuments,
   validateMetamapDocument,
 } from "@roryscot/metamap";
@@ -97,7 +108,22 @@ const impact = graph.trace("urn:example:concept:item", {
 });
 
 const authority = graph.resolveAuthority("urn:example:concept:item", "type");
+
+const compiled = compileMetamap(document, viabilityPolicy, {
+  context: { environment: "production" },
+  evaluatedAt: new Date().toISOString(),
+});
+
+const activator = new MetamapActivator();
+const activation = activator.activate(document, viabilityPolicy, {
+  context: { environment: "production" },
+});
 ```
+
+The graph describes stable relationships. A separate viability policy declares
+which mappings may be expressed in a context and the guarantees, evidence, and
+constraints required before activation. See [VIABILITY.md](VIABILITY.md) for
+the complete fail-fast model and portable contracts.
 
 ## Design boundaries
 
@@ -111,4 +137,5 @@ facts needed for validation. It deliberately does not:
 - require every system to share one hierarchy or implementation language.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the model and scale strategy and
-[CONTRIBUTING.md](CONTRIBUTING.md) for development instructions.
+[CONTRIBUTING.md](CONTRIBUTING.md) for development instructions. Release notes
+are in [CHANGELOG.md](CHANGELOG.md).

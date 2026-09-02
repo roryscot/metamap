@@ -17,7 +17,10 @@ domain sources -> language/domain adapters -> independent graph shards
                                              -> deterministic composition
                                              -> explicit correspondence overlay
                                              -> validation + baseline diff
-                                             -> queries, reports, projections
+viability policy + evaluation context -------+-> viability compiler
+                                                  -> immutable generation
+                                                  -> atomic activation
+                                                  -> queries, reports, projections
 ```
 
 Parsing is necessarily source-specific. A TypeScript adapter may use the
@@ -68,6 +71,24 @@ Mappings and authority declarations identify whether they were declared,
 observed, generated, or inferred, who asserted them, and—when available—their
 source revision and confidence.
 
+### Viability policy and generation
+
+The graph is the stable structural substrate; environment-specific expression
+belongs in a separate viability policy. The policy gives every mapping explicit
+coverage, determinism, reversibility, activation and inhibition conditions,
+constraints, evidence, and temporary waivers.
+
+Compilation is fail-closed. A candidate becomes an immutable,
+content-addressed generation only after graph validation, policy binding,
+context resolution, constraint evaluation, evidence checks, waiver expiry, and
+impact analysis all succeed. Activation preserves the last viable generation
+if the candidate is rejected.
+
+This separation permits variation without permissiveness: one graph can have
+different valid expressions in development and production while missing
+context, unknown lossiness, contradictory evidence, and invalid composition
+fail immediately.
+
 ## Discovery and correspondence
 
 Each source adapter has a small deterministic contract:
@@ -101,6 +122,10 @@ The kernel and workspace gate validate:
 10. Type, presence, nullability, cardinality, and enum-value drift.
 11. Stale or incomplete difference waivers.
 12. Stable-ID changes from the committed graph baseline.
+13. Complete viability declarations for every mapping.
+14. Required context and declared transform guarantees.
+15. Executable constraints and contradictory evidence.
+16. Exact waiver scope and expiry.
 
 Errors fail generation and CI. Warnings can preserve a usable imported graph
 while keeping unresolved migration debt visible.
@@ -127,6 +152,11 @@ adds operational federation:
 - lazy locator resolution;
 - reverse-impact indexes and event-driven incremental validation.
 
+Relations additionally declare causal `impactDirection`. This avoids assuming
+that graph traversal and failure propagation are the same. Incremental
+validation begins with changed subjects, follows active causal edges, and
+reports the path through each mapping to the affected structure.
+
 ## Consumer boundary
 
 The reusable repository owns schemas, core semantics, generic adapters, the
@@ -137,6 +167,7 @@ CLI, and the reference implementation. A consuming repository owns its:
 - source manifests and adapter inputs;
 - generated graph, snapshot, drift report, and documentation;
 - CI policy deciding which drift severities fail.
+- viability policies, contexts, evidence producers, and activation state.
 
 This keeps the engine general while the structural source of truth remains next
 to the system it describes.

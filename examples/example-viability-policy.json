@@ -1,0 +1,98 @@
+{
+  "$schema": "../schemas/metamap-viability.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:viability:user-schema",
+  "graph": {
+    "id": "urn:example:metamap:example-user-schema",
+    "revision": "example-1"
+  },
+  "mappings": [
+    {
+      "mapping": "urn:example:mapping:prisma-contains-user-email",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:zod-contains-user-email",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:user-email-implementations",
+      "coverage": "partial",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:zod-email-derived-from-prisma",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible",
+      "applicability": {
+        "when": {
+          "key": "environment",
+          "operator": "in",
+          "values": ["development", "production"]
+        },
+        "unless": {
+          "key": "maintenance",
+          "operator": "equals",
+          "value": true
+        }
+      }
+    }
+  ],
+  "constraints": [
+    {
+      "id": "urn:example:constraint:derived-email-evidence",
+      "kind": "core:requires-evidence",
+      "subjects": ["urn:example:mapping:zod-email-derived-from-prisma"],
+      "parameters": {
+        "minimumConfidence": 0.95,
+        "kinds": ["conformance-test"]
+      }
+    },
+    {
+      "id": "urn:example:constraint:user-email-authority",
+      "kind": "core:requires-authority",
+      "subjects": ["urn:example:concept:user.email"],
+      "parameters": {
+        "fact": "type"
+      }
+    },
+    {
+      "id": "urn:example:constraint:user-email-implementation",
+      "kind": "core:requires-mapping",
+      "subjects": ["urn:example:concept:user.email"],
+      "parameters": {
+        "relation": "core:implements"
+      }
+    },
+    {
+      "id": "urn:example:constraint:one-prisma-origin",
+      "kind": "core:unique-target",
+      "subjects": ["urn:example:element:zod.UserSchema.email"],
+      "parameters": {
+        "relation": "core:derives_from"
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "id": "urn:example:evidence:email-conformance-test",
+      "subjects": ["urn:example:mapping:zod-email-derived-from-prisma"],
+      "kind": "conformance-test",
+      "result": "supports",
+      "producer": "test:email-schema-conformance",
+      "observedAt": "2026-09-01T00:00:00.000Z",
+      "confidence": 1,
+      "digest": "sha256:32ba476771d01e74e08fa84d1bc90cf22376f316f353baf48301770b21d8c216"
+    }
+  ],
+  "waivers": [],
+  "metadata": {
+    "purpose": "Demonstrate context-dependent expression, executable constraints, evidence, and fail-closed compilation"
+  }
+}

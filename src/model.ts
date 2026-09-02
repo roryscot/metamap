@@ -114,6 +114,8 @@ export interface MetamapDocument {
 }
 
 export type CyclePolicy = "allow" | "forbid";
+export type ImpactDirection =
+  "source-to-target" | "target-to-source" | "both" | "none";
 
 export interface RelationDefinition {
   id: string;
@@ -126,6 +128,12 @@ export interface RelationDefinition {
   symmetric?: boolean;
   inverse?: string;
   composesWith?: readonly string[];
+  /**
+   * Declares causal propagation independently of traversal direction. This is
+   * used for blast-radius analysis; it does not change the meaning of the
+   * relation itself.
+   */
+  impactDirection?: ImpactDirection;
 }
 
 export interface RelationPack {

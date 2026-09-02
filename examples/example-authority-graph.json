@@ -104,7 +104,7 @@
         "urn:example:element:zod.UserSchema.email"
       ],
       "cardinality": "one-to-many",
-      "lossiness": "unknown",
+      "lossiness": "lossless",
       "provenance": {
         "status": "declared",
         "assertedBy": "human:architecture"

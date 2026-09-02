@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json",
+  "activeMappings": [
+    "urn:example:mapping:prisma-contains-user-email",
+    "urn:example:mapping:user-email-implementations",
+    "urn:example:mapping:zod-contains-user-email",
+    "urn:example:mapping:zod-email-derived-from-prisma"
+  ],
+  "context": {
+    "environment": "production",
+    "maintenance": false
+  },
+  "digest": "sha256:2acaf9461c557bae4eda35566b52ffeb3fab2bef3ce24cc98fe18d3203c8c6fd",
+  "evaluatedAt": "2026-09-02T00:00:00.000Z",
+  "evidence": ["urn:example:evidence:email-conformance-test"],
+  "graph": {
+    "digest": "sha256:7c3384787b0fac61a94bde964cebe9742c4c69c37a1648527adab641d395efe6",
+    "id": "urn:example:metamap:example-user-schema",
+    "revision": "example-1"
+  },
+  "id": "urn:metamap:generation:2acaf9461c557bae4eda35566b52ffeb3fab2bef3ce24cc98fe18d3203c8c6fd",
+  "inactiveMappings": [],
+  "policy": {
+    "digest": "sha256:6d7e18866a7fd4abfeb2e9a779bca16e4e506a70fb4b8594e6d08052c130c833",
+    "id": "urn:example:viability:user-schema"
+  },
+  "schemaVersion": "1.0.0",
+  "waiversApplied": []
+}

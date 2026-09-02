@@ -19,6 +19,7 @@ describe("core relation pack", () => {
         cyclePolicy: relation.cyclePolicy,
         transitive: relation.transitive,
         symmetric: relation.symmetric,
+        impactDirection: relation.impactDirection,
       }));
 
     expect(portable.id).toBe(coreRelationPack.id);

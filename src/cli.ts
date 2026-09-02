@@ -7,12 +7,16 @@ import {
   isLegacySourceOfTruthDocument,
 } from "./adapters/source-of-truth.js";
 import { MetamapGraph, MetamapValidationError } from "./graph.js";
+import { parseEvaluationContext } from "./context.js";
+import { promoteMetamapGeneration } from "./activation.js";
 import { loadMetamapConfig } from "./config.js";
 import { diffMetamapDocuments } from "./diff.js";
 import type { MetamapDocument } from "./model.js";
 import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
+import { compileMetamap, parseViabilityPolicy } from "./viability.js";
+import type { ViabilityIssue } from "./viability-model.js";
 import {
   checkWorkspace,
   discoverWorkspace,
@@ -23,6 +27,9 @@ import {
 function usage(): string {
   return `Usage:
   metamap validate <graph.json>
+  metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]...
+  metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]...
+  metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp]
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json>
@@ -30,6 +37,38 @@ function usage(): string {
   metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [max-depth] [relation]
   metamap authority <graph.json> <concept-id> <fact>
 `;
+}
+
+interface ParsedArguments {
+  positionals: string[];
+  options: Map<string, string[]>;
+}
+
+function parseArguments(
+  args: string[],
+  valuedOptions: ReadonlySet<string>,
+): ParsedArguments {
+  const positionals: string[] = [];
+  const options = new Map<string, string[]>();
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    if (!argument.startsWith("--")) {
+      positionals.push(argument);
+      continue;
+    }
+    if (!valuedOptions.has(argument)) {
+      throw new Error(`Unknown option ${argument}`);
+    }
+    const value = args[index + 1];
+    if (!value || value.startsWith("--")) {
+      throw new Error(`${argument} requires a value`);
+    }
+    const values = options.get(argument) ?? [];
+    values.push(value);
+    options.set(argument, values);
+    index += 1;
+  }
+  return { positionals, options };
 }
 
 async function readJson(path: string): Promise<unknown> {
@@ -43,6 +82,20 @@ function printIssues(
     const location = entry.path ? ` ${entry.path}` : "";
     console.log(
       `${entry.severity.toUpperCase()} ${entry.code}${location}: ${entry.message}`,
+    );
+  }
+}
+
+function printViabilityIssues(issues: readonly ViabilityIssue[]): void {
+  for (const entry of issues) {
+    const location = entry.path ? ` ${entry.path}` : "";
+    const subject = entry.subjectId ? ` [${entry.subjectId}]` : "";
+    const causalPath = entry.causalPath
+      ? ` via ${entry.causalPath.join(" -> ")}`
+      : "";
+    const waiver = entry.waivedBy ? ` waived by ${entry.waivedBy}` : "";
+    console.error(
+      `${entry.severity.toUpperCase()} ${entry.code}${location}${subject}: ${entry.message}${causalPath}${waiver}`,
     );
   }
 }
@@ -65,6 +118,86 @@ async function main(args: string[]): Promise<number> {
       `${result.valid ? "VALID" : "INVALID"}: ${errors} error(s), ${warnings} warning(s)`,
     );
     return result.valid ? 0 : 1;
+  }
+
+  if (command === "compile" || command === "promote" || command === "impact") {
+    const parsed = parseArguments(
+      rest,
+      new Set(["--context", "--as-of", "--changed"]),
+    );
+    const [graphPath, policyPath, ...remaining] = parsed.positionals;
+    const outputPath = command === "impact" ? undefined : remaining[0];
+    const changedSubjects =
+      command === "impact"
+        ? remaining
+        : (parsed.options.get("--changed") ?? []);
+    if (
+      !graphPath ||
+      !policyPath ||
+      (command === "impact" && changedSubjects.length === 0) ||
+      (command === "compile" && remaining.length > 1) ||
+      (command === "promote" && remaining.length !== 1)
+    ) {
+      console.error(usage());
+      return 2;
+    }
+
+    const graphValue = await readJson(graphPath);
+    const graphValidation = validateMetamapDocument(graphValue);
+    if (!graphValidation.valid) {
+      printIssues(graphValidation.issues);
+      return 1;
+    }
+    const policy = parseViabilityPolicy(await readJson(policyPath));
+    const contextPath = parsed.options.get("--context")?.[0];
+    const context = contextPath
+      ? parseEvaluationContext(await readJson(contextPath))
+      : {};
+    const evaluatedAt = parsed.options.get("--as-of")?.[0];
+    if (command === "promote") {
+      const promoted = await promoteMetamapGeneration(
+        graphValue as MetamapDocument,
+        policy,
+        outputPath as string,
+        { context, evaluatedAt, changedSubjects },
+      );
+      printViabilityIssues(promoted.compilation.issues);
+      if (!promoted.activated) {
+        console.error(
+          `REJECTED: retained ${promoted.previousDigest ?? "no previous generation"} at ${promoted.path}`,
+        );
+        return 1;
+      }
+      console.error(
+        `ACTIVATED ${promoted.current?.digest ?? "generation"} at ${promoted.path}`,
+      );
+      return 0;
+    }
+    const result = compileMetamap(graphValue as MetamapDocument, policy, {
+      context,
+      evaluatedAt,
+      changedSubjects,
+    });
+    printViabilityIssues(result.issues);
+
+    if (command === "impact") {
+      process.stdout.write(stableJson(result.impact, true));
+      return result.status === "viable" ? 0 : 1;
+    }
+    if (result.status === "rejected") {
+      console.error(
+        `REJECTED: ${result.issues.filter((entry) => entry.severity === "error").length} error(s); ${result.quarantinedSubjects.length} subject(s) quarantined`,
+      );
+      return 1;
+    }
+    const serialized = stableJson(result.generation, true);
+    if (outputPath) {
+      await writeFile(resolve(outputPath), serialized, "utf8");
+      console.error(`Wrote viable generation ${outputPath}`);
+    } else {
+      process.stdout.write(serialized);
+    }
+    return 0;
   }
 
   if (command === "generate") {

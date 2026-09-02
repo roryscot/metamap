@@ -8,3 +8,9 @@ Metamap adapters read repository files and the CLI writes only configured graph,
 snapshot, report, documentation, and cache paths. Treat third-party adapters and
 relation packs as code and data from their respective publishers; review them
 before use in sensitive repositories.
+
+Viability policy JSON never names executable code. Custom constraint evaluators
+are trusted application code and should be reviewed like adapters. Unknown
+constraint kinds fail compilation. Durable generation promotion writes only to
+the caller-selected path and uses a same-directory temporary file followed by
+atomic rename; rejected candidates do not touch the active generation.

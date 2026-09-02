@@ -12,6 +12,7 @@ npm test
 npm run build
 npm run example:generate
 npm run example:check
+npm run example:compile
 ```
 
 Before opening a pull request, also run `npm pack --dry-run` and verify that
@@ -26,6 +27,11 @@ authority semantic change must include:
 - tests for both valid and invalid documents;
 - matching TypeScript model and validator changes;
 - updated examples and architecture documentation.
+
+Changes to viability policies, generations, context expressions, constraints,
+impact propagation, evidence, or waivers are also contract changes. New
+constraint kinds must include deterministic evaluator tests and documentation;
+unknown kinds must continue to fail closed.
 
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather

@@ -1,6 +1,6 @@
 {
   "name": "@roryscot/metamap",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Language-neutral authority and structural correspondence graph",
   "type": "module",
   "main": "dist/index.js",
@@ -14,7 +14,9 @@
     "relation-packs",
     "examples",
     "README.md",
-    "ARCHITECTURE.md"
+    "ARCHITECTURE.md",
+    "VIABILITY.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -24,6 +26,7 @@
     "validate:example": "npm run build && node dist/cli.js validate examples/example-authority-graph.json",
     "example:generate": "npm run build && node dist/cli.js generate examples/workspace/metamap.config.json --no-cache",
     "example:check": "npm run build && node dist/cli.js check examples/workspace/metamap.config.json --no-cache",
+    "example:compile": "npm run build && node dist/cli.js compile examples/example-authority-graph.json examples/example-viability-policy.json examples/example-generation.json --context examples/example-context.json --as-of 2026-09-02T00:00:00.000Z && prettier --write examples/example-generation.json",
     "prepare": "npm run build"
   },
   "dependencies": {
@@ -48,7 +51,37 @@
     "./legacy": {
       "import": "./dist/adapters/source-of-truth.js",
       "types": "./dist/adapters/source-of-truth.d.ts"
-    }
+    },
+    "./viability": {
+      "import": "./dist/viability.js",
+      "types": "./dist/viability.d.ts"
+    },
+    "./viability-model": {
+      "import": "./dist/viability-model.js",
+      "types": "./dist/viability-model.d.ts"
+    },
+    "./context": {
+      "import": "./dist/context.js",
+      "types": "./dist/context.d.ts"
+    },
+    "./impact": {
+      "import": "./dist/impact.js",
+      "types": "./dist/impact.d.ts"
+    },
+    "./constraints": {
+      "import": "./dist/constraints.js",
+      "types": "./dist/constraints.d.ts"
+    },
+    "./activation": {
+      "import": "./dist/activation.js",
+      "types": "./dist/activation.d.ts"
+    },
+    "./schemas/metamap-graph.schema.json": "./schemas/metamap-graph.schema.json",
+    "./schemas/metamap-config.schema.json": "./schemas/metamap-config.schema.json",
+    "./schemas/relation-pack.schema.json": "./schemas/relation-pack.schema.json",
+    "./schemas/metamap-viability.schema.json": "./schemas/metamap-viability.schema.json",
+    "./schemas/metamap-generation.schema.json": "./schemas/metamap-generation.schema.json",
+    "./relation-packs/core.json": "./relation-packs/core.json"
   },
   "repository": {
     "type": "git",

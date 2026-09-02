@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-viability.schema.json",
+  "title": "Metamap viability policy",
+  "description": "Contextual mapping semantics, executable constraints, evidence, and expiring waivers used to compile a graph into a viable generation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "graph",
+    "mappings",
+    "constraints",
+    "evidence"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "$ref": "#/$defs/identifier" },
+    "graph": { "$ref": "#/$defs/graphBinding" },
+    "mappings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/mappingDeclaration" }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/constraint" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "waivers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/waiver" }
+    },
+    "metadata": { "$ref": "#/$defs/jsonObject" }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "relationIdentifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+    },
+    "jsonPrimitive": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string" }
+      ]
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "$ref": "#/$defs/jsonPrimitive" },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "$ref": "#/$defs/jsonObject" }
+      ]
+    },
+    "jsonObject": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/jsonValue" }
+    },
+    "graphBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "revision": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      },
+      "anyOf": [
+        {
+          "properties": { "revision": true },
+          "required": ["revision"]
+        },
+        {
+          "properties": { "digest": true },
+          "required": ["digest"]
+        }
+      ]
+    },
+    "contextExpression": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["key", "operator", "value"],
+          "properties": {
+            "key": { "type": "string", "minLength": 1 },
+            "operator": { "enum": ["equals", "not-equals"] },
+            "value": { "$ref": "#/$defs/jsonPrimitive" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["key", "operator", "values"],
+          "properties": {
+            "key": { "type": "string", "minLength": 1 },
+            "operator": { "enum": ["in", "not-in"] },
+            "values": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/jsonPrimitive" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["key", "operator"],
+          "properties": {
+            "key": { "type": "string", "minLength": 1 },
+            "operator": { "const": "exists" },
+            "value": { "type": "boolean" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["all"],
+          "properties": {
+            "all": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/contextExpression" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["any"],
+          "properties": {
+            "any": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/contextExpression" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["not"],
+          "properties": {
+            "not": { "$ref": "#/$defs/contextExpression" }
+          }
+        }
+      ]
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "when": { "$ref": "#/$defs/contextExpression" },
+        "unless": { "$ref": "#/$defs/contextExpression" }
+      }
+    },
+    "mappingDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mapping", "coverage", "determinism", "reversibility"],
+      "properties": {
+        "mapping": { "$ref": "#/$defs/identifier" },
+        "coverage": { "enum": ["total", "partial"] },
+        "determinism": { "enum": ["deterministic", "nondeterministic"] },
+        "reversibility": { "enum": ["reversible", "irreversible"] },
+        "applicability": { "$ref": "#/$defs/applicability" }
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri"],
+      "properties": {
+        "uri": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subjects", "kind", "result", "producer"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "subjects": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "kind": { "type": "string", "minLength": 1 },
+        "result": { "enum": ["supports", "contradicts", "inconclusive"] },
+        "producer": { "type": "string", "minLength": 1 },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "locator": { "$ref": "#/$defs/locator" },
+        "digest": { "type": "string", "minLength": 1 },
+        "attributes": { "$ref": "#/$defs/jsonObject" }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "subjects"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "kind": { "$ref": "#/$defs/relationIdentifier" },
+        "subjects": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "parameters": { "$ref": "#/$defs/jsonObject" }
+      }
+    },
+    "waiver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "codes",
+        "subjects",
+        "reason",
+        "expiresAt",
+        "assertedBy"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "subjects": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "reason": { "type": "string", "minLength": 1 },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "assertedBy": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
