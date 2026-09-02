@@ -42,15 +42,18 @@ npm run example:check
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
 Prisma `Item` model and assigns persistence facts to Prisma.
 
-For a consuming repository, install the tagged Git repository:
+For a consuming repository, install the tagged public archive:
 
 ```json
 {
   "dependencies": {
-    "@roryscot/metamap": "git+https://github.com/roryscot/metamap.git#v0.1.0"
+    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.1.1.tar.gz"
   }
 }
 ```
+
+Release tags include compiled `dist/` artifacts so public consumers do not need
+Git credentials or an install-time TypeScript build.
 
 Then create a `metamap.config.json` and run:
 

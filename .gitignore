@@ -1,5 +1,4 @@
 node_modules/
-dist/
 .cache/
 *.tgz
 .DS_Store
