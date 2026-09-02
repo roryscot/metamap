@@ -25,7 +25,10 @@ viability policy + evaluation context -------+-> viability compiler
 
 Parsing is necessarily source-specific. A TypeScript adapter may use the
 compiler API and a Python adapter may use `ast`; both interoperate by emitting
-the same language-neutral graph document.
+the same language-neutral graph document. The runtime `AdapterRegistry` accepts
+consumer adapters without editing the kernel. Processes written in other
+languages can instead publish a portable document and enter through the
+`metamap-shard` adapter.
 
 ## Core model
 
@@ -98,6 +101,18 @@ fingerprint(config, context) -> content-addressed inputs
 discover(config, context)    -> graph shard + diagnostics
 ```
 
+Built-in and consumer adapters use the same registry and cache path. Unknown
+adapter identifiers fail before discovery and list the registered choices.
+Adapter-defined configuration fields and structure kinds remain open, while
+the shared workspace envelope is validated by the portable configuration
+schema.
+
+Domain relation packs are also portable inputs. A workspace loads their JSON
+documents explicitly, registers their semantics for validation and impact
+analysis, and records their paths and content digests in the composed graph.
+Direct graph commands require explicit repeatable `--relation-pack` arguments;
+the CLI never fetches or executes a relation pack implicitly.
+
 Discovery observes structure but never establishes equivalence. Workspace
 configuration supplies the semantic join: explicit structure and field pairs,
 compared facts, coverage rules, transformations, reviewed differences, and
@@ -142,6 +157,11 @@ The reference implementation keeps a repository-scale graph in memory with
 indexes by identity, relation, kind, locator, and authority scope. Larger
 systems can persist the same documents in relational, graph, or search indexes
 and ingest changed shards independently.
+
+The `metamap-shard` adapter is the federation seam: a separately versioned
+service, repository, or language runtime owns discovery and publishes only the
+portable graph it observed. Metamap revalidates that shard after composition
+against the workspace's exact relation-pack registry.
 
 Scaling does not require changing the authority or correspondence model. It
 adds operational federation:

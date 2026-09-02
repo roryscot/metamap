@@ -12,6 +12,8 @@ import { promoteMetamapGeneration } from "./activation.js";
 import { loadMetamapConfig } from "./config.js";
 import { diffMetamapDocuments } from "./diff.js";
 import type { MetamapDocument } from "./model.js";
+import { loadRelationPack } from "./relation-pack.js";
+import { RelationRegistry } from "./relations.js";
 import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -26,16 +28,16 @@ import {
 
 function usage(): string {
   return `Usage:
-  metamap validate <graph.json>
-  metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]...
-  metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]...
-  metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp]
+  metamap validate <graph.json> [--relation-pack pack.json]...
+  metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+  metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+  metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
-  metamap diff <before.json> <after.json>
+  metamap diff <before.json> <after.json> [--relation-pack pack.json]...
   metamap migrate-sources <sources-of-truth.json> [output.json]
-  metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [max-depth] [relation]
-  metamap authority <graph.json> <concept-id> <fact>
+  metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [max-depth] [relation] [--relation-pack pack.json]...
+  metamap authority <graph.json> <concept-id> <fact> [--relation-pack pack.json]...
 `;
 }
 
@@ -75,6 +77,16 @@ async function readJson(path: string): Promise<unknown> {
   return JSON.parse(await readFile(resolve(path), "utf8")) as unknown;
 }
 
+async function relationRegistryFrom(
+  parsed: ParsedArguments,
+): Promise<RelationRegistry> {
+  const registry = new RelationRegistry();
+  for (const path of parsed.options.get("--relation-pack") ?? []) {
+    registry.registerPack(await loadRelationPack(path));
+  }
+  return registry;
+}
+
 function printIssues(
   issues: ReturnType<typeof validateMetamapDocument>["issues"],
 ): void {
@@ -103,12 +115,14 @@ function printViabilityIssues(issues: readonly ViabilityIssue[]): void {
 async function main(args: string[]): Promise<number> {
   const [command, ...rest] = args;
   if (command === "validate") {
-    const [path] = rest;
-    if (!path) {
+    const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+    const [path] = parsed.positionals;
+    if (!path || parsed.positionals.length !== 1) {
       console.error(usage());
       return 2;
     }
-    const result = validateMetamapDocument(await readJson(path));
+    const registry = await relationRegistryFrom(parsed);
+    const result = validateMetamapDocument(await readJson(path), registry);
     printIssues(result.issues);
     const errors = result.issues.filter(
       (entry) => entry.severity === "error",
@@ -123,7 +137,7 @@ async function main(args: string[]): Promise<number> {
   if (command === "compile" || command === "promote" || command === "impact") {
     const parsed = parseArguments(
       rest,
-      new Set(["--context", "--as-of", "--changed"]),
+      new Set(["--context", "--as-of", "--changed", "--relation-pack"]),
     );
     const [graphPath, policyPath, ...remaining] = parsed.positionals;
     const outputPath = command === "impact" ? undefined : remaining[0];
@@ -142,8 +156,12 @@ async function main(args: string[]): Promise<number> {
       return 2;
     }
 
+    const relationRegistry = await relationRegistryFrom(parsed);
     const graphValue = await readJson(graphPath);
-    const graphValidation = validateMetamapDocument(graphValue);
+    const graphValidation = validateMetamapDocument(
+      graphValue,
+      relationRegistry,
+    );
     if (!graphValidation.valid) {
       printIssues(graphValidation.issues);
       return 1;
@@ -159,7 +177,7 @@ async function main(args: string[]): Promise<number> {
         graphValue as MetamapDocument,
         policy,
         outputPath as string,
-        { context, evaluatedAt, changedSubjects },
+        { context, evaluatedAt, changedSubjects, relationRegistry },
       );
       printViabilityIssues(promoted.compilation.issues);
       if (!promoted.activated) {
@@ -177,6 +195,7 @@ async function main(args: string[]): Promise<number> {
       context,
       evaluatedAt,
       changedSubjects,
+      relationRegistry,
     });
     printViabilityIssues(result.issues);
 
@@ -245,15 +264,17 @@ async function main(args: string[]): Promise<number> {
   }
 
   if (command === "diff") {
-    const [beforePath, afterPath] = rest;
-    if (!beforePath || !afterPath) {
+    const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+    const [beforePath, afterPath] = parsed.positionals;
+    if (!beforePath || !afterPath || parsed.positionals.length !== 2) {
       console.error(usage());
       return 2;
     }
+    const relationRegistry = await relationRegistryFrom(parsed);
     const before = await readJson(beforePath);
     const after = await readJson(afterPath);
-    const beforeValidation = validateMetamapDocument(before);
-    const afterValidation = validateMetamapDocument(after);
+    const beforeValidation = validateMetamapDocument(before, relationRegistry);
+    const afterValidation = validateMetamapDocument(after, relationRegistry);
     if (!beforeValidation.valid || !afterValidation.valid) {
       printIssues([...beforeValidation.issues, ...afterValidation.issues]);
       return 1;
@@ -298,7 +319,9 @@ async function main(args: string[]): Promise<number> {
   }
 
   if (command === "trace") {
-    const [path, entityId, direction = "both", depth = "1", relation] = rest;
+    const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+    const [path, entityId, direction = "both", depth = "1", relation] =
+      parsed.positionals;
     if (
       !path ||
       !entityId ||
@@ -308,7 +331,8 @@ async function main(args: string[]): Promise<number> {
       return 2;
     }
     try {
-      const graph = MetamapGraph.from(await readJson(path));
+      const registry = await relationRegistryFrom(parsed);
+      const graph = MetamapGraph.from(await readJson(path), { registry });
       const visits = graph.trace(entityId, {
         direction: direction as "incoming" | "outgoing" | "both",
         maxDepth: Number.parseInt(depth, 10),
@@ -331,12 +355,14 @@ async function main(args: string[]): Promise<number> {
   }
 
   if (command === "authority") {
-    const [path, conceptId, fact] = rest;
-    if (!path || !conceptId || !fact) {
+    const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+    const [path, conceptId, fact] = parsed.positionals;
+    if (!path || !conceptId || !fact || parsed.positionals.length !== 3) {
       console.error(usage());
       return 2;
     }
-    const graph = MetamapGraph.from(await readJson(path));
+    const registry = await relationRegistryFrom(parsed);
+    const graph = MetamapGraph.from(await readJson(path), { registry });
     console.log(
       stableJson(graph.resolveAuthority(conceptId, fact), true).trimEnd(),
     );

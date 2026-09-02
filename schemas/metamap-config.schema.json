@@ -22,6 +22,7 @@
     "namespace": { "$ref": "#/$defs/nonEmptyString" },
     "repository": { "$ref": "#/$defs/nonEmptyString" },
     "repositoryRoot": { "$ref": "#/$defs/nonEmptyString" },
+    "relationPacks": { "$ref": "#/$defs/stringArray" },
     "sources": {
       "type": "array",
       "minItems": 1,
@@ -40,6 +41,25 @@
       "type": "array",
       "uniqueItems": true,
       "items": { "$ref": "#/$defs/nonEmptyString" }
+    },
+    "jsonPrimitive": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string" }
+      ]
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "$ref": "#/$defs/jsonPrimitive" },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "$ref": "#/$defs/jsonObject" }
+      ]
+    },
+    "jsonObject": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/jsonValue" }
     },
     "sourceBase": {
       "type": "object",
@@ -100,6 +120,40 @@
               "items": { "$ref": "#/$defs/jsonCollection" }
             }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "adapter", "path"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": { "const": "metamap-shard" },
+            "path": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/jsonValue" },
+          "required": ["id", "adapter"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": {
+              "allOf": [
+                { "$ref": "#/$defs/nonEmptyString" },
+                {
+                  "not": {
+                    "enum": [
+                      "prisma",
+                      "typescript-zod",
+                      "legacy-sources",
+                      "json-collections",
+                      "metamap-shard"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -134,7 +188,7 @@
       "required": ["sourceId", "kind", "name"],
       "properties": {
         "sourceId": { "$ref": "#/$defs/nonEmptyString" },
-        "kind": { "enum": ["model", "schema", "enum"] },
+        "kind": { "$ref": "#/$defs/nonEmptyString" },
         "name": { "$ref": "#/$defs/nonEmptyString" }
       }
     },

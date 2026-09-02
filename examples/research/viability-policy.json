@@ -1,0 +1,79 @@
+{
+  "$schema": "../../schemas/metamap-viability.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:viability:research-state",
+  "graph": {
+    "id": "urn:example:metamap:research",
+    "revision": "sha256:1a41823c20a579de2b559da6b20f203dc89b7f58bfb3999cb0fa28bea4603a73"
+  },
+  "mappings": [
+    {
+      "mapping": "urn:example:mapping:first-obstruction-assumption",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:mechanism-competitors",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:protocol-tests-mechanisms",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:axiom-phase-scope",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    },
+    {
+      "mapping": "urn:example:mapping:postulate-phase-scope",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "urn:example:constraint:first-obstruction-authority",
+      "kind": "core:requires-authority",
+      "subjects": ["urn:example:claim:first-obstruction"],
+      "parameters": { "fact": "statement" }
+    },
+    {
+      "id": "urn:example:constraint:mechanism-competition",
+      "kind": "core:requires-mapping",
+      "subjects": [
+        "urn:example:hypothesis:mathematical-axiom",
+        "urn:example:hypothesis:physical-postulate"
+      ],
+      "parameters": {
+        "relation": "research:competes_with",
+        "direction": "either"
+      }
+    },
+    {
+      "id": "urn:example:constraint:mechanism-protocol",
+      "kind": "core:requires-mapping",
+      "subjects": [
+        "urn:example:hypothesis:mathematical-axiom",
+        "urn:example:hypothesis:physical-postulate"
+      ],
+      "parameters": {
+        "relation": "research:tests",
+        "direction": "target"
+      }
+    }
+  ],
+  "evidence": [],
+  "waivers": [],
+  "metadata": {
+    "viabilityLevel": "research-state",
+    "meaning": "The research structure is coherent; no claim of formal or empirical truth is implied."
+  }
+}

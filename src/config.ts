@@ -7,20 +7,31 @@ import addFormatsModule from "ajv-formats";
 
 export const METAMAP_CONFIG_VERSION = "1.0.0" as const;
 
-export interface PrismaSourceConfig {
+/**
+ * Open source configuration passed unchanged to the selected adapter. Built-in
+ * adapters expose narrower interfaces below, while third-party adapters can
+ * add JSON-compatible fields without changing Metamap core.
+ */
+export interface MetamapSourceConfig {
+  id: string;
+  adapter: string;
+  readonly [key: string]: unknown;
+}
+
+export interface PrismaSourceConfig extends MetamapSourceConfig {
   id: string;
   adapter: "prisma";
   path: string;
 }
 
-export interface TypeScriptZodSourceConfig {
+export interface TypeScriptZodSourceConfig extends MetamapSourceConfig {
   id: string;
   adapter: "typescript-zod";
   roots: string[];
   exclude?: string[];
 }
 
-export interface LegacySourcesConfig {
+export interface LegacySourcesConfig extends MetamapSourceConfig {
   id: string;
   adapter: "legacy-sources";
   path: string;
@@ -40,22 +51,30 @@ export interface JsonCollectionConfig {
   references?: JsonReferenceConfig[];
 }
 
-export interface JsonCollectionsSourceConfig {
+export interface JsonCollectionsSourceConfig extends MetamapSourceConfig {
   id: string;
   adapter: "json-collections";
   path: string;
   collections: JsonCollectionConfig[];
 }
 
-export type MetamapSourceConfig =
+export interface MetamapShardSourceConfig extends MetamapSourceConfig {
+  id: string;
+  adapter: "metamap-shard";
+  path: string;
+}
+
+export type BuiltInSourceConfig =
   | PrismaSourceConfig
   | TypeScriptZodSourceConfig
   | LegacySourcesConfig
-  | JsonCollectionsSourceConfig;
+  | JsonCollectionsSourceConfig
+  | MetamapShardSourceConfig;
 
 export interface StructureReferenceConfig {
   sourceId: string;
-  kind: "model" | "schema" | "enum";
+  /** Adapter-defined structure kind. */
+  kind: string;
   name: string;
 }
 
@@ -119,6 +138,8 @@ export interface MetamapConfig {
   namespace: string;
   repository: string;
   repositoryRoot: string;
+  /** Portable relation-pack documents, resolved from repositoryRoot. */
+  relationPacks?: string[];
   sources: MetamapSourceConfig[];
   correspondences: CorrespondenceConfig[];
   outputs: MetamapOutputConfig;
@@ -211,6 +232,15 @@ export function parseMetamapConfig(value: unknown): MetamapConfig {
     requireString(value, key, "$config");
   }
   if (value.label !== undefined) requireString(value, "label", "$config");
+  if (
+    value.relationPacks !== undefined &&
+    (!Array.isArray(value.relationPacks) ||
+      !value.relationPacks.every(
+        (entry) => typeof entry === "string" && entry.length > 0,
+      ))
+  ) {
+    throw new Error("$config.relationPacks must be a string array");
+  }
   if (!Array.isArray(value.sources) || value.sources.length === 0) {
     throw new Error("$config.sources must be a non-empty array");
   }
@@ -221,7 +251,11 @@ export function parseMetamapConfig(value: unknown): MetamapConfig {
     const id = requireString(source, "id", context);
     if (sourceIds.has(id)) throw new Error(`Duplicate source id ${id}`);
     sourceIds.add(id);
-    if (source.adapter === "prisma" || source.adapter === "legacy-sources") {
+    if (
+      source.adapter === "prisma" ||
+      source.adapter === "legacy-sources" ||
+      source.adapter === "metamap-shard"
+    ) {
       requireString(source, "path", context);
     } else if (source.adapter === "json-collections") {
       requireString(source, "path", context);
@@ -241,7 +275,7 @@ export function parseMetamapConfig(value: unknown): MetamapConfig {
         throw new Error(`${context}.exclude must be a string array`);
       }
     } else {
-      throw new Error(`${context}.adapter is not supported`);
+      requireString(source, "adapter", context);
     }
   }
 
@@ -275,9 +309,7 @@ export function parseMetamapConfig(value: unknown): MetamapConfig {
         );
       }
       requireString(reference, "name", `${context}.${side}`);
-      if (!new Set(["model", "schema", "enum"]).has(String(reference.kind))) {
-        throw new Error(`${context}.${side}.kind is invalid`);
-      }
+      requireString(reference, "kind", `${context}.${side}`);
     }
   }
 

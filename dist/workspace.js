@@ -1,12 +1,11 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { LegacySourcesAdapter } from "./adapters/legacy-sources.js";
-import { JsonCollectionsAdapter } from "./adapters/json-collections.js";
-import { PrismaAdapter } from "./adapters/prisma.js";
-import { TypeScriptZodAdapter } from "./adapters/typescript-zod.js";
+import { createDefaultAdapterRegistry, } from "./adapters/registry.js";
 import { materializeCorrespondences, } from "./correspondence.js";
 import { diffMetamapDocuments, emptyGraphDiff, } from "./diff.js";
 import { composeMetamapDocuments } from "./composer.js";
+import { loadRelationPack } from "./relation-pack.js";
+import { RelationRegistry } from "./relations.js";
 import { renderDriftReport, renderGraphDocumentation } from "./report.js";
 import { stableJson, valueDigest } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -61,17 +60,37 @@ async function discoverWithCache(adapter, config, context, cacheDirectory, useCa
     await writeFile(cachePath, stableJson(entry, true), "utf8");
     return { result, cacheHit: false };
 }
-async function discoverSource(source, context, cacheDirectory, useCache) {
-    switch (source.adapter) {
-        case "prisma":
-            return discoverWithCache(new PrismaAdapter(), source, context, cacheDirectory, useCache);
-        case "typescript-zod":
-            return discoverWithCache(new TypeScriptZodAdapter(), source, context, cacheDirectory, useCache);
-        case "legacy-sources":
-            return discoverWithCache(new LegacySourcesAdapter(), source, context, cacheDirectory, useCache);
-        case "json-collections":
-            return discoverWithCache(new JsonCollectionsAdapter(), source, context, cacheDirectory, useCache);
+async function discoverSource(source, context, cacheDirectory, useCache, registry) {
+    return discoverWithCache(registry.require(source.adapter), source, context, cacheDirectory, useCache);
+}
+async function configureRelationPacks(loaded, registry) {
+    const packs = await Promise.all((loaded.config.relationPacks ?? []).map(async (configuredPath) => ({
+        configuredPath,
+        pack: await loadRelationPack(resolve(loaded.repositoryRoot, configuredPath)),
+    })));
+    for (const { pack } of packs)
+        registry.registerPack(pack);
+    return packs;
+}
+function withConfiguredRelationPacks(document, configured) {
+    const references = new Map((document.relationPacks ?? []).map((entry) => [entry.id, entry]));
+    for (const { configuredPath, pack } of configured) {
+        const existing = references.get(pack.id);
+        if (existing && existing.version !== pack.version) {
+            throw new Error(`Relation pack ${pack.id} is referenced at both ${existing.version} and ${pack.version}`);
+        }
+        references.set(pack.id, {
+            ...existing,
+            id: pack.id,
+            version: pack.version,
+            uri: configuredPath,
+            digest: valueDigest(pack),
+        });
     }
+    return {
+        ...document,
+        relationPacks: [...references.values()].sort((left, right) => left.id.localeCompare(right.id)),
+    };
 }
 function unconfiguredStructureIssues(config, graph, configured) {
     const severity = config.policy?.unconfiguredStructures ?? "ignore";
@@ -124,13 +143,16 @@ function makeSnapshot(graph, adapters, configDigest) {
     };
 }
 export async function discoverWorkspace(loaded, options = {}) {
+    const adapterRegistry = options.adapterRegistry ?? createDefaultAdapterRegistry();
+    const relationRegistry = options.relationRegistry ?? new RelationRegistry();
+    const configuredRelationPacks = await configureRelationPacks(loaded, relationRegistry);
     const context = {
         namespace: loaded.config.namespace,
         repository: loaded.config.repository,
         repositoryRoot: loaded.repositoryRoot,
     };
     const cacheDirectory = outputPath(loaded, loaded.config.outputs.cache ?? ".cache/metamap");
-    const discoveredSources = await Promise.all(loaded.config.sources.map((source) => discoverSource(source, context, cacheDirectory, options.useCache ?? true)));
+    const discoveredSources = await Promise.all(loaded.config.sources.map((source) => discoverSource(source, context, cacheDirectory, options.useCache ?? true, adapterRegistry)));
     const adapters = discoveredSources.map((entry) => entry.result);
     const cacheHits = discoveredSources
         .filter((entry) => entry.cacheHit)
@@ -151,17 +173,17 @@ export async function discoverWorkspace(loaded, options = {}) {
         revision: graphRevision,
     });
     const declared = materializeCorrespondences(loaded.config.namespace, `${loaded.config.id}:declared`, discovered, loaded.config.correspondences, configDigest);
-    const graph = composeMetamapDocuments([discovered, declared.document], {
+    const graph = withConfiguredRelationPacks(composeMetamapDocuments([discovered, declared.document], {
         id: loaded.config.id,
         namespace: loaded.config.namespace,
         label: loaded.config.label ?? "Metamap",
         revision: graphRevision,
-    });
+    }), configuredRelationPacks);
     const driftIssues = [
         ...declared.issues,
         ...unconfiguredStructureIssues(loaded.config, graph, declared.configuredStructureIds),
     ];
-    const validation = validateMetamapDocument(graph);
+    const validation = validateMetamapDocument(graph, relationRegistry);
     return {
         graph,
         adapters,
@@ -175,8 +197,10 @@ export async function checkWorkspace(loaded, options = {}) {
     const current = await discoverWorkspace(loaded, options);
     const baselinePath = outputPath(loaded, loaded.config.outputs.graph);
     const baselineValue = await readJsonIfPresent(baselinePath);
+    const relationRegistry = options.relationRegistry ?? new RelationRegistry();
+    await configureRelationPacks(loaded, relationRegistry);
     const baselineValidation = baselineValue
-        ? validateMetamapDocument(baselineValue)
+        ? validateMetamapDocument(baselineValue, relationRegistry)
         : undefined;
     const baseline = baselineValue && baselineValidation?.valid
         ? baselineValue

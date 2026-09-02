@@ -30,6 +30,19 @@ describe("workspace configuration", () => {
     expect(() => parseMetamapConfig(config)).toThrow(
       /does not match the portable schema/,
     );
+
+    const builtInTypo = minimalConfig();
+    builtInTypo.sources = [
+      {
+        id: "db",
+        adapter: "prisma",
+        path: "schema.prisma",
+        unexpected: true,
+      },
+    ];
+    expect(() => parseMetamapConfig(builtInTypo)).toThrow(
+      /does not match the portable schema/,
+    );
   });
 
   it("enforces semantic uniqueness and source references", () => {

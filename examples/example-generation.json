@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json",
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
   "activeMappings": [
     "urn:example:mapping:prisma-contains-user-email",
     "urn:example:mapping:user-email-implementations",

@@ -1,0 +1,133 @@
+{
+  "$schema": "../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:example:research-machine:qm-gr-phase-1",
+  "namespace": "example-research",
+  "label": "Research Machine claim shard",
+  "revision": "phase-1-example",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:research",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:example:claim:first-obstruction",
+      "kind": "claim",
+      "label": "Constraint-preserving composition is the first obstruction",
+      "locators": [{ "uri": "research-machine://qm-gr-rebuild/claims/c3" }],
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "research-machine-exporter@1.0.0"
+      }
+    },
+    {
+      "id": "urn:example:hypothesis:mathematical-axiom",
+      "kind": "hypothesis",
+      "label": "A changed mathematical axiom is necessary",
+      "locators": [{ "uri": "research-machine://qm-gr-rebuild/hypotheses/c6" }],
+      "attributes": { "workflowState": "unreviewed" },
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "research-machine-exporter@1.0.0"
+      }
+    },
+    {
+      "id": "urn:example:hypothesis:physical-postulate",
+      "kind": "hypothesis",
+      "label": "A revised physical postulate is sufficient",
+      "locators": [{ "uri": "research-machine://qm-gr-rebuild/hypotheses/c7" }],
+      "attributes": { "workflowState": "unreviewed" },
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "research-machine-exporter@1.0.0"
+      }
+    },
+    {
+      "id": "urn:example:assumption:cross-regime-value",
+      "kind": "assumption",
+      "label": "Reconciliation requires cross-regime structure or discriminating value",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    },
+    {
+      "id": "urn:example:protocol:i6-interface",
+      "kind": "protocol",
+      "label": "Frozen I6 interface protocol",
+      "attributes": { "workflowState": "draft" },
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "research-machine-exporter@1.0.0"
+      }
+    },
+    {
+      "id": "urn:example:regime:phase-1",
+      "kind": "research-context",
+      "label": "Phase 1 quantum-geometry interface scope",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:example:mapping:first-obstruction-assumption",
+      "relation": "research:assumes",
+      "sources": ["urn:example:claim:first-obstruction"],
+      "targets": ["urn:example:assumption:cross-regime-value"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    },
+    {
+      "id": "urn:example:mapping:mechanism-competitors",
+      "relation": "research:competes_with",
+      "sources": ["urn:example:hypothesis:mathematical-axiom"],
+      "targets": ["urn:example:hypothesis:physical-postulate"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    },
+    {
+      "id": "urn:example:mapping:protocol-tests-mechanisms",
+      "relation": "research:tests",
+      "sources": ["urn:example:protocol:i6-interface"],
+      "targets": [
+        "urn:example:hypothesis:mathematical-axiom",
+        "urn:example:hypothesis:physical-postulate"
+      ],
+      "cardinality": "one-to-many",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    },
+    {
+      "id": "urn:example:mapping:axiom-phase-scope",
+      "relation": "research:valid_under",
+      "sources": ["urn:example:hypothesis:mathematical-axiom"],
+      "targets": ["urn:example:regime:phase-1"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    },
+    {
+      "id": "urn:example:mapping:postulate-phase-scope",
+      "relation": "research:valid_under",
+      "sources": ["urn:example:hypothesis:physical-postulate"],
+      "targets": ["urn:example:regime:phase-1"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "research-program" }
+    }
+  ],
+  "authorities": [
+    {
+      "id": "urn:example:authority:first-obstruction",
+      "concept": "urn:example:claim:first-obstruction",
+      "source": "urn:example:claim:first-obstruction",
+      "facts": ["statement", "workflow-state"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "research-machine-exporter@1.0.0"
+      }
+    }
+  ]
+}

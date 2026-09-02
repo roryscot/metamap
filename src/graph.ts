@@ -160,9 +160,9 @@ export class MetamapGraph {
       { id: entityId, depth: 0 },
     ];
 
-    while (queue.length > 0) {
-      const current = queue.shift();
-      if (!current || current.depth >= maxDepth) continue;
+    for (let cursor = 0; cursor < queue.length; cursor += 1) {
+      const current = queue[cursor];
+      if (current.depth >= maxDepth) continue;
       for (const neighbor of this.neighbors(current.id, options)) {
         if (visited.has(neighbor.entity.id)) continue;
         visited.add(neighbor.entity.id);

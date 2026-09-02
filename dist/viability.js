@@ -404,7 +404,7 @@ export function compileMetamap(document, policy, options = {}) {
     };
     const digest = valueDigest(generationContent);
     const generation = deepFreeze({
-        $schema: "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json",
+        $schema: "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
         ...generationContent,
         id: `urn:metamap:generation:${digest.replace(/^sha256:/, "")}`,
         digest,

@@ -25,6 +25,7 @@ jobs:
       - run: npm run example:generate
       - run: npm run example:check
       - run: npm run example:compile
+      - run: npm run example:research
       - name: Ensure example outputs are current
-        run: git diff --exit-code examples/workspace/generated examples/example-generation.json
+        run: git diff --exit-code examples/workspace/generated examples/research/generated examples/example-generation.json
       - run: npm pack --dry-run

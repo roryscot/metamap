@@ -1,8 +1,10 @@
+import { AdapterRegistry } from "./adapters/registry.js";
 import type { AdapterResult } from "./adapters/types.js";
 import type { LoadedMetamapConfig } from "./config.js";
 import { type DriftIssue } from "./correspondence.js";
 import { type GraphDiff } from "./diff.js";
 import type { MetamapDocument, ValidationResult } from "./model.js";
+import { RelationRegistry } from "./relations.js";
 declare const SNAPSHOT_VERSION = "1.0.0";
 export interface MetamapSnapshot {
     schemaVersion: typeof SNAPSHOT_VERSION;
@@ -35,12 +37,15 @@ export interface WorkspaceCheck extends WorkspaceDiscovery {
     diff: GraphDiff;
     baselineSeverity: "error" | "warning" | "ignore";
 }
-export declare function discoverWorkspace(loaded: LoadedMetamapConfig, options?: {
+export interface WorkspaceOptions {
     useCache?: boolean;
-}): Promise<WorkspaceDiscovery>;
-export declare function checkWorkspace(loaded: LoadedMetamapConfig, options?: {
-    useCache?: boolean;
-}): Promise<WorkspaceCheck>;
+    /** Programmatic extension point for consumer-supplied adapters. */
+    adapterRegistry?: AdapterRegistry;
+    /** Additional pre-registered relation semantics. */
+    relationRegistry?: RelationRegistry;
+}
+export declare function discoverWorkspace(loaded: LoadedMetamapConfig, options?: WorkspaceOptions): Promise<WorkspaceDiscovery>;
+export declare function checkWorkspace(loaded: LoadedMetamapConfig, options?: WorkspaceOptions): Promise<WorkspaceCheck>;
 export declare function writeWorkspaceOutputs(loaded: LoadedMetamapConfig, discovery: WorkspaceDiscovery): Promise<void>;
 export declare function workspaceHasErrors(discovery: WorkspaceDiscovery): boolean;
 export {};

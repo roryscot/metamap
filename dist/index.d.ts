@@ -1,6 +1,7 @@
 export * from "./model.js";
 export * from "./references.js";
 export * from "./relations.js";
+export * from "./relation-pack.js";
 export * from "./validator.js";
 export * from "./graph.js";
 export * from "./composer.js";
@@ -21,5 +22,7 @@ export * from "./adapters/prisma.js";
 export * from "./adapters/typescript-zod.js";
 export * from "./adapters/legacy-sources.js";
 export * from "./adapters/json-collections.js";
+export * from "./adapters/metamap-shard.js";
+export * from "./adapters/registry.js";
 export * from "./adapters/source-of-truth.js";
 //# sourceMappingURL=index.d.ts.map

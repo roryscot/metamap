@@ -20,8 +20,6 @@ describe("portable JSON contracts", () => {
   it("strictly validates the repository config, example graph, and relation pack", () => {
     const Ajv2020 = Ajv2020Module.default;
     const addFormats = addFormatsModule.default;
-    const ajv = new Ajv2020({ allErrors: true, strict: true });
-    addFormats(ajv);
     const cases = [
       {
         schema: "../../schemas/metamap-config.schema.json",
@@ -36,6 +34,26 @@ describe("portable JSON contracts", () => {
         document: "../../relation-packs/core.json",
       },
       {
+        schema: "../../schemas/relation-pack.schema.json",
+        document: "../../relation-packs/research.json",
+      },
+      {
+        schema: "../../schemas/metamap-config.schema.json",
+        document: "../../examples/research/metamap.config.json",
+      },
+      {
+        schema: "../../schemas/metamap-graph.schema.json",
+        document: "../../examples/research/claim-shard.json",
+      },
+      {
+        schema: "../../schemas/metamap-viability.schema.json",
+        document: "../../examples/research/viability-policy.json",
+      },
+      {
+        schema: "../../schemas/metamap-generation.schema.json",
+        document: "../../examples/research/generated/generation.json",
+      },
+      {
         schema: "../../schemas/metamap-viability.schema.json",
         document: "../../examples/example-viability-policy.json",
       },
@@ -46,6 +64,8 @@ describe("portable JSON contracts", () => {
     ];
 
     for (const entry of cases) {
+      const ajv = new Ajv2020({ allErrors: true, strict: true });
+      addFormats(ajv);
       const validate = ajv.compile(readSchema(entry.schema));
       const valid = validate(readJson(entry.document));
       expect(validate.errors, `${entry.document} schema errors`).toBeNull();

@@ -7,6 +7,8 @@ import { parseEvaluationContext } from "./context.js";
 import { promoteMetamapGeneration } from "./activation.js";
 import { loadMetamapConfig } from "./config.js";
 import { diffMetamapDocuments } from "./diff.js";
+import { loadRelationPack } from "./relation-pack.js";
+import { RelationRegistry } from "./relations.js";
 import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -14,16 +16,16 @@ import { compileMetamap, parseViabilityPolicy } from "./viability.js";
 import { checkWorkspace, discoverWorkspace, workspaceHasErrors, writeWorkspaceOutputs, } from "./workspace.js";
 function usage() {
     return `Usage:
-  metamap validate <graph.json>
-  metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]...
-  metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]...
-  metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp]
+  metamap validate <graph.json> [--relation-pack pack.json]...
+  metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+  metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+  metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
-  metamap diff <before.json> <after.json>
+  metamap diff <before.json> <after.json> [--relation-pack pack.json]...
   metamap migrate-sources <sources-of-truth.json> [output.json]
-  metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [max-depth] [relation]
-  metamap authority <graph.json> <concept-id> <fact>
+  metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [max-depth] [relation] [--relation-pack pack.json]...
+  metamap authority <graph.json> <concept-id> <fact> [--relation-pack pack.json]...
 `;
 }
 function parseArguments(args, valuedOptions) {
@@ -52,6 +54,13 @@ function parseArguments(args, valuedOptions) {
 async function readJson(path) {
     return JSON.parse(await readFile(resolve(path), "utf8"));
 }
+async function relationRegistryFrom(parsed) {
+    const registry = new RelationRegistry();
+    for (const path of parsed.options.get("--relation-pack") ?? []) {
+        registry.registerPack(await loadRelationPack(path));
+    }
+    return registry;
+}
 function printIssues(issues) {
     for (const entry of issues) {
         const location = entry.path ? ` ${entry.path}` : "";
@@ -72,12 +81,14 @@ function printViabilityIssues(issues) {
 async function main(args) {
     const [command, ...rest] = args;
     if (command === "validate") {
-        const [path] = rest;
-        if (!path) {
+        const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+        const [path] = parsed.positionals;
+        if (!path || parsed.positionals.length !== 1) {
             console.error(usage());
             return 2;
         }
-        const result = validateMetamapDocument(await readJson(path));
+        const registry = await relationRegistryFrom(parsed);
+        const result = validateMetamapDocument(await readJson(path), registry);
         printIssues(result.issues);
         const errors = result.issues.filter((entry) => entry.severity === "error").length;
         const warnings = result.issues.length - errors;
@@ -85,7 +96,7 @@ async function main(args) {
         return result.valid ? 0 : 1;
     }
     if (command === "compile" || command === "promote" || command === "impact") {
-        const parsed = parseArguments(rest, new Set(["--context", "--as-of", "--changed"]));
+        const parsed = parseArguments(rest, new Set(["--context", "--as-of", "--changed", "--relation-pack"]));
         const [graphPath, policyPath, ...remaining] = parsed.positionals;
         const outputPath = command === "impact" ? undefined : remaining[0];
         const changedSubjects = command === "impact"
@@ -99,8 +110,9 @@ async function main(args) {
             console.error(usage());
             return 2;
         }
+        const relationRegistry = await relationRegistryFrom(parsed);
         const graphValue = await readJson(graphPath);
-        const graphValidation = validateMetamapDocument(graphValue);
+        const graphValidation = validateMetamapDocument(graphValue, relationRegistry);
         if (!graphValidation.valid) {
             printIssues(graphValidation.issues);
             return 1;
@@ -112,7 +124,7 @@ async function main(args) {
             : {};
         const evaluatedAt = parsed.options.get("--as-of")?.[0];
         if (command === "promote") {
-            const promoted = await promoteMetamapGeneration(graphValue, policy, outputPath, { context, evaluatedAt, changedSubjects });
+            const promoted = await promoteMetamapGeneration(graphValue, policy, outputPath, { context, evaluatedAt, changedSubjects, relationRegistry });
             printViabilityIssues(promoted.compilation.issues);
             if (!promoted.activated) {
                 console.error(`REJECTED: retained ${promoted.previousDigest ?? "no previous generation"} at ${promoted.path}`);
@@ -125,6 +137,7 @@ async function main(args) {
             context,
             evaluatedAt,
             changedSubjects,
+            relationRegistry,
         });
         printViabilityIssues(result.issues);
         if (command === "impact") {
@@ -184,15 +197,17 @@ async function main(args) {
         return workspaceHasErrors(check) ? 1 : 0;
     }
     if (command === "diff") {
-        const [beforePath, afterPath] = rest;
-        if (!beforePath || !afterPath) {
+        const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+        const [beforePath, afterPath] = parsed.positionals;
+        if (!beforePath || !afterPath || parsed.positionals.length !== 2) {
             console.error(usage());
             return 2;
         }
+        const relationRegistry = await relationRegistryFrom(parsed);
         const before = await readJson(beforePath);
         const after = await readJson(afterPath);
-        const beforeValidation = validateMetamapDocument(before);
-        const afterValidation = validateMetamapDocument(after);
+        const beforeValidation = validateMetamapDocument(before, relationRegistry);
+        const afterValidation = validateMetamapDocument(after, relationRegistry);
         if (!beforeValidation.valid || !afterValidation.valid) {
             printIssues([...beforeValidation.issues, ...afterValidation.issues]);
             return 1;
@@ -226,7 +241,8 @@ async function main(args) {
         return 0;
     }
     if (command === "trace") {
-        const [path, entityId, direction = "both", depth = "1", relation] = rest;
+        const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+        const [path, entityId, direction = "both", depth = "1", relation] = parsed.positionals;
         if (!path ||
             !entityId ||
             !["incoming", "outgoing", "both"].includes(direction)) {
@@ -234,7 +250,8 @@ async function main(args) {
             return 2;
         }
         try {
-            const graph = MetamapGraph.from(await readJson(path));
+            const registry = await relationRegistryFrom(parsed);
+            const graph = MetamapGraph.from(await readJson(path), { registry });
             const visits = graph.trace(entityId, {
                 direction: direction,
                 maxDepth: Number.parseInt(depth, 10),
@@ -257,12 +274,14 @@ async function main(args) {
         }
     }
     if (command === "authority") {
-        const [path, conceptId, fact] = rest;
-        if (!path || !conceptId || !fact) {
+        const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+        const [path, conceptId, fact] = parsed.positionals;
+        if (!path || !conceptId || !fact || parsed.positionals.length !== 3) {
             console.error(usage());
             return 2;
         }
-        const graph = MetamapGraph.from(await readJson(path));
+        const registry = await relationRegistryFrom(parsed);
+        const graph = MetamapGraph.from(await readJson(path), { registry });
         console.log(stableJson(graph.resolveAuthority(conceptId, fact), true).trimEnd());
         return 0;
     }

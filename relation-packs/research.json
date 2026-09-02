@@ -1,0 +1,131 @@
+{
+  "$schema": "../schemas/relation-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:metamap:relation-pack:research",
+  "version": "1.0.0",
+  "description": "Relations for auditable inquiry, competing hypotheses, formal consequences, protocols, and scoped evidence.",
+  "relations": [
+    {
+      "id": "research:defines",
+      "description": "The source explicitly defines the target term, object, or operation.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "research:assumes",
+      "description": "The source depends on the target assumption in its stated scope.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "research:entails",
+      "description": "The source formally entails the target under explicitly recorded assumptions.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "transitive": true,
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "research:predicts",
+      "description": "The source hypothesis or model prospectively predicts the target observable outcome.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "research:measured_by",
+      "description": "The source construct or prediction is operationalized by the target measurement.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "research:tests",
+      "description": "The source protocol or run tests the target claim or hypothesis without implying its result.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "research:supports",
+      "description": "The source evidence supports the target only in the evidence record's declared scope.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "research:contradicts",
+      "description": "The source evidence contradicts the target in a declared scope; it does not imply logical negation outside that scope.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "research:competes_with",
+      "description": "The source and target are live competing explanations or models.",
+      "cardinalities": ["one-to-one", "many-to-many"],
+      "cyclePolicy": "allow",
+      "symmetric": true,
+      "impactDirection": "both"
+    },
+    {
+      "id": "research:valid_under",
+      "description": "The source is claimed to apply only under the target context, regime, or assumption set.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "research:recovers",
+      "description": "The source candidate recovers the target established sector or limiting behavior under explicit conditions.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "research:refines",
+      "description": "The source narrows, qualifies, or supersedes the target while preserving lineage.",
+      "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "transitive": true,
+      "impactDirection": "target-to-source"
+    }
+  ]
+}

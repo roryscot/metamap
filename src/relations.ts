@@ -103,7 +103,7 @@ export const coreRelationPack: RelationPack = {
 
 export class RelationRegistry {
   private readonly definitions = new Map<string, RelationDefinition>();
-  private readonly packs = new Map<string, string>();
+  private readonly packs = new Map<string, RelationPack>();
 
   constructor(packs: readonly RelationPack[] = [coreRelationPack]) {
     for (const pack of packs) {
@@ -112,11 +112,19 @@ export class RelationRegistry {
   }
 
   registerPack(pack: RelationPack): void {
-    const existingVersion = this.packs.get(pack.id);
-    if (existingVersion && existingVersion !== pack.version) {
+    const existing = this.packs.get(pack.id);
+    if (existing && existing.version !== pack.version) {
       throw new Error(
-        `Relation pack ${pack.id} is already registered at version ${existingVersion}`,
+        `Relation pack ${pack.id} is already registered at version ${existing.version}`,
       );
+    }
+    if (existing) {
+      if (JSON.stringify(existing) !== JSON.stringify(pack)) {
+        throw new Error(
+          `Relation pack ${pack.id}@${pack.version} conflicts with its registered definition`,
+        );
+      }
+      return;
     }
 
     for (const relation of pack.relations) {
@@ -125,7 +133,7 @@ export class RelationRegistry {
       }
       this.definitions.set(relation.id, relation);
     }
-    this.packs.set(pack.id, pack.version);
+    this.packs.set(pack.id, pack);
   }
 
   get(id: string): RelationDefinition | undefined {
@@ -133,13 +141,15 @@ export class RelationRegistry {
   }
 
   hasPack(id: string, version?: string): boolean {
-    const registeredVersion = this.packs.get(id);
-    return version
-      ? registeredVersion === version
-      : registeredVersion !== undefined;
+    const registered = this.packs.get(id);
+    return version ? registered?.version === version : registered !== undefined;
   }
 
   all(): RelationDefinition[] {
     return [...this.definitions.values()];
+  }
+
+  allPacks(): RelationPack[] {
+    return [...this.packs.values()];
   }
 }

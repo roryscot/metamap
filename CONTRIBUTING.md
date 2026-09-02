@@ -13,6 +13,7 @@ npm run build
 npm run example:generate
 npm run example:check
 npm run example:compile
+npm run example:research
 ```
 
 Before opening a pull request, also run `npm pack --dry-run` and verify that
@@ -36,6 +37,12 @@ unknown kinds must continue to fail closed.
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather
 than physical paths as identity.
+
+Third-party adapter configuration is intentionally open. New built-in adapters
+must still add a narrow TypeScript config interface, portable schema conditions,
+registry coverage, and a representative shard test. Relation packs must keep
+semantic entailment separate from evidential support and include an explicit
+causal `impactDirection` for every relation intended for viable activation.
 
 ## Pull requests
 

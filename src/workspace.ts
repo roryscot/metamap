@@ -1,9 +1,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { LegacySourcesAdapter } from "./adapters/legacy-sources.js";
-import { JsonCollectionsAdapter } from "./adapters/json-collections.js";
-import { PrismaAdapter } from "./adapters/prisma.js";
-import { TypeScriptZodAdapter } from "./adapters/typescript-zod.js";
+import {
+  AdapterRegistry,
+  createDefaultAdapterRegistry,
+} from "./adapters/registry.js";
 import type {
   AdapterContext,
   AdapterResult,
@@ -24,7 +24,14 @@ import {
   type GraphDiff,
 } from "./diff.js";
 import { composeMetamapDocuments } from "./composer.js";
-import type { MetamapDocument, ValidationResult } from "./model.js";
+import type {
+  MetamapDocument,
+  RelationPack,
+  RelationPackReference,
+  ValidationResult,
+} from "./model.js";
+import { loadRelationPack } from "./relation-pack.js";
+import { RelationRegistry } from "./relations.js";
 import { renderDriftReport, renderGraphDocumentation } from "./report.js";
 import { stableJson, valueDigest } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -70,6 +77,14 @@ export interface WorkspaceCheck extends WorkspaceDiscovery {
   baseline?: MetamapDocument;
   diff: GraphDiff;
   baselineSeverity: "error" | "warning" | "ignore";
+}
+
+export interface WorkspaceOptions {
+  useCache?: boolean;
+  /** Programmatic extension point for consumer-supplied adapters. */
+  adapterRegistry?: AdapterRegistry;
+  /** Additional pre-registered relation semantics. */
+  relationRegistry?: RelationRegistry;
 }
 
 function outputPath(loaded: LoadedMetamapConfig, path: string): string {
@@ -139,41 +154,66 @@ async function discoverSource(
   context: AdapterContext,
   cacheDirectory: string,
   useCache: boolean,
+  registry: AdapterRegistry,
 ): Promise<{ result: AdapterResult; cacheHit: boolean }> {
-  switch (source.adapter) {
-    case "prisma":
-      return discoverWithCache(
-        new PrismaAdapter(),
-        source,
-        context,
-        cacheDirectory,
-        useCache,
+  return discoverWithCache(
+    registry.require(source.adapter),
+    source,
+    context,
+    cacheDirectory,
+    useCache,
+  );
+}
+
+interface ConfiguredRelationPack {
+  configuredPath: string;
+  pack: RelationPack;
+}
+
+async function configureRelationPacks(
+  loaded: LoadedMetamapConfig,
+  registry: RelationRegistry,
+): Promise<ConfiguredRelationPack[]> {
+  const packs = await Promise.all(
+    (loaded.config.relationPacks ?? []).map(async (configuredPath) => ({
+      configuredPath,
+      pack: await loadRelationPack(
+        resolve(loaded.repositoryRoot, configuredPath),
+      ),
+    })),
+  );
+  for (const { pack } of packs) registry.registerPack(pack);
+  return packs;
+}
+
+function withConfiguredRelationPacks(
+  document: MetamapDocument,
+  configured: readonly ConfiguredRelationPack[],
+): MetamapDocument {
+  const references = new Map<string, RelationPackReference>(
+    (document.relationPacks ?? []).map((entry) => [entry.id, entry]),
+  );
+  for (const { configuredPath, pack } of configured) {
+    const existing = references.get(pack.id);
+    if (existing && existing.version !== pack.version) {
+      throw new Error(
+        `Relation pack ${pack.id} is referenced at both ${existing.version} and ${pack.version}`,
       );
-    case "typescript-zod":
-      return discoverWithCache(
-        new TypeScriptZodAdapter(),
-        source,
-        context,
-        cacheDirectory,
-        useCache,
-      );
-    case "legacy-sources":
-      return discoverWithCache(
-        new LegacySourcesAdapter(),
-        source,
-        context,
-        cacheDirectory,
-        useCache,
-      );
-    case "json-collections":
-      return discoverWithCache(
-        new JsonCollectionsAdapter(),
-        source,
-        context,
-        cacheDirectory,
-        useCache,
-      );
+    }
+    references.set(pack.id, {
+      ...existing,
+      id: pack.id,
+      version: pack.version,
+      uri: configuredPath,
+      digest: valueDigest(pack),
+    });
   }
+  return {
+    ...document,
+    relationPacks: [...references.values()].sort((left, right) =>
+      left.id.localeCompare(right.id),
+    ),
+  };
 }
 
 function unconfiguredStructureIssues(
@@ -239,8 +279,15 @@ function makeSnapshot(
 
 export async function discoverWorkspace(
   loaded: LoadedMetamapConfig,
-  options: { useCache?: boolean } = {},
+  options: WorkspaceOptions = {},
 ): Promise<WorkspaceDiscovery> {
+  const adapterRegistry =
+    options.adapterRegistry ?? createDefaultAdapterRegistry();
+  const relationRegistry = options.relationRegistry ?? new RelationRegistry();
+  const configuredRelationPacks = await configureRelationPacks(
+    loaded,
+    relationRegistry,
+  );
   const context: AdapterContext = {
     namespace: loaded.config.namespace,
     repository: loaded.config.repository,
@@ -252,7 +299,13 @@ export async function discoverWorkspace(
   );
   const discoveredSources = await Promise.all(
     loaded.config.sources.map((source) =>
-      discoverSource(source, context, cacheDirectory, options.useCache ?? true),
+      discoverSource(
+        source,
+        context,
+        cacheDirectory,
+        options.useCache ?? true,
+        adapterRegistry,
+      ),
     ),
   );
   const adapters = discoveredSources.map((entry) => entry.result);
@@ -284,12 +337,15 @@ export async function discoverWorkspace(
     loaded.config.correspondences,
     configDigest,
   );
-  const graph = composeMetamapDocuments([discovered, declared.document], {
-    id: loaded.config.id,
-    namespace: loaded.config.namespace,
-    label: loaded.config.label ?? "Metamap",
-    revision: graphRevision,
-  });
+  const graph = withConfiguredRelationPacks(
+    composeMetamapDocuments([discovered, declared.document], {
+      id: loaded.config.id,
+      namespace: loaded.config.namespace,
+      label: loaded.config.label ?? "Metamap",
+      revision: graphRevision,
+    }),
+    configuredRelationPacks,
+  );
   const driftIssues = [
     ...declared.issues,
     ...unconfiguredStructureIssues(
@@ -298,7 +354,7 @@ export async function discoverWorkspace(
       declared.configuredStructureIds,
     ),
   ];
-  const validation = validateMetamapDocument(graph);
+  const validation = validateMetamapDocument(graph, relationRegistry);
   return {
     graph,
     adapters,
@@ -311,13 +367,15 @@ export async function discoverWorkspace(
 
 export async function checkWorkspace(
   loaded: LoadedMetamapConfig,
-  options: { useCache?: boolean } = {},
+  options: WorkspaceOptions = {},
 ): Promise<WorkspaceCheck> {
   const current = await discoverWorkspace(loaded, options);
   const baselinePath = outputPath(loaded, loaded.config.outputs.graph);
   const baselineValue = await readJsonIfPresent(baselinePath);
+  const relationRegistry = options.relationRegistry ?? new RelationRegistry();
+  await configureRelationPacks(loaded, relationRegistry);
   const baselineValidation = baselineValue
-    ? validateMetamapDocument(baselineValue)
+    ? validateMetamapDocument(baselineValue, relationRegistry)
     : undefined;
   const baseline =
     baselineValue && baselineValidation?.valid

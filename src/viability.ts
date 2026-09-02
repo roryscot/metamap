@@ -689,7 +689,7 @@ export function compileMetamap(
   const digest = valueDigest(generationContent);
   const generation: ViableGeneration = deepFreeze({
     $schema:
-      "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json",
+      "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
     ...generationContent,
     id: `urn:metamap:generation:${digest.replace(/^sha256:/, "")}`,
     digest,

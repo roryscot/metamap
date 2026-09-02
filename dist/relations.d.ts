@@ -8,5 +8,6 @@ export declare class RelationRegistry {
     get(id: string): RelationDefinition | undefined;
     hasPack(id: string, version?: string): boolean;
     all(): RelationDefinition[];
+    allPacks(): RelationPack[];
 }
 //# sourceMappingURL=relations.d.ts.map

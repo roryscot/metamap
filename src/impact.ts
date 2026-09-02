@@ -106,9 +106,8 @@ export function analyzeImpact(
     }
   }
 
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (!current) continue;
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor];
     const currentPath = paths.get(current) ?? [current];
     for (const edge of adjacency.get(current) ?? []) {
       const mappingPath = [...currentPath, edge.mapping.id];

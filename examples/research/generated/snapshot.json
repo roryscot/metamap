@@ -1,0 +1,25 @@
+{
+  "configDigest": "sha256:5cb4de6de8a11f2209dafcefe3d14b9ace35fa96c5f8e9f54bf8507ea238d01c",
+  "counts": {
+    "authorities": 1,
+    "entities": 6,
+    "mappings": 5
+  },
+  "graphDigest": "sha256:2a13cbc11d144d4870903408c8bc207d50d7004192dcc2d62ef3db9a75a6942a",
+  "graphId": "urn:example:metamap:research",
+  "graphRevision": "sha256:1a41823c20a579de2b559da6b20f203dc89b7f58bfb3999cb0fa28bea4603a73",
+  "schemaVersion": "1.0.0",
+  "sources": [
+    {
+      "adapter": "metamap-shard",
+      "adapterVersion": "1.0.0",
+      "id": "research-machine",
+      "inputs": [
+        {
+          "digest": "sha256:d1c23409c1b0f5bd13fa498dbdcbcec850514b66caf618d609eed25a56c97d79",
+          "path": "examples/research/claim-shard.json"
+        }
+      ]
+    }
+  ]
+}

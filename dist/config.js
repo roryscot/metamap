@@ -58,6 +58,11 @@ export function parseMetamapConfig(value) {
     }
     if (value.label !== undefined)
         requireString(value, "label", "$config");
+    if (value.relationPacks !== undefined &&
+        (!Array.isArray(value.relationPacks) ||
+            !value.relationPacks.every((entry) => typeof entry === "string" && entry.length > 0))) {
+        throw new Error("$config.relationPacks must be a string array");
+    }
     if (!Array.isArray(value.sources) || value.sources.length === 0) {
         throw new Error("$config.sources must be a non-empty array");
     }
@@ -70,7 +75,9 @@ export function parseMetamapConfig(value) {
         if (sourceIds.has(id))
             throw new Error(`Duplicate source id ${id}`);
         sourceIds.add(id);
-        if (source.adapter === "prisma" || source.adapter === "legacy-sources") {
+        if (source.adapter === "prisma" ||
+            source.adapter === "legacy-sources" ||
+            source.adapter === "metamap-shard") {
             requireString(source, "path", context);
         }
         else if (source.adapter === "json-collections") {
@@ -89,7 +96,7 @@ export function parseMetamapConfig(value) {
             }
         }
         else {
-            throw new Error(`${context}.adapter is not supported`);
+            requireString(source, "adapter", context);
         }
     }
     if (!Array.isArray(value.correspondences)) {
@@ -116,9 +123,7 @@ export function parseMetamapConfig(value) {
                 throw new Error(`${context}.${side} references unknown source ${sourceId}`);
             }
             requireString(reference, "name", `${context}.${side}`);
-            if (!new Set(["model", "schema", "enum"]).has(String(reference.kind))) {
-                throw new Error(`${context}.${side}.kind is invalid`);
-            }
+            requireString(reference, "kind", `${context}.${side}`);
         }
     }
     if (!isRecord(value.outputs)) {

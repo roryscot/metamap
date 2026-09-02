@@ -1,16 +1,26 @@
 export declare const METAMAP_CONFIG_VERSION: "1.0.0";
-export interface PrismaSourceConfig {
+/**
+ * Open source configuration passed unchanged to the selected adapter. Built-in
+ * adapters expose narrower interfaces below, while third-party adapters can
+ * add JSON-compatible fields without changing Metamap core.
+ */
+export interface MetamapSourceConfig {
+    id: string;
+    adapter: string;
+    readonly [key: string]: unknown;
+}
+export interface PrismaSourceConfig extends MetamapSourceConfig {
     id: string;
     adapter: "prisma";
     path: string;
 }
-export interface TypeScriptZodSourceConfig {
+export interface TypeScriptZodSourceConfig extends MetamapSourceConfig {
     id: string;
     adapter: "typescript-zod";
     roots: string[];
     exclude?: string[];
 }
-export interface LegacySourcesConfig {
+export interface LegacySourcesConfig extends MetamapSourceConfig {
     id: string;
     adapter: "legacy-sources";
     path: string;
@@ -27,16 +37,22 @@ export interface JsonCollectionConfig {
     entityKind: string;
     references?: JsonReferenceConfig[];
 }
-export interface JsonCollectionsSourceConfig {
+export interface JsonCollectionsSourceConfig extends MetamapSourceConfig {
     id: string;
     adapter: "json-collections";
     path: string;
     collections: JsonCollectionConfig[];
 }
-export type MetamapSourceConfig = PrismaSourceConfig | TypeScriptZodSourceConfig | LegacySourcesConfig | JsonCollectionsSourceConfig;
+export interface MetamapShardSourceConfig extends MetamapSourceConfig {
+    id: string;
+    adapter: "metamap-shard";
+    path: string;
+}
+export type BuiltInSourceConfig = PrismaSourceConfig | TypeScriptZodSourceConfig | LegacySourcesConfig | JsonCollectionsSourceConfig | MetamapShardSourceConfig;
 export interface StructureReferenceConfig {
     sourceId: string;
-    kind: "model" | "schema" | "enum";
+    /** Adapter-defined structure kind. */
+    kind: string;
     name: string;
 }
 export type ComparedFact = "type" | "presence" | "nullability" | "cardinality";
@@ -91,6 +107,8 @@ export interface MetamapConfig {
     namespace: string;
     repository: string;
     repositoryRoot: string;
+    /** Portable relation-pack documents, resolved from repositoryRoot. */
+    relationPacks?: string[];
     sources: MetamapSourceConfig[];
     correspondences: CorrespondenceConfig[];
     outputs: MetamapOutputConfig;

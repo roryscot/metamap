@@ -102,9 +102,15 @@ export class RelationRegistry {
         }
     }
     registerPack(pack) {
-        const existingVersion = this.packs.get(pack.id);
-        if (existingVersion && existingVersion !== pack.version) {
-            throw new Error(`Relation pack ${pack.id} is already registered at version ${existingVersion}`);
+        const existing = this.packs.get(pack.id);
+        if (existing && existing.version !== pack.version) {
+            throw new Error(`Relation pack ${pack.id} is already registered at version ${existing.version}`);
+        }
+        if (existing) {
+            if (JSON.stringify(existing) !== JSON.stringify(pack)) {
+                throw new Error(`Relation pack ${pack.id}@${pack.version} conflicts with its registered definition`);
+            }
+            return;
         }
         for (const relation of pack.relations) {
             if (this.definitions.has(relation.id)) {
@@ -112,19 +118,20 @@ export class RelationRegistry {
             }
             this.definitions.set(relation.id, relation);
         }
-        this.packs.set(pack.id, pack.version);
+        this.packs.set(pack.id, pack);
     }
     get(id) {
         return this.definitions.get(id);
     }
     hasPack(id, version) {
-        const registeredVersion = this.packs.get(id);
-        return version
-            ? registeredVersion === version
-            : registeredVersion !== undefined;
+        const registered = this.packs.get(id);
+        return version ? registered?.version === version : registered !== undefined;
     }
     all() {
         return [...this.definitions.values()];
+    }
+    allPacks() {
+        return [...this.packs.values()];
     }
 }
 //# sourceMappingURL=relations.js.map

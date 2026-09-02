@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
+  "activeMappings": [
+    "urn:example:mapping:axiom-phase-scope",
+    "urn:example:mapping:first-obstruction-assumption",
+    "urn:example:mapping:mechanism-competitors",
+    "urn:example:mapping:postulate-phase-scope",
+    "urn:example:mapping:protocol-tests-mechanisms"
+  ],
+  "context": {},
+  "digest": "sha256:dd4f9077ddab303ef7b00a5ee76c8e267684e476637cb0823e9564fe02d69b2f",
+  "evaluatedAt": "2026-09-02T00:00:00.000Z",
+  "evidence": [],
+  "graph": {
+    "digest": "sha256:2a13cbc11d144d4870903408c8bc207d50d7004192dcc2d62ef3db9a75a6942a",
+    "id": "urn:example:metamap:research",
+    "revision": "sha256:1a41823c20a579de2b559da6b20f203dc89b7f58bfb3999cb0fa28bea4603a73"
+  },
+  "id": "urn:metamap:generation:dd4f9077ddab303ef7b00a5ee76c8e267684e476637cb0823e9564fe02d69b2f",
+  "inactiveMappings": [],
+  "policy": {
+    "digest": "sha256:f4c49361837bfb7ba56f059950ea953c04f70da8fad60af3c47a12c9254a02ae",
+    "id": "urn:example:viability:research-state"
+  },
+  "schemaVersion": "1.0.0",
+  "waiversApplied": []
+}

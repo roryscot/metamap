@@ -19,13 +19,19 @@ The governing rule is:
 - Deterministic composition and validation of independently emitted shards.
 - Content-addressed adapter caching, snapshots, stable-ID diffs, and drift
   reports.
+- A runtime adapter registry for consumer-defined discovery without changes to
+  the core package.
+- Portable graph-shard ingestion so any language or service can participate in
+  federation by emitting the JSON contract.
+- Workspace-loaded relation packs, including a research vocabulary that keeps
+  formal entailment, prediction, testing, support, and contradiction distinct.
 - Context-dependent mapping activation and inhibition without changing the
   underlying identity graph.
 - Executable constraints, first-class evidence, and exact expiring waivers.
 - Fail-closed compilation into immutable viable generations with causal impact
   paths and atomic last-known-good activation.
-- Read-only Prisma, TypeScript/Zod, JSON collection, and legacy catalog
-  adapters.
+- Read-only Prisma, TypeScript/Zod, JSON collection, legacy catalog, and
+  portable Metamap shard adapters.
 - A CLI and TypeScript API for generation, checking, traversal, diffing, and
   authority resolution.
 
@@ -43,6 +49,7 @@ npm test
 npm run example:generate
 npm run example:check
 npm run example:compile
+npm run example:research
 ```
 
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
@@ -53,7 +60,7 @@ For a consuming repository, install the tagged public archive:
 ```json
 {
   "dependencies": {
-    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.2.0.tar.gz"
+    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.3.0.tar.gz"
   }
 }
 ```
@@ -76,15 +83,15 @@ drift.
 ## CLI
 
 ```text
-metamap validate <graph.json>
-metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]...
-metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]...
-metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp]
+metamap validate <graph.json> [--relation-pack pack.json]...
+metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
 metamap generate <metamap.config.json> [--no-cache]
 metamap check <metamap.config.json> [--no-cache]
-metamap diff <before.json> <after.json>
-metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [depth] [relation]
-metamap authority <graph.json> <concept-id> <fact>
+metamap diff <before.json> <after.json> [--relation-pack pack.json]...
+metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [depth] [relation] [--relation-pack pack.json]...
+metamap authority <graph.json> <concept-id> <fact> [--relation-pack pack.json]...
 metamap migrate-sources <sources-of-truth.json> [output.json]
 ```
 
@@ -119,6 +126,50 @@ const activation = activator.activate(document, viabilityPolicy, {
   context: { environment: "production" },
 });
 ```
+
+## Extending discovery and relations
+
+`metamap.config.json` accepts adapter-defined source fields and open structure
+kinds. Register a consumer adapter through the TypeScript API while preserving
+the built-ins:
+
+```typescript
+import {
+  createDefaultAdapterRegistry,
+  discoverWorkspace,
+} from "@roryscot/metamap";
+
+const adapters = createDefaultAdapterRegistry().register(myAdapter);
+const discovery = await discoverWorkspace(loadedConfig, {
+  adapterRegistry: adapters,
+});
+```
+
+Adapters in other languages do not need to run inside Node. Emit a document
+matching `schemas/metamap-graph.schema.json`, then ingest it with the
+`metamap-shard` adapter. Fingerprints and cache keys still cover the complete
+portable shard.
+
+Workspace configuration can load domain relations without modifying the core:
+
+```json
+{
+  "relationPacks": ["relation-packs/research.json"],
+  "sources": [
+    {
+      "id": "research-machine",
+      "adapter": "metamap-shard",
+      "path": "generated/research.graph.json"
+    }
+  ]
+}
+```
+
+Pass repeatable `--relation-pack` options when directly validating, tracing, or
+compiling a graph that uses non-core relations. The runnable
+`examples/research/` workspace demonstrates a Research Machine-style claim
+shard and compiles it only to the explicitly named `research-state` viability
+level; that does not imply formal or empirical truth.
 
 The graph describes stable relationships. A separate viability policy declares
 which mappings may be expressed in a context and the guarantees, evidence, and

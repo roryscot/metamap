@@ -1,0 +1,29 @@
+{
+  "$schema": "../../schemas/metamap-config.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:metamap:research",
+  "label": "Research Machine federation example",
+  "namespace": "example-research",
+  "repository": "metamap",
+  "repositoryRoot": "../..",
+  "relationPacks": ["relation-packs/research.json"],
+  "sources": [
+    {
+      "id": "research-machine",
+      "adapter": "metamap-shard",
+      "path": "examples/research/claim-shard.json"
+    }
+  ],
+  "correspondences": [],
+  "outputs": {
+    "graph": "examples/research/generated/graph.json",
+    "snapshot": "examples/research/generated/snapshot.json",
+    "report": "examples/research/generated/report.md",
+    "documentation": "examples/research/generated/graph.md",
+    "cache": ".cache/metamap-research-example"
+  },
+  "policy": {
+    "baselineChanges": "error",
+    "unconfiguredStructures": "ignore"
+  }
+}
