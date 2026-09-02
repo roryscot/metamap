@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json",
+  "title": "Metamap relationship graph",
+  "description": "Language-neutral identities, structural correspondences, and scoped authority declarations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "namespace",
+    "entities",
+    "mappings",
+    "authorities"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "2.0.0"
+    },
+    "id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "namespace": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "relationPacks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relationPackReference"
+      },
+      "uniqueItems": true
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entity"
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    },
+    "authorities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/authority"
+      }
+    },
+    "metadata": {
+      "$ref": "#/$defs/jsonObject"
+    },
+    "extensions": {
+      "$ref": "#/$defs/jsonObject"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "relationIdentifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+    },
+    "jsonValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": { "$ref": "#/$defs/jsonValue" }
+        },
+        { "$ref": "#/$defs/jsonObject" }
+      ]
+    },
+    "jsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/jsonValue"
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri"],
+      "properties": {
+        "uri": { "$ref": "#/$defs/identifier" },
+        "mediaType": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string", "minLength": 1 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "assertedBy"],
+      "properties": {
+        "status": {
+          "enum": ["declared", "observed", "generated", "inferred"]
+        },
+        "assertedBy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceRevision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z][A-Za-z0-9._:-]*$"
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "schema": { "$ref": "#/$defs/identifier" },
+        "locators": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/locator" }
+        },
+        "attributes": { "$ref": "#/$defs/jsonObject" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter", "version"],
+      "properties": {
+        "adapter": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "entrypoint": { "$ref": "#/$defs/identifier" },
+        "deterministic": { "type": "boolean" },
+        "reversible": { "type": "boolean" },
+        "configuration": { "$ref": "#/$defs/jsonObject" }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "relation",
+        "sources",
+        "targets",
+        "cardinality",
+        "lossiness",
+        "provenance"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "relation": { "$ref": "#/$defs/relationIdentifier" },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "cardinality": {
+          "enum": ["one-to-one", "one-to-many", "many-to-one", "many-to-many"]
+        },
+        "lossiness": {
+          "enum": ["lossless", "lossy", "unknown"]
+        },
+        "transform": { "$ref": "#/$defs/transform" },
+        "invariants": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "attributes": { "$ref": "#/$defs/jsonObject" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "concept", "source", "facts", "mode", "provenance"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "concept": { "$ref": "#/$defs/identifier" },
+        "source": { "$ref": "#/$defs/identifier" },
+        "facts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "mode": {
+          "enum": ["canonical", "delegated", "candidate"]
+        },
+        "delegatedFrom": { "$ref": "#/$defs/identifier" },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "mode": { "const": "delegated" } },
+            "required": ["mode"]
+          },
+          "then": {
+            "properties": {
+              "delegatedFrom": { "$ref": "#/$defs/identifier" }
+            },
+            "required": ["delegatedFrom"]
+          },
+          "else": { "not": { "required": ["delegatedFrom"] } }
+        }
+      ]
+    },
+    "relationPackReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "string", "minLength": 1 },
+        "uri": { "$ref": "#/$defs/identifier" },
+        "digest": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

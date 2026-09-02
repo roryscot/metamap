@@ -1,0 +1,36 @@
+{
+  "configDigest": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+  "counts": {
+    "authorities": 1,
+    "entities": 9,
+    "mappings": 7
+  },
+  "graphDigest": "sha256:381f6906edaa491ec75d122a98a702902e179fdfaebf41d8ce6e6b6d221b6e79",
+  "graphId": "urn:example:metamap:workspace",
+  "graphRevision": "sha256:091ff630c458363596dddc1751be1b773204c89c2986510617c8e8936b51357f",
+  "schemaVersion": "1.0.0",
+  "sources": [
+    {
+      "adapter": "prisma",
+      "adapterVersion": "1.0.0",
+      "id": "database",
+      "inputs": [
+        {
+          "digest": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+          "path": "examples/workspace/schema.prisma"
+        }
+      ]
+    },
+    {
+      "adapter": "typescript-zod",
+      "adapterVersion": "1.0.0",
+      "id": "schemas",
+      "inputs": [
+        {
+          "digest": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+          "path": "examples/workspace/schemas/item.ts"
+        }
+      ]
+    }
+  ]
+}

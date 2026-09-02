@@ -1,0 +1,22 @@
+{
+  "sourcesOfTruth": [
+    {
+      "id": "database_schema",
+      "label": "Database schema",
+      "paths": ["schema.prisma"],
+      "outputs": ["database"]
+    },
+    {
+      "id": "web_routes",
+      "label": "Web routes",
+      "paths": ["routes.ts", "app/**/page.tsx"],
+      "outputs": ["navigation"]
+    },
+    {
+      "id": "creation_workflow",
+      "label": "Creation workflow",
+      "paths": ["workflow.json", "workflow.json or generated-workflow.json"],
+      "outputs": ["flow"]
+    }
+  ]
+}

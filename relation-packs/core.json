@@ -1,0 +1,95 @@
+{
+  "$schema": "../schemas/relation-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:metamap:relation-pack:core",
+  "version": "1.0.0",
+  "description": "Minimal structural relations shared by language and domain adapters.",
+  "relations": [
+    {
+      "id": "core:contains",
+      "description": "The source structurally contains the target.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "transitive": true
+    },
+    {
+      "id": "core:implements",
+      "description": "The target is a physical realization of the source concept or contract.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid"
+    },
+    {
+      "id": "core:conforms_to",
+      "description": "The source is constrained by the target schema or specification.",
+      "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+      "cyclePolicy": "forbid"
+    },
+    {
+      "id": "core:derives_from",
+      "description": "The source is derived from the target.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "forbid",
+      "transitive": true
+    },
+    {
+      "id": "core:generates",
+      "description": "The source deterministically or procedurally produces the target.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid"
+    },
+    {
+      "id": "core:depends_on",
+      "description": "The source requires the target.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "transitive": true
+    },
+    {
+      "id": "core:mirrors",
+      "description": "The source and target intentionally duplicate the same scoped facts.",
+      "cardinalities": ["one-to-one", "many-to-many"],
+      "cyclePolicy": "allow",
+      "symmetric": true
+    },
+    {
+      "id": "core:documents",
+      "description": "The source documentation describes the target.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "allow"
+    },
+    {
+      "id": "core:tests",
+      "description": "The source provides evidence about the target.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "allow"
+    },
+    {
+      "id": "core:exposes",
+      "description": "The source makes the target externally addressable.",
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid"
+    },
+    {
+      "id": "core:references",
+      "description": "The source identifies or points to the target without implying ownership.",
+      "cardinalities": [
+        "one-to-one",
+        "one-to-many",
+        "many-to-one",
+        "many-to-many"
+      ],
+      "cyclePolicy": "allow"
+    },
+    {
+      "id": "core:specified_by",
+      "description": "The target defines the intended behavior or constraints of the source.",
+      "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+      "cyclePolicy": "forbid"
+    }
+  ]
+}

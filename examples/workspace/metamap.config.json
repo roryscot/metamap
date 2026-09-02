@@ -1,0 +1,61 @@
+{
+  "$schema": "../../schemas/metamap-config.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:metamap:workspace",
+  "label": "Example structural map",
+  "namespace": "example",
+  "repository": "metamap-example",
+  "repositoryRoot": "../..",
+  "sources": [
+    {
+      "id": "database",
+      "adapter": "prisma",
+      "path": "examples/workspace/schema.prisma"
+    },
+    {
+      "id": "schemas",
+      "adapter": "typescript-zod",
+      "roots": ["examples/workspace/schemas"]
+    }
+  ],
+  "correspondences": [
+    {
+      "id": "item-domain",
+      "source": {
+        "sourceId": "schemas",
+        "kind": "schema",
+        "name": "itemSchema"
+      },
+      "target": {
+        "sourceId": "database",
+        "kind": "model",
+        "name": "Item"
+      },
+      "relation": "core:derives_from",
+      "fields": {
+        "pairs": [
+          { "source": "id", "target": "id" },
+          { "source": "title", "target": "title" },
+          { "source": "created_at", "target": "createdAt" }
+        ],
+        "requireSourceCoverage": true,
+        "requireTargetCoverage": true
+      },
+      "authority": {
+        "side": "target",
+        "facts": ["storage", "type", "nullability"]
+      }
+    }
+  ],
+  "outputs": {
+    "graph": "examples/workspace/generated/graph.json",
+    "snapshot": "examples/workspace/generated/snapshot.json",
+    "report": "examples/workspace/generated/drift-report.md",
+    "documentation": "examples/workspace/generated/graph.md",
+    "cache": ".cache/metamap-example"
+  },
+  "policy": {
+    "baselineChanges": "error",
+    "unconfiguredStructures": "warning"
+  }
+}

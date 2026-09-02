@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-config/v1.schema.json",
+  "title": "Metamap workspace configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "namespace",
+    "repository",
+    "repositoryRoot",
+    "sources",
+    "correspondences",
+    "outputs"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "$ref": "#/$defs/nonEmptyString" },
+    "label": { "$ref": "#/$defs/nonEmptyString" },
+    "namespace": { "$ref": "#/$defs/nonEmptyString" },
+    "repository": { "$ref": "#/$defs/nonEmptyString" },
+    "repositoryRoot": { "$ref": "#/$defs/nonEmptyString" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "correspondences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/correspondence" }
+    },
+    "outputs": { "$ref": "#/$defs/outputs" },
+    "policy": { "$ref": "#/$defs/policy" }
+  },
+  "$defs": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "stringArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/nonEmptyString" }
+    },
+    "sourceBase": {
+      "type": "object",
+      "required": ["id", "adapter"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "adapter": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "adapter", "path"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": { "const": "prisma" },
+            "path": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "adapter", "roots"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": { "const": "typescript-zod" },
+            "roots": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/nonEmptyString" }
+            },
+            "exclude": { "$ref": "#/$defs/stringArray" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "adapter", "path"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": { "const": "legacy-sources" },
+            "path": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "adapter", "path", "collections"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": { "const": "json-collections" },
+            "path": { "$ref": "#/$defs/nonEmptyString" },
+            "collections": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/jsonCollection" }
+            }
+          }
+        }
+      ]
+    },
+    "jsonReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["property", "targetKind"],
+      "properties": {
+        "property": { "$ref": "#/$defs/nonEmptyString" },
+        "targetKind": { "$ref": "#/$defs/nonEmptyString" },
+        "relation": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "jsonCollection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pointer", "idProperty", "entityKind"],
+      "properties": {
+        "pointer": { "$ref": "#/$defs/nonEmptyString" },
+        "idProperty": { "$ref": "#/$defs/nonEmptyString" },
+        "labelProperty": { "$ref": "#/$defs/nonEmptyString" },
+        "entityKind": { "$ref": "#/$defs/nonEmptyString" },
+        "references": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/jsonReference" }
+        }
+      }
+    },
+    "structureReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceId", "kind", "name"],
+      "properties": {
+        "sourceId": { "$ref": "#/$defs/nonEmptyString" },
+        "kind": { "enum": ["model", "schema", "enum"] },
+        "name": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "fieldPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "target"],
+      "properties": {
+        "source": { "$ref": "#/$defs/nonEmptyString" },
+        "target": { "$ref": "#/$defs/nonEmptyString" },
+        "compare": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["type", "presence", "nullability", "cardinality"]
+          }
+        },
+        "allowDifferences": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["type", "presence", "nullability", "cardinality"]
+          }
+        },
+        "transform": { "$ref": "#/$defs/nonEmptyString" },
+        "note": { "type": "string" }
+      }
+    },
+    "fieldCorrespondence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pairs"],
+      "properties": {
+        "pairs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fieldPair" }
+        },
+        "ignoreSource": { "$ref": "#/$defs/stringArray" },
+        "ignoreTarget": { "$ref": "#/$defs/stringArray" },
+        "requireSourceCoverage": { "type": "boolean" },
+        "requireTargetCoverage": { "type": "boolean" }
+      }
+    },
+    "enumCorrespondence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowSourceOnly": { "$ref": "#/$defs/stringArray" },
+        "allowTargetOnly": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "facts"],
+      "properties": {
+        "side": { "enum": ["source", "target"] },
+        "facts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "correspondence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source", "target"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "source": { "$ref": "#/$defs/structureReference" },
+        "target": { "$ref": "#/$defs/structureReference" },
+        "relation": { "$ref": "#/$defs/nonEmptyString" },
+        "fields": { "$ref": "#/$defs/fieldCorrespondence" },
+        "enumValues": { "$ref": "#/$defs/enumCorrespondence" },
+        "authority": { "$ref": "#/$defs/authority" }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["graph", "snapshot", "report", "documentation"],
+      "properties": {
+        "graph": { "$ref": "#/$defs/nonEmptyString" },
+        "snapshot": { "$ref": "#/$defs/nonEmptyString" },
+        "report": { "$ref": "#/$defs/nonEmptyString" },
+        "documentation": { "$ref": "#/$defs/nonEmptyString" },
+        "cache": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "baselineChanges": { "enum": ["error", "warning", "ignore"] },
+        "unconfiguredStructures": { "enum": ["error", "warning", "ignore"] }
+      }
+    }
+  }
+}

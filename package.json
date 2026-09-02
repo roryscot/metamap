@@ -1,0 +1,71 @@
+{
+  "name": "@roryscot/metamap",
+  "version": "0.1.0",
+  "description": "Language-neutral authority and structural correspondence graph",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "metamap": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "relation-packs",
+    "examples",
+    "README.md",
+    "ARCHITECTURE.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "validate:example": "npm run build && node dist/cli.js validate examples/example-authority-graph.json",
+    "example:generate": "npm run build && node dist/cli.js generate examples/workspace/metamap.config.json --no-cache",
+    "example:check": "npm run build && node dist/cli.js check examples/workspace/metamap.config.json --no-cache",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.37",
+    "prettier": "^3.6.2",
+    "vitest": "^3.2.4"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./model": {
+      "import": "./dist/model.js",
+      "types": "./dist/model.d.ts"
+    },
+    "./legacy": {
+      "import": "./dist/adapters/source-of-truth.js",
+      "types": "./dist/adapters/source-of-truth.d.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roryscot/metamap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/roryscot/metamap/issues"
+  },
+  "homepage": "https://github.com/roryscot/metamap#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "architecture",
+    "authority",
+    "graph",
+    "schema",
+    "source-of-truth"
+  ]
+}

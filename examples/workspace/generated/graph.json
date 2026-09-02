@@ -1,0 +1,477 @@
+{
+  "$schema": "./schemas/metamap-graph.schema.json",
+  "authorities": [
+    {
+      "concept": "urn:example:concept:item-domain",
+      "facts": [
+        "storage",
+        "type",
+        "nullability"
+      ],
+      "id": "urn:example:authority:item-domain",
+      "mode": "canonical",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      },
+      "source": "urn:example:prisma-model:database%3AItem"
+    }
+  ],
+  "entities": [
+    {
+      "attributes": {
+        "adapter": "prisma",
+        "mappedName": "Item",
+        "name": "Item",
+        "sourceId": "database",
+        "structureKind": "model"
+      },
+      "id": "urn:example:prisma-model:database%3AItem",
+      "kind": "prisma-model",
+      "label": "Item",
+      "locators": [
+        {
+          "digest": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+          "mediaType": "text/plain",
+          "uri": "repo://metamap-example/examples/workspace/schema.prisma#L1"
+        },
+        {
+          "uri": "prisma-symbol://metamap-example/Item"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:prisma@1.0.0",
+        "sourceRevision": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "prisma",
+        "cardinality": "one",
+        "dataType": "string",
+        "hasDefault": false,
+        "id": true,
+        "mappedName": "id",
+        "name": "id",
+        "nativeType": "String",
+        "nullable": false,
+        "presenceRequired": true,
+        "relation": false,
+        "sourceId": "database",
+        "structureId": "urn:example:prisma-model:database%3AItem",
+        "structureName": "Item",
+        "unique": false
+      },
+      "id": "urn:example:prisma-field:database%3AItem.id",
+      "kind": "prisma-field",
+      "label": "Item.id",
+      "locators": [
+        {
+          "digest": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+          "mediaType": "text/plain",
+          "uri": "repo://metamap-example/examples/workspace/schema.prisma#L2"
+        },
+        {
+          "uri": "prisma-symbol://metamap-example/Item/id"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:prisma@1.0.0",
+        "sourceRevision": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "prisma",
+        "cardinality": "one",
+        "dataType": "string",
+        "hasDefault": false,
+        "id": false,
+        "mappedName": "title",
+        "name": "title",
+        "nativeType": "String",
+        "nullable": false,
+        "presenceRequired": true,
+        "relation": false,
+        "sourceId": "database",
+        "structureId": "urn:example:prisma-model:database%3AItem",
+        "structureName": "Item",
+        "unique": false
+      },
+      "id": "urn:example:prisma-field:database%3AItem.title",
+      "kind": "prisma-field",
+      "label": "Item.title",
+      "locators": [
+        {
+          "digest": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+          "mediaType": "text/plain",
+          "uri": "repo://metamap-example/examples/workspace/schema.prisma#L3"
+        },
+        {
+          "uri": "prisma-symbol://metamap-example/Item/title"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:prisma@1.0.0",
+        "sourceRevision": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "prisma",
+        "cardinality": "one",
+        "dataType": "datetime",
+        "hasDefault": true,
+        "id": false,
+        "mappedName": "createdAt",
+        "name": "createdAt",
+        "nativeType": "DateTime",
+        "nullable": false,
+        "presenceRequired": true,
+        "relation": false,
+        "sourceId": "database",
+        "structureId": "urn:example:prisma-model:database%3AItem",
+        "structureName": "Item",
+        "unique": false
+      },
+      "id": "urn:example:prisma-field:database%3AItem.createdAt",
+      "kind": "prisma-field",
+      "label": "Item.createdAt",
+      "locators": [
+        {
+          "digest": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+          "mediaType": "text/plain",
+          "uri": "repo://metamap-example/examples/workspace/schema.prisma#L4"
+        },
+        {
+          "uri": "prisma-symbol://metamap-example/Item/createdAt"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:prisma@1.0.0",
+        "sourceRevision": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "typescript-zod",
+        "baseSchemaName": null,
+        "name": "itemSchema",
+        "operations": [],
+        "sourceId": "schemas",
+        "structureKind": "schema",
+        "zodRoot": "object"
+      },
+      "id": "urn:example:zod-schema:schemas%3AitemSchema",
+      "kind": "zod-schema",
+      "label": "itemSchema",
+      "locators": [
+        {
+          "digest": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+          "mediaType": "text/typescript",
+          "uri": "repo://metamap-example/examples/workspace/schemas/item.ts#L3"
+        },
+        {
+          "uri": "ts-symbol://metamap-example/examples/workspace/schemas/item.ts#itemSchema"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:typescript-zod@1.0.0",
+        "sourceRevision": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "typescript-zod",
+        "cardinality": "one",
+        "dataType": "string",
+        "expression": "z.string()",
+        "hasDefault": false,
+        "name": "id",
+        "nullable": false,
+        "presenceRequired": true,
+        "relation": false,
+        "sourceId": "schemas",
+        "structureId": "urn:example:zod-schema:schemas%3AitemSchema",
+        "structureName": "itemSchema"
+      },
+      "id": "urn:example:zod-field:schemas%3AitemSchema.id",
+      "kind": "zod-field",
+      "label": "itemSchema.id",
+      "locators": [
+        {
+          "digest": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+          "mediaType": "text/typescript",
+          "uri": "repo://metamap-example/examples/workspace/schemas/item.ts#L4"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:typescript-zod@1.0.0",
+        "sourceRevision": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "typescript-zod",
+        "cardinality": "one",
+        "dataType": "string",
+        "expression": "z.string()",
+        "hasDefault": false,
+        "name": "title",
+        "nullable": false,
+        "presenceRequired": true,
+        "relation": false,
+        "sourceId": "schemas",
+        "structureId": "urn:example:zod-schema:schemas%3AitemSchema",
+        "structureName": "itemSchema"
+      },
+      "id": "urn:example:zod-field:schemas%3AitemSchema.title",
+      "kind": "zod-field",
+      "label": "itemSchema.title",
+      "locators": [
+        {
+          "digest": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+          "mediaType": "text/typescript",
+          "uri": "repo://metamap-example/examples/workspace/schemas/item.ts#L5"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:typescript-zod@1.0.0",
+        "sourceRevision": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "adapter": "typescript-zod",
+        "cardinality": "one",
+        "dataType": "datetime",
+        "expression": "z.date()",
+        "hasDefault": false,
+        "name": "created_at",
+        "nullable": false,
+        "presenceRequired": true,
+        "relation": false,
+        "sourceId": "schemas",
+        "structureId": "urn:example:zod-schema:schemas%3AitemSchema",
+        "structureName": "itemSchema"
+      },
+      "id": "urn:example:zod-field:schemas%3AitemSchema.created_at",
+      "kind": "zod-field",
+      "label": "itemSchema.created_at",
+      "locators": [
+        {
+          "digest": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+          "mediaType": "text/typescript",
+          "uri": "repo://metamap-example/examples/workspace/schemas/item.ts#L6"
+        }
+      ],
+      "provenance": {
+        "assertedBy": "adapter:typescript-zod@1.0.0",
+        "sourceRevision": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+        "status": "observed"
+      }
+    },
+    {
+      "attributes": {
+        "correspondenceId": "item-domain",
+        "sourceStructure": "urn:example:zod-schema:schemas%3AitemSchema",
+        "targetStructure": "urn:example:prisma-model:database%3AItem"
+      },
+      "id": "urn:example:concept:item-domain",
+      "kind": "concept",
+      "label": "item-domain",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      }
+    }
+  ],
+  "id": "urn:example:metamap:workspace",
+  "label": "Example structural map",
+  "mappings": [
+    {
+      "cardinality": "one-to-many",
+      "id": "urn:example:mapping:database%3Acontains%3Aurn%3Aexample%3Aprisma-model%3Adatabase%253AItem",
+      "lossiness": "lossless",
+      "provenance": {
+        "assertedBy": "adapter:prisma@1.0.0",
+        "sourceRevision": "sha256:0f410cbfdd02eabfe7433e547b8c3e78bd2899e39a0fb6620d44299ffe2cf948",
+        "status": "observed"
+      },
+      "relation": "core:contains",
+      "sources": [
+        "urn:example:prisma-model:database%3AItem"
+      ],
+      "targets": [
+        "urn:example:prisma-field:database%3AItem.id",
+        "urn:example:prisma-field:database%3AItem.title",
+        "urn:example:prisma-field:database%3AItem.createdAt"
+      ]
+    },
+    {
+      "cardinality": "one-to-many",
+      "id": "urn:example:mapping:schemas%3Acontains%3AitemSchema",
+      "lossiness": "lossless",
+      "provenance": {
+        "assertedBy": "adapter:typescript-zod@1.0.0",
+        "sourceRevision": "sha256:58d99757a1cdc0215b49ba5ede5d4622a3202de6ad4cb8d5d20c1a2834af9245",
+        "status": "observed"
+      },
+      "relation": "core:contains",
+      "sources": [
+        "urn:example:zod-schema:schemas%3AitemSchema"
+      ],
+      "targets": [
+        "urn:example:zod-field:schemas%3AitemSchema.id",
+        "urn:example:zod-field:schemas%3AitemSchema.title",
+        "urn:example:zod-field:schemas%3AitemSchema.created_at"
+      ]
+    },
+    {
+      "cardinality": "one-to-many",
+      "id": "urn:example:mapping:item-domain%3Aimplementations",
+      "lossiness": "unknown",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      },
+      "relation": "core:implements",
+      "sources": [
+        "urn:example:concept:item-domain"
+      ],
+      "targets": [
+        "urn:example:zod-schema:schemas%3AitemSchema",
+        "urn:example:prisma-model:database%3AItem"
+      ]
+    },
+    {
+      "attributes": {
+        "correspondenceId": "item-domain"
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:mapping:item-domain%3Astructure",
+      "lossiness": "unknown",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      },
+      "relation": "core:derives_from",
+      "sources": [
+        "urn:example:zod-schema:schemas%3AitemSchema"
+      ],
+      "targets": [
+        "urn:example:prisma-model:database%3AItem"
+      ]
+    },
+    {
+      "attributes": {
+        "allowedDifferences": [],
+        "comparedFacts": [
+          "type",
+          "presence",
+          "nullability",
+          "cardinality"
+        ],
+        "correspondenceId": "item-domain",
+        "note": ""
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:mapping:item-domain%3Afield%3Aid%3Aid",
+      "lossiness": "unknown",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      },
+      "relation": "core:derives_from",
+      "sources": [
+        "urn:example:zod-field:schemas%3AitemSchema.id"
+      ],
+      "targets": [
+        "urn:example:prisma-field:database%3AItem.id"
+      ]
+    },
+    {
+      "attributes": {
+        "allowedDifferences": [],
+        "comparedFacts": [
+          "type",
+          "presence",
+          "nullability",
+          "cardinality"
+        ],
+        "correspondenceId": "item-domain",
+        "note": ""
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:mapping:item-domain%3Afield%3Atitle%3Atitle",
+      "lossiness": "unknown",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      },
+      "relation": "core:derives_from",
+      "sources": [
+        "urn:example:zod-field:schemas%3AitemSchema.title"
+      ],
+      "targets": [
+        "urn:example:prisma-field:database%3AItem.title"
+      ]
+    },
+    {
+      "attributes": {
+        "allowedDifferences": [],
+        "comparedFacts": [
+          "type",
+          "presence",
+          "nullability",
+          "cardinality"
+        ],
+        "correspondenceId": "item-domain",
+        "note": ""
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:mapping:item-domain%3Afield%3Acreated_at%3AcreatedAt",
+      "lossiness": "unknown",
+      "provenance": {
+        "assertedBy": "metamap-config",
+        "sourceRevision": "sha256:49e6d21828a1f28d20dfd7345ae1a25a28120d27f70c9e40aa2eb035716473f2",
+        "status": "declared"
+      },
+      "relation": "core:derives_from",
+      "sources": [
+        "urn:example:zod-field:schemas%3AitemSchema.created_at"
+      ],
+      "targets": [
+        "urn:example:prisma-field:database%3AItem.createdAt"
+      ]
+    }
+  ],
+  "metadata": {
+    "composedFrom": [
+      "urn:example:metamap:workspace:discovered",
+      "urn:example:metamap-shard:urn%3Aexample%3Ametamap%3Aworkspace%3Adeclared"
+    ]
+  },
+  "namespace": "example",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    }
+  ],
+  "revision": "sha256:091ff630c458363596dddc1751be1b773204c89c2986510617c8e8936b51357f",
+  "schemaVersion": "2.0.0"
+}

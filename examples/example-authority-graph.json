@@ -1,0 +1,150 @@
+{
+  "$schema": "../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:example:metamap:example-user-schema",
+  "namespace": "example",
+  "label": "User schema correspondence example",
+  "revision": "example-1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:example:concept:user.email",
+      "kind": "concept",
+      "label": "User email"
+    },
+    {
+      "id": "urn:example:structure:prisma-schema",
+      "kind": "structure",
+      "label": "Prisma database schema",
+      "locators": [
+        {
+          "uri": "repo://example/packages/api/prisma/schema.prisma",
+          "mediaType": "text/prisma"
+        }
+      ]
+    },
+    {
+      "id": "urn:example:structure:shared-domain-schema",
+      "kind": "structure",
+      "label": "Shared domain schema",
+      "locators": [
+        {
+          "uri": "repo://example/packages/shared/src/schemas/domain/user.ts",
+          "mediaType": "text/typescript"
+        }
+      ]
+    },
+    {
+      "id": "urn:example:element:prisma.User.email",
+      "kind": "field",
+      "label": "Prisma User.email",
+      "locators": [
+        {
+          "uri": "prisma-symbol://example/User/email"
+        }
+      ],
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "adapter:prisma",
+        "sourceRevision": "example-1"
+      }
+    },
+    {
+      "id": "urn:example:element:zod.UserSchema.email",
+      "kind": "field",
+      "label": "Zod UserSchema.email",
+      "locators": [
+        {
+          "uri": "ts-symbol://example/packages/shared/src/schemas/domain/user.ts#UserSchema.email"
+        }
+      ],
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "adapter:typescript",
+        "sourceRevision": "example-1"
+      }
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:example:mapping:prisma-contains-user-email",
+      "relation": "core:contains",
+      "sources": ["urn:example:structure:prisma-schema"],
+      "targets": ["urn:example:element:prisma.User.email"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "adapter:prisma"
+      }
+    },
+    {
+      "id": "urn:example:mapping:zod-contains-user-email",
+      "relation": "core:contains",
+      "sources": ["urn:example:structure:shared-domain-schema"],
+      "targets": ["urn:example:element:zod.UserSchema.email"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "observed",
+        "assertedBy": "adapter:typescript"
+      }
+    },
+    {
+      "id": "urn:example:mapping:user-email-implementations",
+      "relation": "core:implements",
+      "sources": ["urn:example:concept:user.email"],
+      "targets": [
+        "urn:example:element:prisma.User.email",
+        "urn:example:element:zod.UserSchema.email"
+      ],
+      "cardinality": "one-to-many",
+      "lossiness": "unknown",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "human:architecture"
+      }
+    },
+    {
+      "id": "urn:example:mapping:zod-email-derived-from-prisma",
+      "relation": "core:derives_from",
+      "sources": ["urn:example:element:zod.UserSchema.email"],
+      "targets": ["urn:example:element:prisma.User.email"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "transform": {
+        "adapter": "prisma-to-zod",
+        "version": "1.0.0",
+        "entrypoint": "command://example/generate-shared-schema",
+        "deterministic": true,
+        "reversible": false
+      },
+      "invariants": ["field.type is preserved", "field.required is preserved"],
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "human:architecture"
+      }
+    }
+  ],
+  "authorities": [
+    {
+      "id": "urn:example:authority:user-email-database-shape",
+      "concept": "urn:example:concept:user.email",
+      "source": "urn:example:element:prisma.User.email",
+      "facts": ["storage", "type", "required"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "human:architecture"
+      }
+    }
+  ],
+  "metadata": {
+    "purpose": "Demonstrate stable identities, physical locators, mappings, transforms, and fact-scoped authority"
+  }
+}

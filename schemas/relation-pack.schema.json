@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-relation-pack/v1.schema.json",
+  "title": "Metamap relation pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "version", "relations"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schemaVersion": { "const": "1.0.0" },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "version": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relation"
+      }
+    }
+  },
+  "$defs": {
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cyclePolicy"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+        },
+        "description": { "type": "string" },
+        "sourceKinds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "targetKinds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "cardinalities": {
+          "type": "array",
+          "items": {
+            "enum": ["one-to-one", "one-to-many", "many-to-one", "many-to-many"]
+          },
+          "uniqueItems": true
+        },
+        "cyclePolicy": { "enum": ["allow", "forbid"] },
+        "transitive": { "type": "boolean" },
+        "symmetric": { "type": "boolean" },
+        "inverse": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+        },
+        "composesWith": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}
