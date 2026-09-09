@@ -1,0 +1,43 @@
+{
+  "$schema": "../../schemas/metamap-projection-spec.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:application-topology:projection",
+  "select": { "ids": ["urn:example:route:account"] },
+  "slots": [
+    {
+      "name": "implementation",
+      "relation": "topology:implemented_by",
+      "direction": "outgoing",
+      "cardinality": "exactly-one",
+      "targetKinds": ["topology:page", "topology:container"]
+    },
+    {
+      "name": "container",
+      "relation": "topology:rendered_in",
+      "direction": "outgoing",
+      "cardinality": "exactly-one",
+      "targetKinds": ["topology:container"]
+    },
+    {
+      "name": "content",
+      "relation": "topology:resolves_content",
+      "direction": "outgoing",
+      "cardinality": "exactly-one",
+      "targetKinds": ["topology:content"]
+    },
+    {
+      "name": "contexts",
+      "relation": "topology:requires_context",
+      "direction": "outgoing",
+      "cardinality": "one-or-more",
+      "targetKinds": ["topology:context"]
+    },
+    {
+      "name": "hydration",
+      "relation": "topology:hydrates",
+      "direction": "incoming",
+      "cardinality": "zero-or-one",
+      "targetKinds": ["topology:hydration-boundary"]
+    }
+  ]
+}

@@ -6,6 +6,12 @@ A Metamap is a canonical index of identities, structural correspondences,
 authority boundaries, and derivation rules. Referenced systems remain
 authoritative for their own data.
 
+For a declared universe and evaluation context, a Metamap can impose a
+closed-world topology rule: every discovered structural leaf is uniquely
+mapped, explicitly excluded with provenance, or rejected. The map is therefore
+a declarative structure of logic, while its endpoints remain references to
+independently authoritative structures.
+
 Metamap is a graph of references between structures, not a universal tree. It
 contains enough evidence to answer which structure owns a particular fact,
 whether projections have drifted, and what a structural change can affect.
@@ -175,6 +181,8 @@ The kernel and workspace gate validate:
 14. Required context and declared transform guarantees.
 15. Executable constraints and contradictory evidence.
 16. Exact waiver scope and expiry.
+17. Dynamic topology totality, reachability, context satisfaction, and
+    reviewed exclusions when those constraints are declared.
 
 Errors fail generation and CI. Warnings can preserve a usable imported graph
 while keeping unresolved migration debt visible.

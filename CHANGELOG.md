@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.5.0
+
+- Restore and formalize Metamap's original exhaustive application-routing
+  invariant: every discovered leaf is mapped, explicitly excluded with
+  provenance, or rejected.
+- Add the `application-topology` relation pack for route implementations,
+  containers, outlets, content, contexts, data, parameters, middleware,
+  fallbacks, and hydration.
+- Add dynamic totality, reachability, and context-dominance constraints.
+- Add closed-world mapping selectors so enormous graphs do not require one
+  repeated viability record per generated mapping.
+- Add deterministic Next.js App Router discovery for rendering structure,
+  providers, loader entry points, route handlers, exact reviewed exclusions,
+  and stale-exclusion detection.
+- Add a runnable end-to-end application-topology example and generated static
+  projections.
+
 ## 0.4.0
 
 - Reframe Metamap as a language-neutral semantic linker with a dynamic control

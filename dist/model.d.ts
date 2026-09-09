@@ -1,6 +1,8 @@
 export declare const METAMAP_SCHEMA_VERSION: "2.0.0";
 export declare const CORE_RELATION_PACK_ID: "urn:metamap:relation-pack:core";
 export declare const CORE_RELATION_PACK_VERSION: "1.0.0";
+export declare const APPLICATION_TOPOLOGY_RELATION_PACK_ID: "urn:metamap:relation-pack:application-topology";
+export declare const APPLICATION_TOPOLOGY_RELATION_PACK_VERSION: "1.0.0";
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | {
     [key: string]: JsonValue;

@@ -1,0 +1,75 @@
+{
+  "$schema": "../../schemas/metamap-viability.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:application-topology:policy",
+  "graph": {
+    "id": "urn:example:application-topology:graph",
+    "revision": "1"
+  },
+  "mappings": [
+    {
+      "select": { "provenanceStatuses": ["declared"] },
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "urn:example:constraint:page-coverage",
+      "kind": "topology:relation-totality",
+      "subjects": ["urn:example:application-topology:graph"],
+      "parameters": {
+        "subjectKinds": ["topology:page"],
+        "relation": "topology:implemented_by",
+        "direction": "target",
+        "cardinality": "exactly-one",
+        "counterpartKinds": ["routing:route"],
+        "allowExcluded": true
+      }
+    },
+    {
+      "id": "urn:example:constraint:client-hydration",
+      "kind": "topology:relation-totality",
+      "subjects": ["urn:example:application-topology:graph"],
+      "parameters": {
+        "subjectKinds": ["topology:page"],
+        "subjectAttributes": { "runtime": "client" },
+        "relation": "topology:hydrates",
+        "direction": "target",
+        "cardinality": "exactly-one",
+        "counterpartKinds": ["topology:hydration-boundary"]
+      }
+    },
+    {
+      "id": "urn:example:constraint:reachable",
+      "kind": "topology:reachable",
+      "subjects": ["urn:example:application-topology:graph"],
+      "parameters": {
+        "root": "urn:example:app",
+        "relation": "topology:contains",
+        "subjectKinds": [
+          "topology:segment",
+          "topology:container",
+          "topology:page",
+          "topology:hydration-boundary"
+        ]
+      }
+    },
+    {
+      "id": "urn:example:constraint:context",
+      "kind": "topology:context-satisfied",
+      "subjects": ["urn:example:application-topology:graph"],
+      "parameters": {
+        "subjectKinds": ["routing:route"],
+        "subjectAttributes": { "topologySurface": "semantic-page" },
+        "requiresRelation": "topology:requires_context",
+        "providesRelation": "topology:provides_context",
+        "renderedInRelation": "topology:rendered_in",
+        "parentRelation": "topology:wraps",
+        "hostsProviderRelation": "topology:hosts_provider"
+      }
+    }
+  ],
+  "evidence": []
+}

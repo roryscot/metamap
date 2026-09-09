@@ -1,0 +1,158 @@
+{
+  "$schema": "../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:example:application-topology:graph",
+  "namespace": "example",
+  "label": "Application topology example",
+  "revision": "1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:routing",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:application-topology",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    { "id": "urn:example:app", "kind": "topology:application" },
+    { "id": "urn:example:segment:root", "kind": "topology:segment" },
+    {
+      "id": "urn:example:container:root",
+      "kind": "topology:container",
+      "locators": [{ "uri": "repo://example/app/layout.tsx" }]
+    },
+    {
+      "id": "urn:example:page:account",
+      "kind": "topology:page",
+      "locators": [{ "uri": "repo://example/app/account/page.tsx" }],
+      "attributes": { "runtime": "client" }
+    },
+    {
+      "id": "urn:example:route:account",
+      "kind": "routing:route",
+      "attributes": { "topologySurface": "semantic-page" }
+    },
+    {
+      "id": "urn:example:content:account",
+      "kind": "topology:content",
+      "locators": [{ "uri": "cms://example/account" }]
+    },
+    { "id": "urn:example:context:session", "kind": "topology:context" },
+    {
+      "id": "urn:example:hydration:account",
+      "kind": "topology:hydration-boundary"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:example:mapping:app-segment",
+      "relation": "topology:contains",
+      "sources": ["urn:example:app"],
+      "targets": ["urn:example:segment:root"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:segment-structure",
+      "relation": "topology:contains",
+      "sources": ["urn:example:segment:root"],
+      "targets": [
+        "urn:example:container:root",
+        "urn:example:page:account",
+        "urn:example:hydration:account"
+      ],
+      "cardinality": "one-to-many",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:container-page",
+      "relation": "topology:wraps",
+      "sources": ["urn:example:container:root"],
+      "targets": ["urn:example:page:account"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:page-container",
+      "relation": "topology:rendered_in",
+      "sources": ["urn:example:page:account"],
+      "targets": ["urn:example:container:root"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:route-page",
+      "relation": "topology:implemented_by",
+      "sources": ["urn:example:route:account"],
+      "targets": ["urn:example:page:account"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:route-container",
+      "relation": "topology:rendered_in",
+      "sources": ["urn:example:route:account"],
+      "targets": ["urn:example:container:root"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:route-content",
+      "relation": "topology:resolves_content",
+      "sources": ["urn:example:route:account"],
+      "targets": ["urn:example:content:account"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:route-context",
+      "relation": "topology:requires_context",
+      "sources": ["urn:example:route:account"],
+      "targets": ["urn:example:context:session"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:container-context",
+      "relation": "topology:provides_context",
+      "sources": ["urn:example:container:root"],
+      "targets": ["urn:example:context:session"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:hydrate-page",
+      "relation": "topology:hydrates",
+      "sources": ["urn:example:hydration:account"],
+      "targets": ["urn:example:page:account"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    },
+    {
+      "id": "urn:example:mapping:hydrate-route",
+      "relation": "topology:hydrates",
+      "sources": ["urn:example:hydration:account"],
+      "targets": ["urn:example:route:account"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": { "status": "declared", "assertedBy": "example" }
+    }
+  ],
+  "authorities": []
+}

@@ -109,7 +109,63 @@ function knownGraphSubjects(document) {
         ...document.authorities.map((entry) => entry.id),
     ]);
 }
-function validatePolicyBindings(document, policy) {
+function selectorMatches(mapping, selector, entityKinds) {
+    if (selector.ids && !selector.ids.includes(mapping.id))
+        return false;
+    if (selector.relations && !selector.relations.includes(mapping.relation)) {
+        return false;
+    }
+    if (selector.sourceKinds &&
+        !mapping.sources.some((id) => {
+            const kind = entityKinds.get(id);
+            return kind !== undefined && selector.sourceKinds?.includes(kind);
+        })) {
+        return false;
+    }
+    if (selector.targetKinds &&
+        !mapping.targets.some((id) => {
+            const kind = entityKinds.get(id);
+            return kind !== undefined && selector.targetKinds?.includes(kind);
+        })) {
+        return false;
+    }
+    if (selector.provenanceStatuses &&
+        !selector.provenanceStatuses.includes(mapping.provenance.status)) {
+        return false;
+    }
+    return true;
+}
+function resolvedDeclarations(document, policy) {
+    const entityKinds = new Map(document.entities.map((entity) => [entity.id, entity.kind]));
+    const direct = new Map();
+    const selectors = [];
+    const selectorMatchCounts = new Map();
+    for (const declaration of policy.mappings) {
+        if (declaration.mapping !== undefined) {
+            const entries = direct.get(declaration.mapping) ?? [];
+            entries.push(declaration);
+            direct.set(declaration.mapping, entries);
+        }
+        else {
+            selectors.push(declaration);
+            selectorMatchCounts.set(declaration, 0);
+        }
+    }
+    const byMapping = new Map();
+    for (const mapping of document.mappings) {
+        const declarations = [...(direct.get(mapping.id) ?? [])];
+        for (const declaration of selectors) {
+            if (!selectorMatches(mapping, declaration.select, entityKinds)) {
+                continue;
+            }
+            declarations.push(declaration);
+            selectorMatchCounts.set(declaration, (selectorMatchCounts.get(declaration) ?? 0) + 1);
+        }
+        byMapping.set(mapping.id, declarations);
+    }
+    return { byMapping, selectorMatchCounts };
+}
+function validatePolicyBindings(document, policy, resolution) {
     const issues = [];
     const graphDigest = valueDigest(document);
     if (policy.graph.id !== document.id) {
@@ -124,15 +180,26 @@ function validatePolicyBindings(document, policy) {
         issues.push(issue("GRAPH_DIGEST_MISMATCH", `Policy graph digest does not match ${document.id}`, policy.id));
     }
     const mappings = new Set(document.mappings.map((entry) => entry.id));
-    const declarations = new Map();
-    for (const declaration of policy.mappings) {
-        declarations.set(declaration.mapping, (declarations.get(declaration.mapping) ?? 0) + 1);
-        if (!mappings.has(declaration.mapping)) {
+    const declarations = resolution.byMapping;
+    for (const [index, declaration] of policy.mappings.entries()) {
+        if (declaration.mapping !== undefined &&
+            !mappings.has(declaration.mapping)) {
             issues.push(issue("UNKNOWN_MAPPING_DECLARATION", `Policy declares missing mapping ${declaration.mapping}`, declaration.mapping));
+        }
+        if (declaration.select !== undefined) {
+            const matches = resolution.selectorMatchCounts.get(declaration) ?? 0;
+            if (matches === 0) {
+                issues.push(issue("EMPTY_MAPPING_SELECTOR", `Mapping selector at policy index ${index} matches no graph mappings`, policy.id));
+            }
+            for (const id of declaration.select.ids ?? []) {
+                if (!mappings.has(id)) {
+                    issues.push(issue("UNKNOWN_MAPPING_SELECTOR_ID", `Mapping selector references missing mapping ${id}`, id));
+                }
+            }
         }
     }
     for (const mapping of document.mappings) {
-        const count = declarations.get(mapping.id) ?? 0;
+        const count = declarations.get(mapping.id)?.length ?? 0;
         if (count === 0) {
             issues.push(issue("MAPPING_POLICY_MISSING", `${mapping.id} has no viability declaration`, mapping.id));
         }
@@ -162,35 +229,39 @@ function validatePolicyBindings(document, policy) {
     }
     return issues;
 }
-function validateApplicabilityContext(policy, context) {
+function validateApplicabilityContext(document, policy, context, resolution) {
     const issues = [];
-    for (const declaration of policy.mappings) {
-        const required = new Set();
-        if (declaration.applicability?.when) {
-            for (const key of requiredContextKeys(declaration.applicability.when)) {
-                required.add(key);
+    const resolved = resolution.byMapping;
+    for (const [mappingId, declarations] of resolved) {
+        for (const declaration of declarations) {
+            const required = new Set();
+            if (declaration.applicability?.when) {
+                for (const key of requiredContextKeys(declaration.applicability.when)) {
+                    required.add(key);
+                }
             }
-        }
-        if (declaration.applicability?.unless) {
-            for (const key of requiredContextKeys(declaration.applicability.unless)) {
-                required.add(key);
+            if (declaration.applicability?.unless) {
+                for (const key of requiredContextKeys(declaration.applicability.unless)) {
+                    required.add(key);
+                }
             }
-        }
-        for (const key of required) {
-            if (!Object.hasOwn(context, key)) {
-                issues.push(issue("CONTEXT_KEY_MISSING", `${declaration.mapping} requires context key ${key}`, declaration.mapping));
+            for (const key of required) {
+                if (!Object.hasOwn(context, key)) {
+                    issues.push(issue("CONTEXT_KEY_MISSING", `${mappingId} requires context key ${key}`, mappingId));
+                }
             }
         }
     }
     return issues;
 }
-function validateDeclaredSemantics(document, policy, relationRegistry) {
+function validateDeclaredSemantics(document, policy, relationRegistry, resolution) {
     const issues = [];
-    const mappings = new Map(document.mappings.map((entry) => [entry.id, entry]));
-    for (const declaration of policy.mappings) {
-        const mapping = mappings.get(declaration.mapping);
-        if (!mapping)
+    const resolved = resolution.byMapping;
+    for (const mapping of document.mappings) {
+        const declarations = resolved.get(mapping.id) ?? [];
+        if (declarations.length !== 1)
             continue;
+        const declaration = declarations[0];
         if (!relationRegistry.get(mapping.relation)?.impactDirection) {
             issues.push(issue("UNDECLARED_IMPACT_DIRECTION", `${mapping.relation} must declare impactDirection before ${mapping.id} can activate`, mapping.id));
         }
@@ -214,15 +285,20 @@ function validateDeclaredSemantics(document, policy, relationRegistry) {
     }
     return issues;
 }
-function activeMappingState(policy, context) {
+function activeMappingState(document, policy, context, resolution) {
     const active = new Set();
     const inactive = [];
-    for (const declaration of policy.mappings) {
+    const resolved = resolution.byMapping;
+    for (const mapping of document.mappings) {
+        const declarations = resolved.get(mapping.id) ?? [];
+        if (declarations.length !== 1)
+            continue;
+        const declaration = declarations[0];
         const reason = inactiveReason(declaration.applicability, context);
         if (reason)
-            inactive.push({ id: declaration.mapping, reason });
+            inactive.push({ id: mapping.id, reason });
         else
-            active.add(declaration.mapping);
+            active.add(mapping.id);
     }
     inactive.sort((left, right) => left.id.localeCompare(right.id));
     return { active, inactive };
@@ -354,8 +430,9 @@ export function compileMetamap(document, policy, options = {}) {
             quarantinedSubjects: impact.affectedSubjects,
         };
     }
-    issues.push(...validatePolicyBindings(document, policy), ...validateDeclaredSemantics(document, policy, relationRegistry), ...validateApplicabilityContext(policy, context));
-    const state = activeMappingState(policy, context);
+    const resolution = resolvedDeclarations(document, policy);
+    issues.push(...validatePolicyBindings(document, policy, resolution), ...validateDeclaredSemantics(document, policy, relationRegistry, resolution), ...validateApplicabilityContext(document, policy, context, resolution));
+    const state = activeMappingState(document, policy, context, resolution);
     issues.push(...contradictionIssues(document, policy, state.active), ...evaluateConstraints(document, policy, state.active, relationRegistry, constraintRegistry));
     const waived = applyWaivers(issues, policy, evaluatedAt);
     issues = waived.issues;

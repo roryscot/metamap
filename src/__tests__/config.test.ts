@@ -67,4 +67,35 @@ describe("workspace configuration", () => {
       /references unknown source schemas/,
     );
   });
+
+  it("accepts exact reviewed Next.js topology exclusions", () => {
+    const config = minimalConfig();
+    config.sources = [
+      {
+        id: "web",
+        adapter: "nextjs-app-router",
+        root: "src/app",
+        extensions: ["ts", "tsx"],
+        exclusions: [
+          {
+            path: "src/app/legacy/page.tsx",
+            reason: "Migration tracked separately",
+            assertedBy: "team:web",
+            relations: ["topology:implemented_by"],
+          },
+        ],
+      },
+    ];
+    expect(parseMetamapConfig(config).sources[0]).toEqual(
+      (config.sources as unknown[])[0],
+    );
+
+    const invalid = structuredClone(config);
+    (invalid.sources as Array<Record<string, unknown>>)[0].exclusions = [
+      { path: "src/app/legacy/page.tsx", reason: "Missing owner" },
+    ];
+    expect(() => parseMetamapConfig(invalid)).toThrow(
+      /does not match the portable schema/,
+    );
+  });
 });

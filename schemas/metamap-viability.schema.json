@@ -37,6 +37,7 @@
     "metadata": { "$ref": "#/$defs/jsonObject" }
   },
   "$defs": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
     "identifier": {
       "type": "string",
       "minLength": 3,
@@ -168,13 +169,65 @@
     "mappingDeclaration": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mapping", "coverage", "determinism", "reversibility"],
+      "required": ["coverage", "determinism", "reversibility"],
       "properties": {
         "mapping": { "$ref": "#/$defs/identifier" },
+        "select": { "$ref": "#/$defs/mappingSelector" },
         "coverage": { "enum": ["total", "partial"] },
         "determinism": { "enum": ["deterministic", "nondeterministic"] },
         "reversibility": { "enum": ["reversible", "irreversible"] },
         "applicability": { "$ref": "#/$defs/applicability" }
+      },
+      "oneOf": [
+        {
+          "required": ["mapping"],
+          "properties": { "mapping": { "$ref": "#/$defs/identifier" } }
+        },
+        {
+          "required": ["select"],
+          "properties": {
+            "select": { "$ref": "#/$defs/mappingSelector" }
+          }
+        }
+      ]
+    },
+    "mappingSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "relations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/relationIdentifier" }
+        },
+        "sourceKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        },
+        "targetKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        },
+        "provenanceStatuses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["declared", "observed", "generated", "inferred"]
+          }
+        }
       }
     },
     "locator": {

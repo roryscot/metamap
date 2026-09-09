@@ -40,6 +40,13 @@ The practical runtime rule is:
   into content-addressed JSON manifests or typed TypeScript lookup tables.
 - A routing relation pack for commands, events, routes, handlers, schemas,
   authorization policies, endpoints, and workflow transitions.
+- An application-topology pack and fail-closed constraints for exhaustive
+  route, container, content, context, and hydration linkage.
+- Deterministic Next.js App Router discovery for pages, layouts, templates,
+  boundaries, dynamic parameters, providers, loader entry points, API handlers,
+  and client hydration boundaries.
+- Selector-based viability rules that govern large families of mappings while
+  rejecting empty or overlapping selectors.
 - Read-only Prisma, TypeScript/Zod, JSON collection, legacy catalog, and
   portable Metamap shard adapters.
 - A CLI and TypeScript API for generation, checking, traversal, diffing, and
@@ -61,6 +68,7 @@ npm run example:check
 npm run example:compile
 npm run example:research
 npm run example:routing
+npm run example:topology
 ```
 
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
@@ -71,7 +79,7 @@ For a consuming repository, install the tagged public archive:
 ```json
 {
   "dependencies": {
-    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.4.0.tar.gz"
+    "@roryscot/metamap": "https://github.com/roryscot/metamap/archive/refs/tags/v0.5.0.tar.gz"
   }
 }
 ```
@@ -179,6 +187,14 @@ The generated object keys become a TypeScript identity union, so consumers do
 not maintain a second enum. The runtime performs a constant-time lookup and
 never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
 [`examples/routing`](examples/routing) project.
+
+For exhaustive application routing, the application-topology pack maps the
+semantic route onto its framework implementation, nearest container, content,
+required contexts, policies, parameters, loaders, fallbacks, and hydration
+boundary. Dynamic constraints make every newly discovered leaf governed
+immediately. See [APPLICATION_TOPOLOGY.md](APPLICATION_TOPOLOGY.md) and the
+runnable [`examples/application-topology`](examples/application-topology)
+project.
 
 ## Extending discovery and relations
 

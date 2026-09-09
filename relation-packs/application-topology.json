@@ -1,0 +1,213 @@
+{
+  "$schema": "../schemas/relation-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:metamap:relation-pack:application-topology",
+  "version": "1.0.0",
+  "description": "Structural relations for applications, route implementations, containers, outlets, content, contexts, data loading, parameters, middleware, fallbacks, and hydration boundaries.",
+  "relations": [
+    {
+      "id": "topology:contains",
+      "description": "The source structural scope directly contains the target structural element.",
+      "sourceKinds": [
+        "topology:application",
+        "topology:segment",
+        "topology:outlet"
+      ],
+      "targetKinds": [
+        "topology:segment",
+        "topology:page",
+        "topology:container",
+        "topology:outlet",
+        "topology:boundary",
+        "topology:hydration-boundary",
+        "routing:route"
+      ],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "transitive": true,
+      "impactDirection": "both"
+    },
+    {
+      "id": "topology:implemented_by",
+      "description": "The target framework element implements the source semantic route.",
+      "sourceKinds": ["routing:route"],
+      "targetKinds": ["topology:page", "topology:container"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:wraps",
+      "description": "The source container is the nearest rendering parent of the target page or nested container.",
+      "sourceKinds": ["topology:container"],
+      "targetKinds": ["topology:page", "topology:container"],
+      "cardinalities": ["one-to-one", "one-to-many"],
+      "cyclePolicy": "forbid",
+      "transitive": true,
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "topology:rendered_in",
+      "description": "The target is the nearest container that renders the source semantic route or page.",
+      "sourceKinds": ["routing:route", "topology:page"],
+      "targetKinds": ["topology:container"],
+      "cardinalities": ["one-to-one", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:has_outlet",
+      "description": "The source container declares the target rendering outlet.",
+      "sourceKinds": ["topology:container"],
+      "targetKinds": ["topology:outlet"],
+      "cardinalities": ["one-to-one", "one-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "topology:fills_outlet",
+      "description": "The source page or container supplies the target outlet.",
+      "sourceKinds": ["topology:page", "topology:container"],
+      "targetKinds": ["topology:outlet"],
+      "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "both"
+    },
+    {
+      "id": "topology:hosts_provider",
+      "description": "The source rendering scope mounts the target context provider.",
+      "sourceKinds": ["topology:container", "topology:page"],
+      "targetKinds": ["topology:context-provider"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "topology:provides_context",
+      "description": "The source scope makes the target context available to descendants.",
+      "sourceKinds": [
+        "topology:application",
+        "topology:container",
+        "topology:page",
+        "topology:context-provider"
+      ],
+      "targetKinds": ["topology:context"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "topology:requires_context",
+      "description": "The source cannot be expressed unless the target context is provided in its active scope.",
+      "sourceKinds": [
+        "routing:route",
+        "topology:page",
+        "topology:container",
+        "topology:component",
+        "topology:content",
+        "topology:loader"
+      ],
+      "targetKinds": ["topology:context"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:resolves_content",
+      "description": "The target is an independently referenceable content source resolved by the source.",
+      "sourceKinds": [
+        "routing:route",
+        "topology:page",
+        "topology:component",
+        "topology:outlet"
+      ],
+      "targetKinds": ["topology:content"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:loads",
+      "description": "The source invokes the target loader to resolve data.",
+      "sourceKinds": [
+        "routing:route",
+        "topology:page",
+        "topology:container",
+        "topology:component"
+      ],
+      "targetKinds": ["topology:loader"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:parameterized_by",
+      "description": "The source route shape is parameterized by the target schema.",
+      "sourceKinds": ["routing:route", "topology:page"],
+      "targetKinds": ["routing:schema"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:produces",
+      "description": "The source produces data conforming to the target schema.",
+      "sourceKinds": ["routing:handler", "topology:loader"],
+      "targetKinds": ["routing:schema"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    },
+    {
+      "id": "topology:consumes",
+      "description": "The source consumes data conforming to the target schema.",
+      "sourceKinds": [
+        "topology:page",
+        "topology:component",
+        "topology:hydration-boundary"
+      ],
+      "targetKinds": ["routing:schema"],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-one"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:hydrates",
+      "description": "The source hydration boundary activates the target client-rendered structure.",
+      "sourceKinds": ["topology:hydration-boundary"],
+      "targetKinds": [
+        "routing:route",
+        "topology:page",
+        "topology:container",
+        "topology:component",
+        "topology:boundary"
+      ],
+      "cardinalities": ["one-to-one", "one-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "both"
+    },
+    {
+      "id": "topology:guarded_by",
+      "description": "The source route or rendering scope is guarded by the target middleware.",
+      "sourceKinds": ["routing:route", "topology:page", "topology:container"],
+      "targetKinds": ["topology:middleware"],
+      "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "target-to-source"
+    },
+    {
+      "id": "topology:fallback_for",
+      "description": "The source loading, error, not-found, or default boundary is the fallback for the target scope.",
+      "sourceKinds": ["topology:boundary"],
+      "targetKinds": [
+        "topology:segment",
+        "routing:route",
+        "topology:page",
+        "topology:container"
+      ],
+      "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+      "cyclePolicy": "forbid",
+      "impactDirection": "source-to-target"
+    }
+  ]
+}

@@ -14,6 +14,8 @@ npm run example:generate
 npm run example:check
 npm run example:compile
 npm run example:research
+npm run example:routing
+npm run example:topology
 ```
 
 Before opening a pull request, also run `npm pack --dry-run` and verify that

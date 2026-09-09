@@ -38,16 +38,36 @@ export type MappingDeterminism = "deterministic" | "nondeterministic";
 export type MappingReversibility = "reversible" | "irreversible";
 
 /**
+ * A declarative, closed-world selection over graph mappings. Selector fields
+ * are ANDed; values inside one field are ORed. A selector that matches no
+ * mappings is stale and rejects compilation.
+ */
+export interface MappingViabilitySelector {
+  ids?: string[];
+  relations?: string[];
+  sourceKinds?: string[];
+  targetKinds?: string[];
+  provenanceStatuses?: Array<
+    "declared" | "observed" | "generated" | "inferred"
+  >;
+}
+
+/**
  * Contextual semantics for one graph mapping. Every graph mapping must have
  * exactly one declaration before the graph can become a viable generation.
  */
-export interface MappingViabilityDeclaration {
-  mapping: string;
+interface MappingViabilitySemantics {
   coverage: MappingCoverage;
   determinism: MappingDeterminism;
   reversibility: MappingReversibility;
   applicability?: MappingApplicability;
 }
+
+export type MappingViabilityDeclaration = MappingViabilitySemantics &
+  (
+    | { mapping: string; select?: never }
+    | { select: MappingViabilitySelector; mapping?: never }
+  );
 
 export type EvidenceResult = "supports" | "contradicts" | "inconclusive";
 

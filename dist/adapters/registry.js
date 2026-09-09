@@ -1,6 +1,7 @@
 import { JsonCollectionsAdapter } from "./json-collections.js";
 import { LegacySourcesAdapter } from "./legacy-sources.js";
 import { MetamapShardAdapter } from "./metamap-shard.js";
+import { NextjsAppRouterAdapter } from "./nextjs-app-router.js";
 import { PrismaAdapter } from "./prisma.js";
 import { TypeScriptZodAdapter } from "./typescript-zod.js";
 /** Runtime registry for built-in and consumer-supplied source adapters. */
@@ -43,6 +44,7 @@ export function createDefaultAdapterRegistry() {
         .register(new TypeScriptZodAdapter())
         .register(new LegacySourcesAdapter())
         .register(new JsonCollectionsAdapter())
-        .register(new MetamapShardAdapter());
+        .register(new MetamapShardAdapter())
+        .register(new NextjsAppRouterAdapter());
 }
 //# sourceMappingURL=registry.js.map

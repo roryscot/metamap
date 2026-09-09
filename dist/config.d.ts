@@ -48,7 +48,25 @@ export interface MetamapShardSourceConfig extends MetamapSourceConfig {
     adapter: "metamap-shard";
     path: string;
 }
-export type BuiltInSourceConfig = PrismaSourceConfig | TypeScriptZodSourceConfig | LegacySourcesConfig | JsonCollectionsSourceConfig | MetamapShardSourceConfig;
+export interface NextjsTopologyExclusion {
+    /** Repository-relative path to a discovered Next.js special file. */
+    path: string;
+    reason: string;
+    assertedBy: string;
+    /** Relations this exception may satisfy. Defaults to topology:implemented_by. */
+    relations?: string[];
+}
+export interface NextjsAppRouterSourceConfig extends MetamapSourceConfig {
+    id: string;
+    adapter: "nextjs-app-router";
+    /** Repository-relative App Router directory, normally app or src/app. */
+    root: string;
+    /** Source extensions to inspect. Defaults to ts, tsx, js, and jsx. */
+    extensions?: string[];
+    /** Exact, reviewed exceptions. Missing or inapplicable entries are errors. */
+    exclusions?: NextjsTopologyExclusion[];
+}
+export type BuiltInSourceConfig = PrismaSourceConfig | TypeScriptZodSourceConfig | LegacySourcesConfig | JsonCollectionsSourceConfig | MetamapShardSourceConfig | NextjsAppRouterSourceConfig;
 export interface StructureReferenceConfig {
     sourceId: string;
     /** Adapter-defined structure kind. */

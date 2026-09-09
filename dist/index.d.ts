@@ -24,6 +24,7 @@ export * from "./adapters/typescript-zod.js";
 export * from "./adapters/legacy-sources.js";
 export * from "./adapters/json-collections.js";
 export * from "./adapters/metamap-shard.js";
+export * from "./adapters/nextjs-app-router.js";
 export * from "./adapters/registry.js";
 export * from "./adapters/source-of-truth.js";
 //# sourceMappingURL=index.d.ts.map

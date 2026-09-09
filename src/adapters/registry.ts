@@ -2,6 +2,7 @@ import type { MetamapSourceConfig } from "../config.js";
 import { JsonCollectionsAdapter } from "./json-collections.js";
 import { LegacySourcesAdapter } from "./legacy-sources.js";
 import { MetamapShardAdapter } from "./metamap-shard.js";
+import { NextjsAppRouterAdapter } from "./nextjs-app-router.js";
 import { PrismaAdapter } from "./prisma.js";
 import type {
   AdapterContext,
@@ -66,7 +67,8 @@ export function createDefaultAdapterRegistry(): AdapterRegistry {
     .register(new TypeScriptZodAdapter())
     .register(new LegacySourcesAdapter())
     .register(new JsonCollectionsAdapter())
-    .register(new MetamapShardAdapter());
+    .register(new MetamapShardAdapter())
+    .register(new NextjsAppRouterAdapter());
 }
 
 // Retain these imports in generated declarations for adapter authors.

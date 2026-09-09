@@ -112,3 +112,13 @@ Start with one duplicated command or event enum:
 
 The graph can then federate across repositories through `metamap-shard`
 without changing runtime lookup behavior.
+
+## Complete application topology
+
+The routing pack expresses semantic operations. The complementary application
+topology pack connects those operations to framework pages and containers,
+content, context providers and requirements, loaders, parameter schemas,
+middleware, fallbacks, outlets, and hydration boundaries. It also supplies
+kind-selected totality, reachability, and context-dominance constraints, so a
+newly discovered leaf fails before generation unless it is mapped or explicitly
+excluded. See [APPLICATION_TOPOLOGY.md](APPLICATION_TOPOLOGY.md).

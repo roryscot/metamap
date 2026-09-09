@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
+  "activeMappings": [
+    "urn:example:mapping:app-segment",
+    "urn:example:mapping:container-context",
+    "urn:example:mapping:container-page",
+    "urn:example:mapping:hydrate-page",
+    "urn:example:mapping:hydrate-route",
+    "urn:example:mapping:page-container",
+    "urn:example:mapping:route-container",
+    "urn:example:mapping:route-content",
+    "urn:example:mapping:route-context",
+    "urn:example:mapping:route-page",
+    "urn:example:mapping:segment-structure"
+  ],
+  "context": {},
+  "digest": "sha256:9ae54a9ff7a175a10b2eea95692749e6e65efd71ccc72655db3b9d0072de702e",
+  "evaluatedAt": "2026-09-08T00:00:00.000Z",
+  "evidence": [],
+  "graph": {
+    "digest": "sha256:d8b283bbf7c13f77ea1bbda148157037d9c6ff6bd1680092d070658377c9c9af",
+    "id": "urn:example:application-topology:graph",
+    "revision": "1"
+  },
+  "id": "urn:metamap:generation:9ae54a9ff7a175a10b2eea95692749e6e65efd71ccc72655db3b9d0072de702e",
+  "inactiveMappings": [],
+  "policy": {
+    "digest": "sha256:734dc703a61167269201452f09c07799666847010f2e56ae15af6f6fdd1b68f2",
+    "id": "urn:example:application-topology:policy"
+  },
+  "schemaVersion": "1.0.0",
+  "waiversApplied": []
+}

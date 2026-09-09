@@ -133,6 +133,30 @@
         },
         {
           "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "adapter", "root"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonEmptyString" },
+            "adapter": { "const": "nextjs-app-router" },
+            "root": { "$ref": "#/$defs/nonEmptyString" },
+            "extensions": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9]+$"
+              }
+            },
+            "exclusions": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/topologyExclusion" }
+            }
+          }
+        },
+        {
+          "type": "object",
           "additionalProperties": { "$ref": "#/$defs/jsonValue" },
           "required": ["id", "adapter"],
           "properties": {
@@ -147,7 +171,8 @@
                       "typescript-zod",
                       "legacy-sources",
                       "json-collections",
-                      "metamap-shard"
+                      "metamap-shard",
+                      "nextjs-app-router"
                     ]
                   }
                 }
@@ -156,6 +181,25 @@
           }
         }
       ]
+    },
+    "topologyExclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "reason", "assertedBy"],
+      "properties": {
+        "path": { "$ref": "#/$defs/nonEmptyString" },
+        "reason": { "$ref": "#/$defs/nonEmptyString" },
+        "assertedBy": { "$ref": "#/$defs/nonEmptyString" },
+        "relations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*:[a-z][a-z0-9._-]*$"
+          }
+        }
+      }
     },
     "jsonReference": {
       "type": "object",

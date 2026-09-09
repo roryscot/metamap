@@ -6,7 +6,11 @@ import { ConstraintRegistry } from "./constraints.js";
 import { inactiveReason, requiredContextKeys } from "./context.js";
 import { MetamapGraph } from "./graph.js";
 import { analyzeImpact } from "./impact.js";
-import type { MetamapDocument, ValidationIssue } from "./model.js";
+import type {
+  MetamapDocument,
+  StructuralMapping,
+  ValidationIssue,
+} from "./model.js";
 import { isReferenceIdentifier, isRelationIdentifier } from "./references.js";
 import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
@@ -18,6 +22,8 @@ import {
   type CompilationResult,
   type CompileOptions,
   type ImpactReport,
+  type MappingViabilityDeclaration,
+  type MappingViabilitySelector,
   type MetamapViabilityPolicy,
   type ViabilityIssue,
   type ViabilityValidationResult,
@@ -193,9 +199,89 @@ function knownGraphSubjects(document: MetamapDocument): Set<string> {
   ]);
 }
 
+function selectorMatches(
+  mapping: StructuralMapping,
+  selector: MappingViabilitySelector,
+  entityKinds: ReadonlyMap<string, string>,
+): boolean {
+  if (selector.ids && !selector.ids.includes(mapping.id)) return false;
+  if (selector.relations && !selector.relations.includes(mapping.relation)) {
+    return false;
+  }
+  if (
+    selector.sourceKinds &&
+    !mapping.sources.some((id) => {
+      const kind = entityKinds.get(id);
+      return kind !== undefined && selector.sourceKinds?.includes(kind);
+    })
+  ) {
+    return false;
+  }
+  if (
+    selector.targetKinds &&
+    !mapping.targets.some((id) => {
+      const kind = entityKinds.get(id);
+      return kind !== undefined && selector.targetKinds?.includes(kind);
+    })
+  ) {
+    return false;
+  }
+  if (
+    selector.provenanceStatuses &&
+    !selector.provenanceStatuses.includes(mapping.provenance.status)
+  ) {
+    return false;
+  }
+  return true;
+}
+
+interface MappingDeclarationResolution {
+  byMapping: Map<string, MappingViabilityDeclaration[]>;
+  selectorMatchCounts: Map<MappingViabilityDeclaration, number>;
+}
+
+function resolvedDeclarations(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy,
+): MappingDeclarationResolution {
+  const entityKinds = new Map(
+    document.entities.map((entity) => [entity.id, entity.kind]),
+  );
+  const direct = new Map<string, MappingViabilityDeclaration[]>();
+  const selectors: MappingViabilityDeclaration[] = [];
+  const selectorMatchCounts = new Map<MappingViabilityDeclaration, number>();
+  for (const declaration of policy.mappings) {
+    if (declaration.mapping !== undefined) {
+      const entries = direct.get(declaration.mapping) ?? [];
+      entries.push(declaration);
+      direct.set(declaration.mapping, entries);
+    } else {
+      selectors.push(declaration);
+      selectorMatchCounts.set(declaration, 0);
+    }
+  }
+  const byMapping = new Map<string, MappingViabilityDeclaration[]>();
+  for (const mapping of document.mappings) {
+    const declarations = [...(direct.get(mapping.id) ?? [])];
+    for (const declaration of selectors) {
+      if (!selectorMatches(mapping, declaration.select!, entityKinds)) {
+        continue;
+      }
+      declarations.push(declaration);
+      selectorMatchCounts.set(
+        declaration,
+        (selectorMatchCounts.get(declaration) ?? 0) + 1,
+      );
+    }
+    byMapping.set(mapping.id, declarations);
+  }
+  return { byMapping, selectorMatchCounts };
+}
+
 function validatePolicyBindings(
   document: MetamapDocument,
   policy: MetamapViabilityPolicy,
+  resolution: MappingDeclarationResolution,
 ): ViabilityIssue[] {
   const issues: ViabilityIssue[] = [];
   const graphDigest = valueDigest(document);
@@ -234,13 +320,12 @@ function validatePolicyBindings(
   }
 
   const mappings = new Set(document.mappings.map((entry) => entry.id));
-  const declarations = new Map<string, number>();
-  for (const declaration of policy.mappings) {
-    declarations.set(
-      declaration.mapping,
-      (declarations.get(declaration.mapping) ?? 0) + 1,
-    );
-    if (!mappings.has(declaration.mapping)) {
+  const declarations = resolution.byMapping;
+  for (const [index, declaration] of policy.mappings.entries()) {
+    if (
+      declaration.mapping !== undefined &&
+      !mappings.has(declaration.mapping)
+    ) {
       issues.push(
         issue(
           "UNKNOWN_MAPPING_DECLARATION",
@@ -249,9 +334,32 @@ function validatePolicyBindings(
         ),
       );
     }
+    if (declaration.select !== undefined) {
+      const matches = resolution.selectorMatchCounts.get(declaration) ?? 0;
+      if (matches === 0) {
+        issues.push(
+          issue(
+            "EMPTY_MAPPING_SELECTOR",
+            `Mapping selector at policy index ${index} matches no graph mappings`,
+            policy.id,
+          ),
+        );
+      }
+      for (const id of declaration.select.ids ?? []) {
+        if (!mappings.has(id)) {
+          issues.push(
+            issue(
+              "UNKNOWN_MAPPING_SELECTOR_ID",
+              `Mapping selector references missing mapping ${id}`,
+              id,
+            ),
+          );
+        }
+      }
+    }
   }
   for (const mapping of document.mappings) {
-    const count = declarations.get(mapping.id) ?? 0;
+    const count = declarations.get(mapping.id)?.length ?? 0;
     if (count === 0) {
       issues.push(
         issue(
@@ -307,31 +415,38 @@ function validatePolicyBindings(
 }
 
 function validateApplicabilityContext(
+  document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   context: NonNullable<CompileOptions["context"]>,
+  resolution: MappingDeclarationResolution,
 ): ViabilityIssue[] {
   const issues: ViabilityIssue[] = [];
-  for (const declaration of policy.mappings) {
-    const required = new Set<string>();
-    if (declaration.applicability?.when) {
-      for (const key of requiredContextKeys(declaration.applicability.when)) {
-        required.add(key);
+  const resolved = resolution.byMapping;
+  for (const [mappingId, declarations] of resolved) {
+    for (const declaration of declarations) {
+      const required = new Set<string>();
+      if (declaration.applicability?.when) {
+        for (const key of requiredContextKeys(declaration.applicability.when)) {
+          required.add(key);
+        }
       }
-    }
-    if (declaration.applicability?.unless) {
-      for (const key of requiredContextKeys(declaration.applicability.unless)) {
-        required.add(key);
+      if (declaration.applicability?.unless) {
+        for (const key of requiredContextKeys(
+          declaration.applicability.unless,
+        )) {
+          required.add(key);
+        }
       }
-    }
-    for (const key of required) {
-      if (!Object.hasOwn(context, key)) {
-        issues.push(
-          issue(
-            "CONTEXT_KEY_MISSING",
-            `${declaration.mapping} requires context key ${key}`,
-            declaration.mapping,
-          ),
-        );
+      for (const key of required) {
+        if (!Object.hasOwn(context, key)) {
+          issues.push(
+            issue(
+              "CONTEXT_KEY_MISSING",
+              `${mappingId} requires context key ${key}`,
+              mappingId,
+            ),
+          );
+        }
       }
     }
   }
@@ -342,12 +457,14 @@ function validateDeclaredSemantics(
   document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   relationRegistry: RelationRegistry,
+  resolution: MappingDeclarationResolution,
 ): ViabilityIssue[] {
   const issues: ViabilityIssue[] = [];
-  const mappings = new Map(document.mappings.map((entry) => [entry.id, entry]));
-  for (const declaration of policy.mappings) {
-    const mapping = mappings.get(declaration.mapping);
-    if (!mapping) continue;
+  const resolved = resolution.byMapping;
+  for (const mapping of document.mappings) {
+    const declarations = resolved.get(mapping.id) ?? [];
+    if (declarations.length !== 1) continue;
+    const declaration = declarations[0];
     if (!relationRegistry.get(mapping.relation)?.impactDirection) {
       issues.push(
         issue(
@@ -409,8 +526,10 @@ function validateDeclaredSemantics(
 }
 
 function activeMappingState(
+  document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   context: NonNullable<CompileOptions["context"]>,
+  resolution: MappingDeclarationResolution,
 ): {
   active: Set<string>;
   inactive: Array<{ id: string; reason: "when-not-satisfied" | "inhibited" }>;
@@ -420,10 +539,14 @@ function activeMappingState(
     id: string;
     reason: "when-not-satisfied" | "inhibited";
   }> = [];
-  for (const declaration of policy.mappings) {
+  const resolved = resolution.byMapping;
+  for (const mapping of document.mappings) {
+    const declarations = resolved.get(mapping.id) ?? [];
+    if (declarations.length !== 1) continue;
+    const declaration = declarations[0];
     const reason = inactiveReason(declaration.applicability, context);
-    if (reason) inactive.push({ id: declaration.mapping, reason });
-    else active.add(declaration.mapping);
+    if (reason) inactive.push({ id: mapping.id, reason });
+    else active.add(mapping.id);
   }
   inactive.sort((left, right) => left.id.localeCompare(right.id));
   return { active, inactive };
@@ -616,12 +739,18 @@ export function compileMetamap(
     };
   }
 
+  const resolution = resolvedDeclarations(document, policy);
   issues.push(
-    ...validatePolicyBindings(document, policy),
-    ...validateDeclaredSemantics(document, policy, relationRegistry),
-    ...validateApplicabilityContext(policy, context),
+    ...validatePolicyBindings(document, policy, resolution),
+    ...validateDeclaredSemantics(
+      document,
+      policy,
+      relationRegistry,
+      resolution,
+    ),
+    ...validateApplicabilityContext(document, policy, context, resolution),
   );
-  const state = activeMappingState(policy, context);
+  const state = activeMappingState(document, policy, context, resolution);
   issues.push(
     ...contradictionIssues(document, policy, state.active),
     ...evaluateConstraints(

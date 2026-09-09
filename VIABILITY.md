@@ -57,6 +57,12 @@ Every graph mapping must have exactly one policy declaration:
 }
 ```
 
+Large graphs may replace repeated mapping identifiers with selectors over IDs,
+relations, source kinds, target kinds, or provenance statuses. Selectors are
+closed-world rules: a selector matching nothing is stale, and two declarations
+matching the same mapping are ambiguous. Both fail compilation. The resulting
+generation always records the concrete active mapping identities.
+
 Coverage, determinism, reversibility, and graph-level lossiness are assertions,
 not guesses made by the compiler. A policy can require evidence for assertions
 that need external verification.
@@ -80,6 +86,13 @@ ships these fail-closed evaluators:
   target. It uses the mapping parameters above.
 - `core:requires-authority` — fact-scoped authority must resolve uniquely.
   Parameter: `fact`.
+- `topology:relation-totality` — every dynamically selected structural entity
+  satisfies a required relation cardinality or carries a valid reviewed
+  exclusion.
+- `topology:reachable` — every selected structural entity is reachable from a
+  declared application root.
+- `topology:context-satisfied` — every required context has exactly one nearest
+  provider in the active rendering chain.
 
 An unknown constraint kind is an error. Applications can register additional
 `ConstraintEvaluator` functions with `ConstraintRegistry`; the JSON constraint

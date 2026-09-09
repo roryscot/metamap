@@ -77,6 +77,7 @@ describe("adapter registry", () => {
       "json-collections",
       "legacy-sources",
       "metamap-shard",
+      "nextjs-app-router",
       "prisma",
       "typescript-zod",
     ]);

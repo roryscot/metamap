@@ -1,0 +1,114 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.4.0/schemas/metamap-projection.schema.json",
+  "digest": "sha256:e6106c2f2c958fbb4dbcf094a0fef46199d908741dbc589672e198e904003e22",
+  "entries": [
+    {
+      "slots": [
+        {
+          "cardinality": "exactly-one",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:route-container"],
+          "name": "container",
+          "relation": "topology:rendered_in",
+          "targets": [
+            {
+              "id": "urn:example:container:root",
+              "kind": "topology:container",
+              "locators": [
+                {
+                  "uri": "repo://example/app/layout.tsx"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "cardinality": "exactly-one",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:route-content"],
+          "name": "content",
+          "relation": "topology:resolves_content",
+          "targets": [
+            {
+              "id": "urn:example:content:account",
+              "kind": "topology:content",
+              "locators": [
+                {
+                  "uri": "cms://example/account"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "cardinality": "one-or-more",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:route-context"],
+          "name": "contexts",
+          "relation": "topology:requires_context",
+          "targets": [
+            {
+              "id": "urn:example:context:session",
+              "kind": "topology:context"
+            }
+          ]
+        },
+        {
+          "cardinality": "zero-or-one",
+          "direction": "incoming",
+          "mappings": ["urn:example:mapping:hydrate-route"],
+          "name": "hydration",
+          "relation": "topology:hydrates",
+          "targets": [
+            {
+              "id": "urn:example:hydration:account",
+              "kind": "topology:hydration-boundary"
+            }
+          ]
+        },
+        {
+          "cardinality": "exactly-one",
+          "direction": "outgoing",
+          "mappings": ["urn:example:mapping:route-page"],
+          "name": "implementation",
+          "relation": "topology:implemented_by",
+          "targets": [
+            {
+              "attributes": {
+                "runtime": "client"
+              },
+              "id": "urn:example:page:account",
+              "kind": "topology:page",
+              "locators": [
+                {
+                  "uri": "repo://example/app/account/page.tsx"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "subject": {
+        "attributes": {
+          "topologySurface": "semantic-page"
+        },
+        "id": "urn:example:route:account",
+        "kind": "routing:route"
+      }
+    }
+  ],
+  "generation": {
+    "digest": "sha256:9ae54a9ff7a175a10b2eea95692749e6e65efd71ccc72655db3b9d0072de702e",
+    "id": "urn:metamap:generation:9ae54a9ff7a175a10b2eea95692749e6e65efd71ccc72655db3b9d0072de702e"
+  },
+  "graph": {
+    "digest": "sha256:d8b283bbf7c13f77ea1bbda148157037d9c6ff6bd1680092d070658377c9c9af",
+    "id": "urn:example:application-topology:graph"
+  },
+  "id": "urn:metamap:projection:e6106c2f2c958fbb4dbcf094a0fef46199d908741dbc589672e198e904003e22",
+  "schemaVersion": "1.0.0",
+  "spec": {
+    "digest": "sha256:c43fd34ccb9168a331d98668679282a5c7832126114c0c4c57704a8ba8cd8388",
+    "id": "urn:example:application-topology:projection"
+  }
+}
