@@ -2,6 +2,8 @@
 
 ## 0.6.0
 
+- Explain the kernel as a versioned persistent hypergraph of correspondences
+  whose validated generations materialize into static runtime views.
 - License the kernel, schemas, relation packs, CLI, and built-in adapters under
   Apache-2.0. Consuming graphs and policies remain owned by their repositories.
 - Compile nested path-tree projections from viable graph generations, restoring

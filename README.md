@@ -15,6 +15,88 @@ The practical runtime rule is:
 > Dynamic composition in the control plane; immutable generated structures in
 > the data plane.
 
+## What a metamap is
+
+A metamap formalizes correspondence without identification. Independently owned
+structures keep their own data and representations. The map records which
+identities, facts, and constraints they share, who owns each fact, and which of
+those mappings may be expressed in a given context. That is the replacement for
+duplicated cross-system enums and registries: not a universal data model, but a
+validated overlay.
+
+A metamap is a **versioned, attributed directed hypergraph of
+correspondences**. Its nodes are stable semantic identities; its hyperedges are
+first-class mappings between one or more independently owned structures. A
+mapping may be directional, typed, cardinality-constrained, lossy,
+provenance-bearing, and transform-bearing.
+
+The mathematical object and its implementation should be distinguished. A
+mapping can be represented in software as an object connected through ordinary
+adjacency indexes, producing something operationally similar to an attributed
+multigraph. Because a single mapping may relate multiple endpoints, the
+underlying correspondence structure is a directed hypergraph.
+
+At rest, the core object is:
+
+```text
+entities[]      typed nodes with stable semantic IDs
+mappings[]      typed, attributed correspondence hyperedges
+authorities[]   ownership records over facts and scopes
+```
+
+`MetamapGraph` is an indexed in-memory view of that object: identities resolve
+directly, mappings are found by endpoint or relation, authority is resolved by
+fact and scope, and delegations follow their declared relationships. It is not
+the runtime data structure.
+
+The metamap is dynamic through **versioning, composition, and selection**, not
+through mutation during execution. Independent shards compose by stable
+identity: compatible definitions merge, contradictory definitions fail, and new
+entities may extend a later graph without renaming existing ones. Viability
+compilation then selects which candidate mappings are admissible in a context.
+The graph stays the same; the selected subgraph changes. A validated result
+becomes an immutable, content-addressed **generation**. Activation replaces the
+previous generation atomically. A partially validated candidate is never live.
+
+```text
+shards  --compose-->  persistent graph
+                         |
+                         | compile(context, evidence, constraints)
+                         v
+                     generation
+                         |
+                         | materialize
+                         v
+                     projection
+```
+
+The graph is the space of declared possible correspondences. A generation is a
+**validated context-specific realization** of some of those correspondences. A
+projection is a materialized view for a particular consumer:
+
+```text
+subjectId -> { slotName -> target | target[] | null }
+```
+
+or a path trie that keeps structural templates and runtime occupants separate.
+Cardinality and structural constraints are checked before activation. After
+materialization, the data plane uses ordinary arrays, hash maps, tries, or
+generated objects rather than traversing the correspondence graph. Expected
+constant-time lookup, where available, is a property of those implementations,
+not of projection itself.
+
+This makes the metamap a **versioned persistent hypergraph with validated
+materialized views**. It is not a tree: correspondences need not have unique
+parents or a preferred hierarchy. It is not union-find: semantic equivalence
+must be declared, not inferred from connectivity, names, paths, or locators.
+It is not a domain database: payloads stay in independently authoritative
+sources. And it is not a mutable service locator: runtime consumers execute
+generated structures rather than discovering dependencies by graph traversal.
+
+Compactly: a metamap is a versioned persistent hypergraph of candidate
+correspondences whose validated context-specific realizations are compiled into
+static runtime views.
+
 ## What it provides
 
 - Portable JSON schemas for graph documents, workspace configuration, and
@@ -196,8 +278,8 @@ metamap link graph.json generation.json projection.json command-router.ts \
 ```
 
 The generated object keys become a TypeScript identity union, so consumers do
-not maintain a second enum. The runtime performs a constant-time lookup and
-never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
+not maintain a second enum. The runtime uses the generated table or path tree
+and never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
 [`examples/routing`](examples/routing) project. Nested URL maps from the same
 generation are in [`examples/path-tree`](examples/path-tree).
 
