@@ -6,6 +6,9 @@ facts, then compiles viable graph generations into static runtime projections.
 It helps large systems replace duplicated cross-system enums and registries
 without copying every source into one universal data model.
 
+See [VISION.md](VISION.md) for the longer-term direction: making Metamap a
+trust layer for governed, evidence-bearing relationships between systems.
+
 The governing rule is:
 
 > One authority per fact and scope; many validated or generated projections.
