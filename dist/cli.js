@@ -13,6 +13,7 @@ import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
 import { compileMetamap, parseViabilityPolicy, parseViableGeneration, } from "./viability.js";
+import { compilePathTree, emitTypeScriptPathTree } from "./path-tree.js";
 import { compileProjection, emitTypeScriptProjection, parseProjectionSpec, } from "./projection.js";
 import { checkWorkspace, discoverWorkspace, workspaceHasErrors, writeWorkspaceOutputs, } from "./workspace.js";
 function usage() {
@@ -21,7 +22,7 @@ function usage() {
   metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
-  metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript] [--export name] [--relation-pack pack.json]...
+  metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -179,7 +180,7 @@ async function main(args) {
             return 2;
         }
         const format = parsed.options.get("--format")?.[0] ?? "json";
-        if (!new Set(["json", "typescript"]).has(format)) {
+        if (!new Set(["json", "typescript", "path-tree", "path-tree-typescript"]).has(format)) {
             throw new Error(`Unsupported link format ${format}`);
         }
         const exportName = parsed.options.get("--export")?.[0];
@@ -195,9 +196,25 @@ async function main(args) {
             console.error(`REJECTED: static projection has ${result.issues.length} error(s)`);
             return 1;
         }
-        const serialized = format === "typescript"
-            ? emitTypeScriptProjection(result.projection, { exportName })
-            : stableJson(result.projection, true);
+        let serialized;
+        if (format === "path-tree" || format === "path-tree-typescript") {
+            const tree = compilePathTree(result.projection, spec);
+            printProjectionIssues(tree.issues);
+            if (tree.status === "rejected") {
+                console.error(`REJECTED: path tree has ${tree.issues.length} error(s)`);
+                return 1;
+            }
+            serialized =
+                format === "path-tree-typescript"
+                    ? emitTypeScriptPathTree(tree.pathTree, { exportName })
+                    : stableJson(tree.pathTree, true);
+        }
+        else {
+            serialized =
+                format === "typescript"
+                    ? emitTypeScriptProjection(result.projection, { exportName })
+                    : stableJson(result.projection, true);
+        }
         if (outputPath) {
             await writeFile(resolve(outputPath), serialized, "utf8");
             console.error(`Wrote static ${format} projection ${outputPath}`);

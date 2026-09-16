@@ -92,6 +92,20 @@ content digests. TypeScript projections contain a dependency-free `as const`
 lookup, a key-derived identity union, and a resolver that throws on unknown
 identities.
 
+When a projection specification includes `pathTree`, `metamap link --format
+path-tree` compiles those same entries into a nested object. Every node stores
+its path template in `_`. A `$` occupant is present only when a selected
+subject owns that exact path. `path-tree-typescript` also emits
+`hydrateRoutes({ eventId: "42" })`, which substitutes `:param` tokens without
+mutating the compiled tree. Catch-all `*param` values may include `/`; optional
+`*param?` tokens may be omitted. These are the portable forms already emitted
+by Next.js App Router discovery (`[id]`, `[...path]`, `[[...slug]]`).
+
+This is the original nested route-map DX, generated from graph facts rather
+than constructed at runtime from a JavaScript blueprint. Colliding paths,
+missing path attributes, and reserved `_`/`$` segments fail before any
+artifact is written. See [`examples/path-tree`](examples/path-tree).
+
 Target locators remain references. A consuming build integration can translate
 locators into native imports, dependency-injection tokens, RPC descriptors, or
 other runtime values. Those emitters belong at language or framework boundaries

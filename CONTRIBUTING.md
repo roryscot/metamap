@@ -15,6 +15,7 @@ npm run example:check
 npm run example:compile
 npm run example:research
 npm run example:routing
+npm run example:path-tree
 npm run example:topology
 ```
 

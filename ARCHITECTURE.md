@@ -27,7 +27,8 @@ viability policy + evaluation context -------+-> viability compiler
                                                   -> immutable generation
                                                   -> atomic activation
                                                   -> projection compiler
-                                                  -> static runtime structures
+                                                  -> static lookup tables
+                                                  -> nested path-tree projections
                                                   -> queries and reports
 ```
 

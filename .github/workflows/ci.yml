@@ -27,6 +27,7 @@ jobs:
       - run: npm run example:compile
       - run: npm run example:research
       - run: npm run example:routing
+      - run: npm run example:path-tree
       - name: Ensure example outputs are current
-        run: git diff --exit-code examples/workspace/generated examples/research/generated examples/routing/generated examples/example-generation.json
+        run: git diff --exit-code examples/workspace/generated examples/research/generated examples/routing/generated examples/path-tree/generated examples/example-generation.json
       - run: npm pack --dry-run

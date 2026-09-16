@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0
+
+- Compile nested path-tree projections from viable graph generations, restoring
+  the original `_` path-map DX as an immutable generated artifact.
+- Fail closed on missing path attributes, colliding paths, reserved `_`/`$`
+  segments, and undeclared path-tree specifications.
+- Add `metamap link --format path-tree` and `--format path-tree-typescript`
+  with a dependency-free hydrate helper for `:param`, `*param`, and optional
+  `*param?` templates. Catch-all values may contain `/`; singular params may
+  not.
+- Leave unrelated ancestor utilities (HTML escaping, HTTP status maps, React
+  keys, CSS helpers) out of the kernel.
+
 ## 0.5.0
 
 - Restore and formalize Metamap's original exhaustive application-routing

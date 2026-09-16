@@ -42,12 +42,22 @@ export interface ProjectionSlotSpec {
  * A portable request for a static view over one viable graph generation.
  * Selection fields intersect when both ids and kinds are supplied.
  */
+export type PathTreeDelimiter = "/" | "--" | ".";
+
+export interface PathTreeSpec {
+  /** Entity attribute that owns the path template. Defaults to `path`. */
+  attribute?: string;
+  delimiter?: PathTreeDelimiter;
+}
+
 export interface MetamapProjectionSpec {
   $schema?: string;
   schemaVersion: typeof METAMAP_PROJECTION_SPEC_VERSION;
   id: string;
   select: ProjectionSelection;
   slots: ProjectionSlotSpec[];
+  /** When present, the projection may also compile into a nested path tree. */
+  pathTree?: PathTreeSpec;
   metadata?: JsonObject;
 }
 
@@ -200,6 +210,15 @@ export function validateProjectionSpec(value: unknown): {
         ),
       );
     }
+  }
+  if (spec.pathTree?.delimiter?.includes(":")) {
+    issues.push(
+      issue(
+        "INVALID_PATH_TREE_DELIMITER",
+        "Path-tree delimiter cannot contain ':' because that marks path parameters",
+        { path: "$.pathTree.delimiter" },
+      ),
+    );
   }
   return { valid: issues.length === 0, issues };
 }
@@ -572,7 +591,22 @@ export function compileProjection(
   };
 }
 
-function validateExportName(value: string): void {
+export function collapseProjectedSlots(
+  entry: ProjectedEntry,
+): Record<string, ProjectedEntity | ProjectedEntity[] | null> {
+  return Object.fromEntries(
+    entry.slots.map((slot) => [
+      slot.name,
+      slot.cardinality === "exactly-one"
+        ? slot.targets[0]
+        : slot.cardinality === "zero-or-one"
+          ? (slot.targets[0] ?? null)
+          : slot.targets,
+    ]),
+  );
+}
+
+export function validateExportName(value: string): void {
   const reserved = new Set([
     "await",
     "break",
@@ -638,16 +672,7 @@ export function emitTypeScriptProjection(
       entry.subject.id,
       {
         subject: entry.subject,
-        slots: Object.fromEntries(
-          entry.slots.map((slot) => [
-            slot.name,
-            slot.cardinality === "exactly-one"
-              ? slot.targets[0]
-              : slot.cardinality === "zero-or-one"
-                ? (slot.targets[0] ?? null)
-                : slot.targets,
-          ]),
-        ),
+        slots: collapseProjectedSlots(entry),
       },
     ]),
   );

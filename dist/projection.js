@@ -50,6 +50,9 @@ export function validateProjectionSpec(value) {
             }));
         }
     }
+    if (spec.pathTree?.delimiter?.includes(":")) {
+        issues.push(issue("INVALID_PATH_TREE_DELIMITER", "Path-tree delimiter cannot contain ':' because that marks path parameters", { path: "$.pathTree.delimiter" }));
+    }
     return { valid: issues.length === 0, issues };
 }
 export function parseProjectionSpec(value) {
@@ -300,7 +303,17 @@ export function compileProjection(document, generation, spec, options = {}) {
         }),
     };
 }
-function validateExportName(value) {
+export function collapseProjectedSlots(entry) {
+    return Object.fromEntries(entry.slots.map((slot) => [
+        slot.name,
+        slot.cardinality === "exactly-one"
+            ? slot.targets[0]
+            : slot.cardinality === "zero-or-one"
+                ? (slot.targets[0] ?? null)
+                : slot.targets,
+    ]));
+}
+export function validateExportName(value) {
     const reserved = new Set([
         "await",
         "break",
@@ -361,14 +374,7 @@ export function emitTypeScriptProjection(projection, options = {}) {
         entry.subject.id,
         {
             subject: entry.subject,
-            slots: Object.fromEntries(entry.slots.map((slot) => [
-                slot.name,
-                slot.cardinality === "exactly-one"
-                    ? slot.targets[0]
-                    : slot.cardinality === "zero-or-one"
-                        ? (slot.targets[0] ?? null)
-                        : slot.targets,
-            ])),
+            slots: collapseProjectedSlots(entry),
         },
     ]));
     const typeName = `${exportName[0].toUpperCase()}${exportName.slice(1)}Id`;

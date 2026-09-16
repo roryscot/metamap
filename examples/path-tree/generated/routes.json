@@ -1,0 +1,173 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-path-tree.schema.json",
+  "attribute": "path",
+  "delimiter": "/",
+  "digest": "sha256:f8386845516d8ebfd56b44fa539826229af5b911fc315eb7d39a73dde7d395e2",
+  "id": "urn:metamap:path-tree:f8386845516d8ebfd56b44fa539826229af5b911fc315eb7d39a73dde7d395e2",
+  "params": ["*path", "*slug?", ":eventId", ":groupId", ":role"],
+  "projection": {
+    "digest": "sha256:a8d7c7fd9a518f36e7e84364be5dc56889ea22099748c1232a0b7778d2361858",
+    "id": "urn:metamap:projection:a8d7c7fd9a518f36e7e84364be5dc56889ea22099748c1232a0b7778d2361858"
+  },
+  "schemaVersion": "1.0.0",
+  "spec": {
+    "digest": "sha256:05f0269b6eb1a6d3ced0906620f2cb609f5da4f8ae795258c365aa34f110b984",
+    "id": "urn:example:projection:path-tree"
+  },
+  "tree": {
+    "_": "/",
+    "admin": {
+      "_": "/admin",
+      ":role": {
+        "_": "/admin/:role",
+        "$": {
+          "id": "urn:example:route:admin-role",
+          "kind": "routing:route",
+          "label": "Admin role",
+          "slots": {
+            "handler": null
+          }
+        },
+        "group": {
+          "_": "/admin/:role/group",
+          ":groupId": {
+            "_": "/admin/:role/group/:groupId",
+            "$": {
+              "id": "urn:example:route:admin-group",
+              "kind": "routing:route",
+              "label": "Admin group",
+              "slots": {
+                "handler": null
+              }
+            }
+          }
+        }
+      },
+      "$": {
+        "id": "urn:example:route:admin",
+        "kind": "routing:route",
+        "label": "Admin",
+        "slots": {
+          "handler": null
+        }
+      }
+    },
+    "auth": {
+      "_": "/auth",
+      "$": {
+        "id": "urn:example:route:auth",
+        "kind": "routing:route",
+        "label": "Auth",
+        "slots": {
+          "handler": null
+        }
+      },
+      "sign_in": {
+        "_": "/auth/sign_in",
+        "$": {
+          "id": "urn:example:route:auth-sign-in",
+          "kind": "routing:route",
+          "label": "Sign in",
+          "slots": {
+            "handler": {
+              "id": "urn:example:handler:sign-in",
+              "kind": "routing:handler",
+              "label": "Sign in handler",
+              "locators": [
+                {
+                  "uri": "typescript:src/auth/sign-in.ts#handleSignIn"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "sign_up": {
+        "_": "/auth/sign_up",
+        "$": {
+          "id": "urn:example:route:auth-sign-up",
+          "kind": "routing:route",
+          "label": "Sign up",
+          "slots": {
+            "handler": null
+          }
+        }
+      }
+    },
+    "dev": {
+      "_": "/dev",
+      "$": {
+        "id": "urn:example:route:dev",
+        "kind": "routing:route",
+        "label": "Dev",
+        "slots": {
+          "handler": null
+        }
+      }
+    },
+    "docs": {
+      "_": "/docs",
+      "*slug?": {
+        "_": "/docs/*slug?",
+        "$": {
+          "id": "urn:example:route:docs",
+          "kind": "routing:route",
+          "label": "Docs",
+          "slots": {
+            "handler": null
+          }
+        }
+      }
+    },
+    "event": {
+      "_": "/event",
+      ":eventId": {
+        "_": "/event/:eventId",
+        "$": {
+          "id": "urn:example:route:event",
+          "kind": "routing:route",
+          "label": "Event",
+          "slots": {
+            "handler": null
+          }
+        },
+        "cast": {
+          "_": "/event/:eventId/cast",
+          "$": {
+            "id": "urn:example:route:event-cast",
+            "kind": "routing:route",
+            "label": "Event cast",
+            "slots": {
+              "handler": null
+            }
+          }
+        },
+        "story": {
+          "_": "/event/:eventId/story",
+          "$": {
+            "id": "urn:example:route:event-story",
+            "kind": "routing:route",
+            "label": "Event story",
+            "slots": {
+              "handler": null
+            }
+          }
+        }
+      }
+    },
+    "files": {
+      "_": "/files",
+      "*path": {
+        "_": "/files/*path",
+        "$": {
+          "id": "urn:example:route:files",
+          "kind": "routing:route",
+          "label": "Files",
+          "slots": {
+            "handler": null
+          }
+        }
+      }
+    }
+  }
+}

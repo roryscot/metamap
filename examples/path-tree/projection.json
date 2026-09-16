@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/metamap-projection-spec.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:projection:path-tree",
+  "select": {
+    "kinds": ["routing:route"]
+  },
+  "pathTree": {
+    "attribute": "path",
+    "delimiter": "/"
+  },
+  "slots": [
+    {
+      "name": "handler",
+      "relation": "routing:handled_by",
+      "direction": "outgoing",
+      "cardinality": "zero-or-one",
+      "targetKinds": ["routing:handler"]
+    }
+  ]
+}

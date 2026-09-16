@@ -1,0 +1,117 @@
+{
+  "$schema": "../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:example:path-tree:graph",
+  "namespace": "path-tree-example",
+  "label": "Nested path-tree example",
+  "revision": "1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:routing",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:example:route:dev",
+      "kind": "routing:route",
+      "label": "Dev",
+      "attributes": { "path": "/dev" }
+    },
+    {
+      "id": "urn:example:route:auth",
+      "kind": "routing:route",
+      "label": "Auth",
+      "attributes": { "path": "/auth" }
+    },
+    {
+      "id": "urn:example:route:auth-sign-in",
+      "kind": "routing:route",
+      "label": "Sign in",
+      "attributes": { "path": "/auth/sign_in" }
+    },
+    {
+      "id": "urn:example:route:auth-sign-up",
+      "kind": "routing:route",
+      "label": "Sign up",
+      "attributes": { "path": "/auth/sign_up" }
+    },
+    {
+      "id": "urn:example:route:admin",
+      "kind": "routing:route",
+      "label": "Admin",
+      "attributes": { "path": "/admin" }
+    },
+    {
+      "id": "urn:example:route:admin-role",
+      "kind": "routing:route",
+      "label": "Admin role",
+      "attributes": { "path": "/admin/:role" }
+    },
+    {
+      "id": "urn:example:route:admin-group",
+      "kind": "routing:route",
+      "label": "Admin group",
+      "attributes": { "path": "/admin/:role/group/:groupId" }
+    },
+    {
+      "id": "urn:example:route:event",
+      "kind": "routing:route",
+      "label": "Event",
+      "attributes": { "path": "/event/:eventId" }
+    },
+    {
+      "id": "urn:example:route:event-cast",
+      "kind": "routing:route",
+      "label": "Event cast",
+      "attributes": { "path": "/event/:eventId/cast" }
+    },
+    {
+      "id": "urn:example:route:event-story",
+      "kind": "routing:route",
+      "label": "Event story",
+      "attributes": { "path": "/event/:eventId/story" }
+    },
+    {
+      "id": "urn:example:route:files",
+      "kind": "routing:route",
+      "label": "Files",
+      "attributes": { "path": "/files/*path" }
+    },
+    {
+      "id": "urn:example:route:docs",
+      "kind": "routing:route",
+      "label": "Docs",
+      "attributes": { "path": "/docs/*slug?" }
+    },
+    {
+      "id": "urn:example:handler:sign-in",
+      "kind": "routing:handler",
+      "label": "Sign in handler",
+      "locators": [
+        {
+          "uri": "typescript:src/auth/sign-in.ts#handleSignIn"
+        }
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:example:mapping:sign-in-handler",
+      "relation": "routing:handled_by",
+      "sources": ["urn:example:route:auth-sign-in"],
+      "targets": ["urn:example:handler:sign-in"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:identity"
+      }
+    }
+  ],
+  "authorities": []
+}

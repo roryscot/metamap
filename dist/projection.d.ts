@@ -22,12 +22,20 @@ export interface ProjectionSlotSpec {
  * A portable request for a static view over one viable graph generation.
  * Selection fields intersect when both ids and kinds are supplied.
  */
+export type PathTreeDelimiter = "/" | "--" | ".";
+export interface PathTreeSpec {
+    /** Entity attribute that owns the path template. Defaults to `path`. */
+    attribute?: string;
+    delimiter?: PathTreeDelimiter;
+}
 export interface MetamapProjectionSpec {
     $schema?: string;
     schemaVersion: typeof METAMAP_PROJECTION_SPEC_VERSION;
     id: string;
     select: ProjectionSelection;
     slots: ProjectionSlotSpec[];
+    /** When present, the projection may also compile into a nested path tree. */
+    pathTree?: PathTreeSpec;
     metadata?: JsonObject;
 }
 export interface ProjectedEntity {
@@ -108,6 +116,8 @@ export declare function parseProjection(value: unknown): MetamapProjection;
  * slots, kind mismatches, and undeclared relations fail closed.
  */
 export declare function compileProjection(document: MetamapDocument, generation: ViableGeneration, spec: MetamapProjectionSpec, options?: ProjectionCompileOptions): ProjectionCompilationResult;
+export declare function collapseProjectedSlots(entry: ProjectedEntry): Record<string, ProjectedEntity | ProjectedEntity[] | null>;
+export declare function validateExportName(value: string): void;
 /** Emit a dependency-free, immutable TypeScript lookup table. */
 export declare function emitTypeScriptProjection(projection: MetamapProjection, options?: TypeScriptProjectionOptions): string;
 //# sourceMappingURL=projection.d.ts.map

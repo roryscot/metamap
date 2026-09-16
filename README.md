@@ -37,7 +37,8 @@ The practical runtime rule is:
 - Fail-closed compilation into immutable viable generations with causal impact
   paths and atomic last-known-good activation.
 - Cardinality-checked static projections that turn active semantic mappings
-  into content-addressed JSON manifests or typed TypeScript lookup tables.
+  into content-addressed JSON manifests, typed TypeScript lookup tables, or
+  nested path trees with `_` templates and generated `:param` hydration.
 - A routing relation pack for commands, events, routes, handlers, schemas,
   authorization policies, endpoints, and workflow transitions.
 - An application-topology pack and fail-closed constraints for exhaustive
@@ -68,6 +69,7 @@ npm run example:check
 npm run example:compile
 npm run example:research
 npm run example:routing
+npm run example:path-tree
 npm run example:topology
 ```
 
@@ -106,7 +108,7 @@ metamap validate <graph.json> [--relation-pack pack.json]...
 metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
 metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
 metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
-metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript] [--export name] [--relation-pack pack.json]...
+metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
 metamap generate <metamap.config.json> [--no-cache]
 metamap check <metamap.config.json> [--no-cache]
 metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -123,8 +125,11 @@ import {
   MetamapGraph,
   compileMetamap,
   compileProjection,
+  compilePathTree,
   composeMetamapDocuments,
   emitTypeScriptProjection,
+  emitTypeScriptPathTree,
+  hydratePathTree,
   validateMetamapDocument,
 } from "@roryscot/metamap";
 
@@ -158,6 +163,13 @@ if (compiled.status === "viable") {
     const source = emitTypeScriptProjection(linked.projection, {
       exportName: "commandRoutes",
     });
+    const tree = compilePathTree(linked.projection, projectionSpec);
+    if (tree.status === "projected") {
+      const nested = emitTypeScriptPathTree(tree.pathTree, {
+        exportName: "routes",
+      });
+      const bound = hydratePathTree(tree.pathTree.tree, { eventId: "42" });
+    }
   }
 }
 ```
@@ -186,7 +198,8 @@ metamap link graph.json generation.json projection.json command-router.ts \
 The generated object keys become a TypeScript identity union, so consumers do
 not maintain a second enum. The runtime performs a constant-time lookup and
 never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
-[`examples/routing`](examples/routing) project.
+[`examples/routing`](examples/routing) project. Nested URL maps from the same
+generation are in [`examples/path-tree`](examples/path-tree).
 
 For exhaustive application routing, the application-topology pack maps the
 semantic route onto its framework implementation, nearest container, content,

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schemas/metamap-viability.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:example:path-tree:viability",
+  "graph": {
+    "id": "urn:example:path-tree:graph",
+    "revision": "1"
+  },
+  "mappings": [
+    {
+      "mapping": "urn:example:mapping:sign-in-handler",
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "irreversible"
+    }
+  ],
+  "constraints": [],
+  "evidence": []
+}

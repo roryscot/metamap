@@ -58,6 +58,18 @@ describe("portable JSON contracts", () => {
         document: "../../examples/routing/projection.json",
       },
       {
+        schema: "../../schemas/metamap-projection-spec.schema.json",
+        document: "../../examples/path-tree/projection.json",
+      },
+      {
+        schema: "../../schemas/metamap-graph.schema.json",
+        document: "../../examples/path-tree/graph.json",
+      },
+      {
+        schema: "../../schemas/metamap-viability.schema.json",
+        document: "../../examples/path-tree/viability-policy.json",
+      },
+      {
         schema: "../../schemas/metamap-generation.schema.json",
         document: "../../examples/routing/generated/generation.json",
       },
@@ -110,6 +122,14 @@ describe("portable JSON contracts", () => {
         schema: "../../schemas/metamap-projection.schema.json",
         document:
           "../../examples/application-topology/generated/application-topology.json",
+      },
+      {
+        schema: "../../schemas/metamap-generation.schema.json",
+        document: "../../examples/path-tree/generated/generation.json",
+      },
+      {
+        schema: "../../schemas/metamap-path-tree.schema.json",
+        document: "../../examples/path-tree/generated/routes.json",
       },
     ];
 
