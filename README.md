@@ -272,3 +272,13 @@ facts needed for validation. It deliberately does not:
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the model and scale strategy and
 [CONTRIBUTING.md](CONTRIBUTING.md) for development instructions. Release notes
 are in [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+Copyright 2026 Rory Dahl. Licensed under the Apache License, Version 2.0. See
+[LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+This covers the schemas, relation packs, reference compiler, CLI, and built-in
+adapters. A consuming repository's graph, correspondences, authority decisions,
+viability policies, and generated projections remain that repository's unless
+they are published as examples in this project.

@@ -20,7 +20,8 @@ npm run example:topology
 ```
 
 Before opening a pull request, also run `npm pack --dry-run` and verify that
-only the intended public files are included.
+only the intended public files are included. Intentional contributions to this
+repository are licensed under Apache-2.0.
 
 ## Contract changes
 

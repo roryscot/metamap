@@ -2,6 +2,8 @@
 
 ## 0.6.0
 
+- License the kernel, schemas, relation packs, CLI, and built-in adapters under
+  Apache-2.0. Consuming graphs and policies remain owned by their repositories.
 - Compile nested path-tree projections from viable graph generations, restoring
   the original `_` path-map DX as an immutable generated artifact.
 - Fail closed on missing path attributes, colliding paths, reserved `_`/`$`

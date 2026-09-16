@@ -1,0 +1,11 @@
+Metamap
+Copyright 2026 Rory Dahl
+
+This product includes software developed by Rory Dahl.
+The schemas, relation packs, reference compiler, CLI, and built-in adapters
+in this repository are licensed under the Apache License, Version 2.0.
+
+Consuming repositories remain responsible for their own graph documents,
+correspondences, authority decisions, viability policies, and generated
+projections. Those artifacts are not licensed by this NOTICE unless they
+are published as part of this repository's examples.

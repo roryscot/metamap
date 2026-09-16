@@ -1,6 +1,7 @@
 {
   "name": "@roryscot/metamap",
   "version": "0.6.0",
+  "license": "Apache-2.0",
   "description": "Language-neutral semantic linker, authority graph, and static projection compiler",
   "type": "module",
   "main": "dist/index.js",
@@ -13,6 +14,8 @@
     "schemas",
     "relation-packs",
     "examples",
+    "LICENSE",
+    "NOTICE",
     "README.md",
     "ARCHITECTURE.md",
     "APPLICATION_TOPOLOGY.md",
