@@ -1,6 +1,6 @@
 {
   "name": "@roryscot/metamap",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "Apache-2.0",
   "description": "Language-neutral semantic linker, authority graph, and static projection compiler",
   "type": "module",
@@ -18,6 +18,9 @@
     "NOTICE",
     "README.md",
     "VISION.md",
+    "BUILD_PLAN.md",
+    "REPLAY.md",
+    "COUNTERFACTUAL.md",
     "ARCHITECTURE.md",
     "APPLICATION_TOPOLOGY.md",
     "ROUTING.md",
@@ -29,6 +32,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
+    "example:replay": "npm run build && node examples/replay/run.mjs",
     "validate:example": "npm run build && node dist/cli.js validate examples/example-authority-graph.json",
     "example:generate": "npm run build && node dist/cli.js generate examples/workspace/metamap.config.json --no-cache",
     "example:check": "npm run build && node dist/cli.js check examples/workspace/metamap.config.json --no-cache",
@@ -106,6 +110,14 @@
       "import": "./dist/path-tree.js",
       "types": "./dist/path-tree.d.ts"
     },
+    "./replay": {
+      "import": "./dist/replay.js",
+      "types": "./dist/replay.d.ts"
+    },
+    "./counterfactual": {
+      "import": "./dist/counterfactual.js",
+      "types": "./dist/counterfactual.d.ts"
+    },
     "./schemas/metamap-graph.schema.json": "./schemas/metamap-graph.schema.json",
     "./schemas/metamap-config.schema.json": "./schemas/metamap-config.schema.json",
     "./schemas/relation-pack.schema.json": "./schemas/relation-pack.schema.json",
@@ -114,6 +126,8 @@
     "./schemas/metamap-projection-spec.schema.json": "./schemas/metamap-projection-spec.schema.json",
     "./schemas/metamap-projection.schema.json": "./schemas/metamap-projection.schema.json",
     "./schemas/metamap-path-tree.schema.json": "./schemas/metamap-path-tree.schema.json",
+    "./schemas/metamap-replay.schema.json": "./schemas/metamap-replay.schema.json",
+    "./schemas/metamap-counterfactual.schema.json": "./schemas/metamap-counterfactual.schema.json",
     "./relation-packs/core.json": "./relation-packs/core.json",
     "./relation-packs/research.json": "./relation-packs/research.json",
     "./relation-packs/routing.json": "./relation-packs/routing.json",

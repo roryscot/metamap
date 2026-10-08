@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.7.0
+
+- Add a versioned compiler replay sidecar, capture/replay API, and CLI commands.
+- Bind replay to exact compiler/schema and transitive dependency contents,
+  source/distribution format, Node/ICU versions, and collation locale.
+- Preserve exact graph, policy, relation-pack contents, context, evaluation
+  time, changed subjects, and projection specifications.
+- Reproduce rejected compilation and projections without upgrading them to
+  admission; CLI replay exits nonzero for reproduced rejection.
+- Reject corrupted bundles, forged results, missing or substituted packs, and
+  incompatible executors. Version 1 supports built-in constraint evaluators.
+- Preserve existing graph, viability, generation, projection, and path-tree
+  contracts and identifiers.
+- Add a gated build plan and a disposable CLI round-trip example.
+- Add read-only comparison of two reproduced evaluations, with introduced and
+  resolved issues, evidence and mapping-state changes, runtime slot changes,
+  and declared dependency paths in both graphs.
+- Preserve unknown mapping state after rejection and distinguish failed
+  projections from hypothetical runtime entry removals.
+- Add a fixed acceptance corpus and an opt-in counterfactual report schema.
+- Record a pinned Seeder pilot against direct checks: equal observed correctness,
+  one shared producer-localization miss, and no satisfied expansion gate.
+
 ## 0.6.0
 
 - Explain the kernel as a versioned persistent hypergraph of correspondences

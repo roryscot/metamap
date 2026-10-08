@@ -121,6 +121,10 @@ static runtime views.
 - Executable constraints, first-class evidence, and exact expiring waivers.
 - Fail-closed compilation into immutable viable generations with causal impact
   paths and atomic last-known-good activation.
+- Exact compiler replay bundles that preserve inputs, executor identity, and
+  successful or rejected results without granting approval or activation.
+- Read-only counterfactual reports for explicit before/after evaluations,
+  including evidence, admission, dependency paths, and runtime-slot changes.
 - Cardinality-checked static projections that turn active semantic mappings
   into content-addressed JSON manifests, typed TypeScript lookup tables, or
   nested path trees with `_` templates and generated `:param` hydration.
@@ -156,6 +160,7 @@ npm run example:research
 npm run example:routing
 npm run example:path-tree
 npm run example:topology
+npm run example:replay
 ```
 
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
@@ -199,6 +204,9 @@ metamap check <metamap.config.json> [--no-cache]
 metamap diff <before.json> <after.json> [--relation-pack pack.json]...
 metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [depth] [relation] [--relation-pack pack.json]...
 metamap authority <graph.json> <concept-id> <fact> [--relation-pack pack.json]...
+metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
+metamap replay <bundle.json>
+metamap compare <before.replay.json> <after.replay.json> [report.json]
 metamap migrate-sources <sources-of-truth.json> [output.json]
 ```
 
@@ -342,6 +350,11 @@ The graph describes stable relationships. A separate viability policy declares
 which mappings may be expressed in a context and the guarantees, evidence, and
 constraints required before activation. See [VIABILITY.md](VIABILITY.md) for
 the complete fail-fast model and portable contracts.
+
+Use [REPLAY.md](REPLAY.md) to capture and reproduce an exact compiler evaluation.
+Use [COUNTERFACTUAL.md](COUNTERFACTUAL.md) to compare two reproduced candidates.
+The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
+vision.
 
 ## Design boundaries
 

@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-counterfactual.schema.json",
+  "title": "Metamap counterfactual comparison report",
+  "description": "Read-only comparison of two reproduced compiler evaluations. Effects follow declared dependencies; they do not establish truth, approval, activation, or optimal repair.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "before",
+    "after",
+    "inputChanges",
+    "graph",
+    "issues",
+    "mappingStates",
+    "evidence",
+    "projections",
+    "impact"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "before": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bundle", "digest", "admitted"],
+      "properties": {
+        "bundle": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "admitted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "after": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bundle", "digest", "admitted"],
+      "properties": {
+        "bundle": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "admitted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "inputChanges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["input", "beforeDigest", "afterDigest"],
+        "properties": {
+          "input": {
+            "enum": [
+              "graph",
+              "policy",
+              "relationPacks",
+              "context",
+              "evaluatedAt",
+              "changedSubjects",
+              "projections"
+            ]
+          },
+          "beforeDigest": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "afterDigest": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changes", "counts"],
+      "properties": {
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["change", "kind", "id"],
+            "properties": {
+              "change": {
+                "enum": ["added", "removed", "changed"]
+              },
+              "kind": {
+                "enum": ["entity", "mapping", "authority"]
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+              },
+              "changedProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["added", "removed", "changed"],
+          "properties": {
+            "added": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "removed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "changed": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["introduced", "resolved"],
+      "properties": {
+        "introduced": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        },
+        "resolved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        }
+      }
+    },
+    "mappingStates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beforeKnown", "afterKnown", "activated", "deactivated"],
+      "properties": {
+        "beforeKnown": {
+          "type": "boolean"
+        },
+        "afterKnown": {
+          "type": "boolean"
+        },
+        "activated": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "deactivated": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "added",
+        "removed",
+        "changed",
+        "recordedSupportLost",
+        "recordedSupportGained"
+      ],
+      "properties": {
+        "added": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "removed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "changed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "recordedSupportLost": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "recordedSupportGained": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        }
+      }
+    },
+    "projections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "specId",
+          "before",
+          "after",
+          "bindingsChanged",
+          "entries",
+          "pathTreeChanged"
+        ],
+        "properties": {
+          "specId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          },
+          "before": {
+            "enum": [
+              "projected",
+              "rejected",
+              "generation-rejected",
+              "not-requested"
+            ]
+          },
+          "after": {
+            "enum": [
+              "projected",
+              "rejected",
+              "generation-rejected",
+              "not-requested"
+            ]
+          },
+          "bindingsChanged": {
+            "type": "boolean"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/entry"
+            }
+          },
+          "pathTreeChanged": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interpretation", "before", "after"],
+      "properties": {
+        "interpretation": {
+          "const": "declared-dependency-propagation"
+        },
+        "before": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay.schema.json#/$defs/impact"
+        },
+        "after": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay.schema.json#/$defs/impact"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "issue"],
+      "properties": {
+        "stage": {
+          "enum": ["compilation", "projection", "path-tree"]
+        },
+        "specId": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "issue": {
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay.schema.json#/$defs/issue"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay.schema.json#/$defs/projectionIssue"
+            }
+          ]
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subjectId", "change", "subjectChanged", "slots"],
+      "properties": {
+        "subjectId": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "change": {
+          "enum": ["added", "removed", "changed"]
+        },
+        "subjectChanged": {
+          "type": "boolean"
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "before": {
+                "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection/v1.schema.json#/$defs/slot"
+              },
+              "after": {
+                "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection/v1.schema.json#/$defs/slot"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

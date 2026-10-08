@@ -17,6 +17,7 @@ npm run example:research
 npm run example:routing
 npm run example:path-tree
 npm run example:topology
+npm run example:replay
 ```
 
 Before opening a pull request, also run `npm pack --dry-run` and verify that

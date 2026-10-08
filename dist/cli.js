@@ -11,6 +11,8 @@ import { loadRelationPack } from "./relation-pack.js";
 import { RelationRegistry } from "./relations.js";
 import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
+import { captureReplayBundle, replayMetamap } from "./replay.js";
+import { compareMetamapBundles } from "./counterfactual.js";
 import { validateMetamapDocument } from "./validator.js";
 import { compileMetamap, parseViabilityPolicy, parseViableGeneration, } from "./viability.js";
 import { compilePathTree, emitTypeScriptPathTree } from "./path-tree.js";
@@ -23,6 +25,9 @@ function usage() {
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
   metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
+  metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
+  metamap replay <bundle.json>
+  metamap compare <before.replay.json> <after.replay.json> [report.json]
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -91,6 +96,81 @@ function printProjectionIssues(issues) {
 }
 async function main(args) {
     const [command, ...rest] = args;
+    if (command === "compare") {
+        const parsed = parseArguments(rest, new Set());
+        const [beforePath, afterPath, outputPath] = parsed.positionals;
+        if (!beforePath || !afterPath || parsed.positionals.length > 3) {
+            console.error(usage());
+            return 2;
+        }
+        const result = compareMetamapBundles(await readJson(beforePath), await readJson(afterPath));
+        const serialized = stableJson(result, true);
+        if (outputPath)
+            await writeFile(resolve(outputPath), serialized, {
+                encoding: "utf8",
+                flag: "wx",
+            });
+        else
+            process.stdout.write(serialized);
+        return result.status === "compared" && result.report.after.admitted ? 0 : 1;
+    }
+    if (command === "capture") {
+        const parsed = parseArguments(rest, new Set([
+            "--as-of",
+            "--context",
+            "--changed",
+            "--projection",
+            "--relation-pack",
+        ]));
+        const [graphPath, policyPath, outputPath] = parsed.positionals;
+        const evaluatedAt = parsed.options.get("--as-of")?.[0];
+        if (!graphPath ||
+            !policyPath ||
+            !evaluatedAt ||
+            parsed.positionals.length > 3 ||
+            (parsed.options.get("--as-of")?.length ?? 0) !== 1 ||
+            (parsed.options.get("--context")?.length ?? 0) > 1) {
+            console.error(usage());
+            return 2;
+        }
+        const relationRegistry = await relationRegistryFrom(parsed);
+        const contextPath = parsed.options.get("--context")?.[0];
+        const bundle = captureReplayBundle((await readJson(graphPath)), (await readJson(policyPath)), {
+            evaluatedAt,
+            relationRegistry,
+            context: contextPath
+                ? parseEvaluationContext(await readJson(contextPath))
+                : {},
+            changedSubjects: parsed.options.get("--changed") ?? [],
+            projections: await Promise.all((parsed.options.get("--projection") ?? []).map(async (path) => parseProjectionSpec(await readJson(path)))),
+        });
+        const serialized = stableJson(bundle, true);
+        if (outputPath) {
+            await writeFile(resolve(outputPath), serialized, {
+                encoding: "utf8",
+                flag: "wx",
+            });
+            console.error(`Captured compiler evaluation ${outputPath}`);
+        }
+        else
+            process.stdout.write(serialized);
+        const result = bundle.expected;
+        return result.compilation.status === "viable" &&
+            result.projections.every((entry) => entry.result.status === "projected" &&
+                (!entry.pathTree || entry.pathTree.status === "projected"))
+            ? 0
+            : 1;
+    }
+    if (command === "replay") {
+        const parsed = parseArguments(rest, new Set());
+        if (parsed.positionals.length !== 1) {
+            console.error(usage());
+            return 2;
+        }
+        const result = replayMetamap(await readJson(parsed.positionals[0]));
+        process.stdout.write(stableJson(result, true));
+        return result.status === "verified" && result.admitted ? 0 : 1;
+    }
     if (command === "validate") {
         const parsed = parseArguments(rest, new Set(["--relation-pack"]));
         const [path] = parsed.positionals;
