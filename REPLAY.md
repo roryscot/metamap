@@ -85,11 +85,41 @@ Capture clones its inputs and returns a frozen bundle. It preserves existing
 generation semantics and identifiers. Replay evaluates a private clone and
 performs no source, evidence, output, or activation writes.
 
+## Semantic profile 2.0
+
+Policy 2.0 selects a replay 2.0 bundle. The same `captureReplayBundle` and
+`replayMetamap` APIs and CLI commands dispatch explicitly on the version. Each
+requested projection must also use spec 2.0 and name its consumer and budget
+decision. The bundle binds the complete semantic policy, full pack values,
+checked proofs and dependencies, original context/time, consumer specs and
+generation/projection/path-tree 2.0 outputs. Removing a proof or changing an
+expected output rejects replay even after the outer bundle is rehashed.
+
+Use `parseSemanticReplayBundle` or `parseSemanticReplayJson` for the new contract.
+The JSON reader and CLI reject duplicate decoded keys. New sidecars use
+JCS/SHA-256 and cover `$schema` when present; graph 2.0 references retain their
+legacy digest rule. `sourceSnapshot: null` and `sourceReceipts: []` explicitly
+record absent captured source lineage. Non-null lineage currently rejects with
+`REPLAY_SOURCE_CAPTURE_NOT_IMPLEMENTED`; source receipts and inspection are P08.
+No raw source fetch or rediscovery is implied by reproducing the captured graph.
+
+Typed assessments, requirements and budgets have explicit reserved inputs. A
+requested unsupported evaluator remains a reproduced compilation/projection
+rejection, not an omitted input or a zero-cost result. Their execution is M3.
+Both replay profiles require the exact installed built-in executor, preserve
+rejected evaluations and perform no activation.
+
+Run `npm run example:relations` for checked derivations through a generated
+native consumer, nested tree, exact replay and a removed-premise comparison.
+
 ## Compatibility
 
-The replay sidecar schema is version 1.0.0. Package 0.7.0 adds it without changing
+The legacy replay sidecar schema is version 1.0.0. Package 0.7.0 added it without changing
 graph 2.0.0, viability 1.0.0, generation 1.0.0, projection 1.0.0, or path-tree
-1.0.0 contracts. Existing callers do not need replay bundles. Schema references
+1.0.0 contracts. The opt-in 2.0 schema has a separate identity and does not
+rewrite those legacy schemas or digests. An old capture still requires its exact
+old executor; the current compiler cannot silently substitute for it.
+Existing callers do not need replay bundles. Schema references
 are registered locally; validation performs no implicit network fetch.
 
 Run `npm run example:replay` for a CLI round trip, tampering failure, reproduced

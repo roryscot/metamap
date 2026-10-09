@@ -18,6 +18,16 @@ import {
 import { RelationRegistry, coreRelationPack } from "./relations.js";
 import { contentDigest, valueDigest, valuesEqual } from "./stable.js";
 import { compileMetamap } from "./viability.js";
+import {
+  captureSemanticReplayBundle,
+  replaySemanticMetamap,
+} from "./semantic-replay.js";
+import type { MetamapSemanticPolicy } from "./semantic-model.js";
+import type {
+  CaptureSemanticReplayOptions,
+  SemanticReplayBundle,
+  SemanticReplayResult,
+} from "./semantic-replay-model.js";
 import type {
   CompilationResult,
   EvaluationContext,
@@ -368,6 +378,40 @@ export function parseReplayBundle(value: unknown): MetamapReplayBundle {
 /** Capture compiler evaluation only. Sources, evidence producers, and activation stay outside this operation. */
 export function captureReplayBundle(
   graph: MetamapDocument,
+  policy: MetamapSemanticPolicy,
+  options: CaptureSemanticReplayOptions,
+): SemanticReplayBundle;
+export function captureReplayBundle(
+  graph: MetamapDocument,
+  policy: MetamapViabilityPolicy,
+  options: CaptureReplayOptions,
+): MetamapReplayBundle;
+export function captureReplayBundle(
+  graph: MetamapDocument,
+  policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
+  options: CaptureReplayOptions | CaptureSemanticReplayOptions,
+): MetamapReplayBundle | SemanticReplayBundle;
+export function captureReplayBundle(
+  graph: MetamapDocument,
+  policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
+  options: CaptureReplayOptions | CaptureSemanticReplayOptions,
+): MetamapReplayBundle | SemanticReplayBundle {
+  if (policy.schemaVersion === "2.0.0")
+    return captureSemanticReplayBundle(
+      graph,
+      policy,
+      options as CaptureSemanticReplayOptions,
+      replayCompilerIdentity,
+    );
+  return captureLegacyReplayBundle(
+    graph,
+    policy,
+    options as CaptureReplayOptions,
+  );
+}
+
+function captureLegacyReplayBundle(
+  graph: MetamapDocument,
   policy: MetamapViabilityPolicy,
   options: CaptureReplayOptions,
 ): MetamapReplayBundle {
@@ -411,7 +455,26 @@ export function captureReplayBundle(
 }
 
 /** Recompute with an exact installed executor. A verified rejection is still not admitted. */
-export function replayMetamap(value: unknown): ReplayResult {
+export function replayMetamap(
+  value: SemanticReplayBundle,
+): SemanticReplayResult;
+export function replayMetamap(value: MetamapReplayBundle): ReplayResult;
+export function replayMetamap(
+  value: unknown,
+): ReplayResult | SemanticReplayResult;
+export function replayMetamap(
+  value: unknown,
+): ReplayResult | SemanticReplayResult {
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "2.0.0"
+  )
+    return replaySemanticMetamap(value, replayCompilerIdentity);
+  return replayLegacyMetamap(value);
+}
+
+function replayLegacyMetamap(value: unknown): ReplayResult {
   const validation = validateReplayBundle(value);
   if (!validation.valid)
     return { status: "rejected", issues: validation.issues };

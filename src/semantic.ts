@@ -9,6 +9,7 @@ import {
 } from "./canonical.js";
 import {
   DERIVATION_ATTRIBUTE,
+  type CorrespondenceDerivation,
   UNCERTAINTY_DIMENSIONS,
 } from "./derivation-model.js";
 import {
@@ -22,6 +23,7 @@ import { relationPackDigest } from "./relation-pack.js";
 import { RelationRegistry } from "./relations.js";
 import type {
   MetamapSemanticPolicy,
+  MappingDependency,
   SemanticCompilationResult,
   SemanticGeneration,
 } from "./semantic-model.js";
@@ -260,6 +262,84 @@ interface LegacyCompiler {
     policy: MetamapViabilityPolicy,
   ) => Map<string, MappingViabilityDeclaration[]>;
 }
+export function derivationAdmissionIssues(
+  proofs: readonly CorrespondenceDerivation[],
+  active: ReadonlySet<string>,
+  declarations: ReadonlyMap<string, readonly MappingViabilityDeclaration[]>,
+  registry: RelationRegistry,
+): ViabilityIssue[] {
+  const issues: ViabilityIssue[] = [];
+  for (const proof of proofs) {
+    if (!active.has(proof.result.id)) continue;
+    const result = declarations.get(proof.result.id)?.[0];
+    for (const premise of proof.premises) {
+      if (!active.has(premise.mapping))
+        issues.push(
+          error(
+            "INACTIVE_DERIVATION_PREMISE",
+            "An active derived mapping requires active premises",
+            proof.result.id,
+          ),
+        );
+      const source = declarations.get(premise.mapping)?.[0];
+      if (!result || !source) continue; // The existing declaration checker reports this.
+      if (
+        (source.coverage === "partial" && result.coverage === "total") ||
+        (source.determinism === "nondeterministic" &&
+          result.determinism === "deterministic") ||
+        (source.reversibility === "irreversible" &&
+          result.reversibility === "reversible")
+      )
+        issues.push(
+          error(
+            "DERIVATION_SEMANTICS_STRENGTHENED",
+            "A derived declaration cannot erase a premise's partial coverage, nondeterminism, or irreversibility",
+            proof.result.id,
+          ),
+        );
+      const law = registry.getLaw(proof.rule.id)!.law;
+      if (law.operation === "reverse" && source.reversibility !== "reversible")
+        issues.push(
+          error(
+            "IRREVERSIBLE_DERIVATION_PREMISE",
+            "A reversal requires a reversible premise declaration",
+            proof.result.id,
+          ),
+        );
+    }
+  }
+  return issues;
+}
+
+export function admittedMappingDependencies(
+  graph: MetamapDocument,
+  active: ReadonlySet<string>,
+  records: readonly CorrespondenceDerivation[],
+): MappingDependency[] {
+  const proofs = new Map(records.map((proof) => [proof.id, proof]));
+  return graph.mappings
+    .filter((mapping) => active.has(mapping.id))
+    .map((mapping) => {
+      const proofId = mapping.attributes?.[DERIVATION_ATTRIBUTE];
+      const proof =
+        typeof proofId === "string" ? proofs.get(proofId) : undefined;
+      return {
+        mapping: mapping.id,
+        premises: proof
+          ? [
+              ...new Set(proof.premises.map((premise) => premise.mapping)),
+            ].sort()
+          : [],
+        ...(proof
+          ? { derivation: { id: proof.id, digest: proof.digest } }
+          : {}),
+      };
+    })
+    .sort((left, right) =>
+      left.mapping < right.mapping ? -1 : left.mapping > right.mapping ? 1 : 0,
+    );
+}
+
 /** Reuse the contextual compiler; add nonwaivable checks for the selected profile. */
 export function compileSemanticMetamap(
   graph: MetamapDocument,
@@ -373,48 +453,14 @@ export function compileSemanticMetamap(
         (issue) => error(issue.code, issue.message, issue.subjectId),
       ),
     );
-    for (const proof of checked.checked) {
-      if (!active.has(proof.result.id)) continue;
-      const result = declarations.get(proof.result.id)?.[0];
-      for (const premise of proof.premises) {
-        if (!active.has(premise.mapping))
-          issues.push(
-            error(
-              "INACTIVE_DERIVATION_PREMISE",
-              "An active derived mapping requires active premises",
-              proof.result.id,
-            ),
-          );
-        const source = declarations.get(premise.mapping)?.[0];
-        if (!result || !source) continue; // The existing declaration checker reports this.
-        if (
-          (source.coverage === "partial" && result.coverage === "total") ||
-          (source.determinism === "nondeterministic" &&
-            result.determinism === "deterministic") ||
-          (source.reversibility === "irreversible" &&
-            result.reversibility === "reversible")
-        )
-          issues.push(
-            error(
-              "DERIVATION_SEMANTICS_STRENGTHENED",
-              "A derived declaration cannot erase a premise's partial coverage, nondeterminism, or irreversibility",
-              proof.result.id,
-            ),
-          );
-        const law = registry.getLaw(proof.rule.id)!.law;
-        if (
-          law.operation === "reverse" &&
-          source.reversibility !== "reversible"
-        )
-          issues.push(
-            error(
-              "IRREVERSIBLE_DERIVATION_PREMISE",
-              "A reversal requires a reversible premise declaration",
-              proof.result.id,
-            ),
-          );
-      }
-    }
+    issues.push(
+      ...derivationAdmissionIssues(
+        checked.checked,
+        active,
+        declarations,
+        registry,
+      ),
+    );
   }
   const impact = analyzeImpact(graph, {
     changedSubjects: options.changedSubjects?.length
@@ -457,28 +503,11 @@ export function compileSemanticMetamap(
     digest: _digest,
     ...common
   } = JSON.parse(JSON.stringify(base.generation)) as typeof base.generation;
-  const proofs = new Map(checked.checked.map((proof) => [proof.id, proof]));
-  const dependencies = graph.mappings
-    .filter((mapping) => base.generation.activeMappings.includes(mapping.id))
-    .map((mapping) => {
-      const proofId = mapping.attributes?.[DERIVATION_ATTRIBUTE];
-      const proof =
-        typeof proofId === "string" ? proofs.get(proofId) : undefined;
-      return {
-        mapping: mapping.id,
-        premises: proof
-          ? [
-              ...new Set(proof.premises.map((premise) => premise.mapping)),
-            ].sort()
-          : [],
-        ...(proof
-          ? { derivation: { id: proof.id, digest: proof.digest } }
-          : {}),
-      };
-    })
-    .sort((left, right) =>
-      left.mapping < right.mapping ? -1 : left.mapping > right.mapping ? 1 : 0,
-    );
+  const dependencies = admittedMappingDependencies(
+    graph,
+    new Set(base.generation.activeMappings),
+    checked.checked,
+  );
   const content = {
     $schema:
       "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-generation-v2.schema.json",

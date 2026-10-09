@@ -22,7 +22,8 @@ import {
   composeCorrespondences,
   parseCompositionRequestJson,
 } from "./derivation.js";
-import { parseSemanticPolicy } from "./semantic.js";
+import { parseSemanticGeneration, parseSemanticPolicy } from "./semantic.js";
+import { parseSemanticProjectionSpec } from "./semantic-projection.js";
 import { captureReplayBundle, replayMetamap } from "./replay.js";
 import { compareMetamapBundles } from "./counterfactual.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -100,6 +101,34 @@ function parseArguments(
 
 async function readJson(path: string): Promise<unknown> {
   return JSON.parse(await readFile(resolve(path), "utf8")) as unknown;
+}
+
+async function readProfileJson(
+  path: string,
+  strict: boolean,
+): Promise<unknown> {
+  const text = await readFile(resolve(path), "utf8");
+  return strict ? parseStrictJson(text) : (JSON.parse(text) as unknown);
+}
+
+async function readVersionedJson(path: string): Promise<unknown> {
+  const text = await readFile(resolve(path), "utf8");
+  const value = JSON.parse(text) as { schemaVersion?: string } | null;
+  return value?.schemaVersion === "2.0.0" ? parseStrictJson(text) : value;
+}
+
+function isSemanticProfile(value: unknown): boolean {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "2.0.0"
+  );
+}
+
+function serializeProfile(value: unknown): string {
+  return isSemanticProfile(value)
+    ? `${canonicalJson(value)}\n`
+    : stableJson(value, true);
 }
 
 async function relationRegistryFrom(
@@ -185,11 +214,13 @@ async function main(args: string[]): Promise<number> {
       console.error(usage());
       return 2;
     }
-    const result = compareMetamapBundles(
-      await readJson(beforePath),
-      await readJson(afterPath),
-    );
-    const serialized = stableJson(result, true);
+    const before = await readVersionedJson(beforePath);
+    const after = await readVersionedJson(afterPath);
+    const result = compareMetamapBundles(before, after);
+    const serialized =
+      isSemanticProfile(before) || isSemanticProfile(after)
+        ? `${canonicalJson(result)}\n`
+        : stableJson(result, true);
     if (outputPath)
       await writeFile(resolve(outputPath), serialized, {
         encoding: "utf8",
@@ -224,24 +255,39 @@ async function main(args: string[]): Promise<number> {
     }
     const relationRegistry = await relationRegistryFrom(parsed);
     const contextPath = parsed.options.get("--context")?.[0];
-    const bundle = captureReplayBundle(
-      (await readJson(graphPath)) as MetamapDocument,
-      (await readJson(policyPath)) as MetamapViabilityPolicy,
-      {
-        evaluatedAt,
-        relationRegistry,
-        context: contextPath
-          ? parseEvaluationContext(await readJson(contextPath))
-          : {},
-        changedSubjects: parsed.options.get("--changed") ?? [],
-        projections: await Promise.all(
-          (parsed.options.get("--projection") ?? []).map(async (path) =>
-            parseProjectionSpec(await readJson(path)),
-          ),
-        ),
-      },
+    const policyValue = await readVersionedJson(policyPath);
+    const semantic = isSemanticProfile(policyValue);
+    const policy = semantic
+      ? parseSemanticPolicy(policyValue)
+      : parseViabilityPolicy(policyValue);
+    const graph = (await readProfileJson(
+      graphPath,
+      semantic,
+    )) as MetamapDocument;
+    const projectionValues = await Promise.all(
+      (parsed.options.get("--projection") ?? []).map((path) =>
+        readProfileJson(path, semantic),
+      ),
     );
-    const serialized = stableJson(bundle, true);
+    const options = {
+      evaluatedAt,
+      relationRegistry,
+      context: contextPath
+        ? parseEvaluationContext(await readProfileJson(contextPath, semantic))
+        : {},
+      changedSubjects: parsed.options.get("--changed") ?? [],
+    };
+    const bundle =
+      policy.schemaVersion === "2.0.0"
+        ? captureReplayBundle(graph, policy, {
+            ...options,
+            projections: projectionValues.map(parseSemanticProjectionSpec),
+          })
+        : captureReplayBundle(graph, policy, {
+            ...options,
+            projections: projectionValues.map(parseProjectionSpec),
+          });
+    const serialized = serializeProfile(bundle);
     if (outputPath) {
       await writeFile(resolve(outputPath), serialized, {
         encoding: "utf8",
@@ -266,8 +312,13 @@ async function main(args: string[]): Promise<number> {
       console.error(usage());
       return 2;
     }
-    const result = replayMetamap(await readJson(parsed.positionals[0]));
-    process.stdout.write(stableJson(result, true));
+    const value = await readVersionedJson(parsed.positionals[0]);
+    const result = replayMetamap(value);
+    process.stdout.write(
+      isSemanticProfile(value)
+        ? `${canonicalJson(result)}\n`
+        : stableJson(result, true),
+    );
     return result.status === "verified" && result.admitted ? 0 : 1;
   }
 
@@ -314,7 +365,14 @@ async function main(args: string[]): Promise<number> {
     }
 
     const relationRegistry = await relationRegistryFrom(parsed);
-    const graphValue = await readJson(graphPath);
+    const policyValue = await readVersionedJson(policyPath);
+    const policy = isSemanticProfile(policyValue)
+      ? parseSemanticPolicy(policyValue)
+      : parseViabilityPolicy(policyValue);
+    const graphValue = await readProfileJson(
+      graphPath,
+      policy.schemaVersion === "2.0.0",
+    );
     const graphValidation = validateMetamapDocument(
       graphValue,
       relationRegistry,
@@ -323,15 +381,11 @@ async function main(args: string[]): Promise<number> {
       printIssues(graphValidation.issues);
       return 1;
     }
-    const policyText = await readFile(resolve(policyPath), "utf8");
-    const policyValue = JSON.parse(policyText) as { schemaVersion?: string };
-    const policy =
-      policyValue.schemaVersion === "2.0.0"
-        ? parseSemanticPolicy(parseStrictJson(policyText))
-        : parseViabilityPolicy(policyValue);
     const contextPath = parsed.options.get("--context")?.[0];
     const context = contextPath
-      ? parseEvaluationContext(await readJson(contextPath))
+      ? parseEvaluationContext(
+          await readProfileJson(contextPath, policy.schemaVersion === "2.0.0"),
+        )
       : {};
     const evaluatedAt = parsed.options.get("--as-of")?.[0];
     if (command === "promote") {
@@ -416,9 +470,18 @@ async function main(args: string[]): Promise<number> {
     }
     const exportName = parsed.options.get("--export")?.[0];
     const relationRegistry = await relationRegistryFrom(parsed);
-    const graph = (await readJson(graphPath)) as MetamapDocument;
-    const generation = parseViableGeneration(await readJson(generationPath));
-    const spec = parseProjectionSpec(await readJson(specPath));
+    const generationValue = await readVersionedJson(generationPath);
+    const generation = isSemanticProfile(generationValue)
+      ? parseSemanticGeneration(generationValue)
+      : parseViableGeneration(generationValue);
+    const graph = (await readProfileJson(
+      graphPath,
+      generation.schemaVersion === "2.0.0",
+    )) as MetamapDocument;
+    const specValue = await readVersionedJson(specPath);
+    const spec = isSemanticProfile(specValue)
+      ? parseSemanticProjectionSpec(specValue)
+      : parseProjectionSpec(specValue);
     const result = compileProjection(graph, generation, spec, {
       relationRegistry,
     });
@@ -440,12 +503,12 @@ async function main(args: string[]): Promise<number> {
       serialized =
         format === "path-tree-typescript"
           ? emitTypeScriptPathTree(tree.pathTree, { exportName })
-          : stableJson(tree.pathTree, true);
+          : serializeProfile(tree.pathTree);
     } else {
       serialized =
         format === "typescript"
           ? emitTypeScriptProjection(result.projection, { exportName })
-          : stableJson(result.projection, true);
+          : serializeProfile(result.projection);
     }
     if (outputPath) {
       await writeFile(resolve(outputPath), serialized, "utf8");

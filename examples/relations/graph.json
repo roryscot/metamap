@@ -7,7 +7,8 @@
     {
       "id": "urn:example:consumer",
       "kind": "configuration",
-      "label": "consumer"
+      "label": "consumer",
+      "attributes": { "path": "/network/:networkId" }
     },
     {
       "id": "urn:example:service",

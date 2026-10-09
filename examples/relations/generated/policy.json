@@ -108,7 +108,7 @@
   ],
   "evidence": [],
   "graph": {
-    "digest": "sha256:c56be09faf275963fda8aa5094d7a03b5a69aa366804e44cbe51acf372119eaa",
+    "digest": "sha256:567b24c8c2e3e246ebb49b0b9fa10254d5c39853d66c93735e4bb4f502a263de",
     "id": "urn:metamap:example:dependency-graph"
   },
   "id": "urn:metamap:example:dependency-policy",

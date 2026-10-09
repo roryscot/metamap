@@ -6,6 +6,8 @@ import { RelationRegistry } from "./relations.js";
 import { replayMetamap, } from "./replay.js";
 import { valueDigest, valuesEqual } from "./stable.js";
 import { compileMetamap } from "./viability.js";
+import { compareSemanticMetamapBundles } from "./semantic-counterfactual.js";
+import { canonicalDigest } from "./canonical.js";
 export const METAMAP_COUNTERFACTUAL_VERSION = "1.0.0";
 const Ajv2020 = Ajv2020Module.default;
 const addFormats = addFormatsModule.default;
@@ -226,6 +228,41 @@ function changeSeeds(before, after, graph, left, right) {
             }
         }
     }
+    if (a.schemaVersion === "2.0.0" && b.schemaVersion === "2.0.0") {
+        const leftPolicy = a;
+        const rightPolicy = b;
+        const changedRecords = (leftRecords, rightRecords) => {
+            const leftById = new Map(leftRecords.map((entry) => [entry.id, entry]));
+            const rightById = new Map(rightRecords.map((entry) => [entry.id, entry]));
+            return [...new Set([...leftById.keys(), ...rightById.keys()])].filter((id) => {
+                const l = leftById.get(id), r = rightById.get(id);
+                return !l || !r || canonicalDigest(l) !== canonicalDigest(r);
+            });
+        };
+        for (const id of changedRecords(leftPolicy.derivations, rightPolicy.derivations))
+            seeds.add(id);
+        for (const id of changedRecords(leftPolicy.assessments, rightPolicy.assessments)) {
+            seeds.add(id);
+            for (const assessment of [
+                ...leftPolicy.assessments,
+                ...rightPolicy.assessments,
+            ])
+                if (assessment.id === id)
+                    seeds.add(assessment.subject);
+        }
+        for (const kind of ["uncertaintyRequirements", "riskBudgets"]) {
+            const changes = changedRecords(leftPolicy[kind], rightPolicy[kind]);
+            for (const id of changes)
+                seeds.add(id);
+            // The declared consumer rules can change admission of the mapping family.
+            if (changes.length)
+                for (const mapping of [
+                    ...before.inputs.graph.mappings,
+                    ...after.inputs.graph.mappings,
+                ])
+                    seeds.add(mapping.id);
+        }
+    }
     return [...seeds].sort();
 }
 function impactFor(bundle, seeds) {
@@ -237,6 +274,21 @@ function impactFor(bundle, seeds) {
         ...bundle.inputs.policy.evidence,
         ...(bundle.inputs.policy.waivers ?? []),
     ].map((entry) => entry.id));
+    if (bundle.inputs.policy.schemaVersion === "2.0.0") {
+        const policy = bundle.inputs.policy;
+        for (const proof of policy.derivations) {
+            known.add(proof.id);
+            known.add(proof.result.id);
+            for (const premise of proof.premises)
+                known.add(premise.mapping);
+        }
+        for (const record of [
+            ...policy.assessments,
+            ...policy.uncertaintyRequirements,
+            ...policy.riskBudgets,
+        ])
+            known.add(record.id);
+    }
     const changedSubjects = seeds.filter((id) => known.has(id));
     if (changedSubjects.length === 0)
         return { changedSubjects: [], affectedSubjects: [], paths: [] };
@@ -257,32 +309,7 @@ function freeze(value) {
     return value;
 }
 /** Compare two independently reproduced candidates. Never repairs, rebinds, or activates. */
-export function compareMetamapBundles(beforeValue, afterValue) {
-    const beforeReplay = replayMetamap(beforeValue);
-    const afterReplay = replayMetamap(afterValue);
-    if (beforeReplay.status === "rejected" || afterReplay.status === "rejected") {
-        return {
-            status: "rejected",
-            issues: [
-                ...(beforeReplay.status === "rejected"
-                    ? beforeReplay.issues.map((issue) => ({
-                        ...issue,
-                        side: "before",
-                    }))
-                    : []),
-                ...(afterReplay.status === "rejected"
-                    ? afterReplay.issues.map((issue) => ({
-                        ...issue,
-                        side: "after",
-                    }))
-                    : []),
-            ],
-        };
-    }
-    const before = beforeValue;
-    const after = afterValue;
-    const left = beforeReplay.outputs;
-    const right = afterReplay.outputs;
+export function compareReplayEvaluationContent(before, after, left, right, beforeAdmitted, afterAdmitted, equals = valuesEqual, inputDigest = (_input, value) => valueDigest(value)) {
     const graph = diffMetamapDocuments(before.inputs.graph, after.inputs.graph);
     const aIssues = new Map(issuesFor(left).map((entry) => [issueKey(entry), entry]));
     const bIssues = new Map(issuesFor(right).map((entry) => [issueKey(entry), entry]));
@@ -291,25 +318,26 @@ export function compareMetamapBundles(beforeValue, afterValue) {
     const bActive = activeMappings(right);
     const seeds = changeSeeds(before, after, graph, left, right);
     const inputChanges = [];
-    for (const input of Object.keys(before.inputs).sort()) {
-        if (!valuesEqual(before.inputs[input], after.inputs[input]))
+    for (const input of [
+        ...new Set([...Object.keys(before.inputs), ...Object.keys(after.inputs)]),
+    ].sort()) {
+        if (!equals(before.inputs[input], after.inputs[input]))
             inputChanges.push({
                 input,
-                beforeDigest: valueDigest(before.inputs[input]),
-                afterDigest: valueDigest(after.inputs[input]),
+                beforeDigest: inputDigest(input, before.inputs[input]),
+                afterDigest: inputDigest(input, after.inputs[input]),
             });
     }
     const content = structuredClone({
-        schemaVersion: METAMAP_COUNTERFACTUAL_VERSION,
         before: {
             bundle: before.id,
             digest: before.digest,
-            admitted: beforeReplay.admitted,
+            admitted: beforeAdmitted,
         },
         after: {
             bundle: after.id,
             digest: after.digest,
-            admitted: afterReplay.admitted,
+            admitted: afterAdmitted,
         },
         inputChanges,
         graph,
@@ -339,6 +367,46 @@ export function compareMetamapBundles(beforeValue, afterValue) {
             after: impactFor(after, seeds),
         },
     });
+    return content;
+}
+export function compareMetamapBundles(beforeValue, afterValue) {
+    const version = (value) => typeof value === "object" && value !== null
+        ? Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value
+        : undefined;
+    if (version(beforeValue) === "2.0.0" || version(afterValue) === "2.0.0")
+        return compareSemanticMetamapBundles(beforeValue, afterValue);
+    return compareLegacyMetamapBundles(beforeValue, afterValue);
+}
+function compareLegacyMetamapBundles(beforeValue, afterValue) {
+    const beforeReplay = replayMetamap(beforeValue);
+    const afterReplay = replayMetamap(afterValue);
+    if (beforeReplay.status === "rejected" || afterReplay.status === "rejected") {
+        return {
+            status: "rejected",
+            issues: [
+                ...(beforeReplay.status === "rejected"
+                    ? beforeReplay.issues.map((issue) => ({
+                        ...issue,
+                        side: "before",
+                    }))
+                    : []),
+                ...(afterReplay.status === "rejected"
+                    ? afterReplay.issues.map((issue) => ({
+                        ...issue,
+                        side: "after",
+                    }))
+                    : []),
+            ],
+        };
+    }
+    const before = beforeValue;
+    const after = afterValue;
+    const left = beforeReplay.outputs;
+    const right = afterReplay.outputs;
+    const content = {
+        schemaVersion: METAMAP_COUNTERFACTUAL_VERSION,
+        ...compareReplayEvaluationContent(before, after, left, right, beforeReplay.admitted, afterReplay.admitted),
+    };
     const digest = valueDigest(content);
     return {
         status: "compared",

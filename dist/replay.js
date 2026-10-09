@@ -9,6 +9,7 @@ import { compileProjection, } from "./projection.js";
 import { RelationRegistry, coreRelationPack } from "./relations.js";
 import { contentDigest, valueDigest, valuesEqual } from "./stable.js";
 import { compileMetamap } from "./viability.js";
+import { captureSemanticReplayBundle, replaySemanticMetamap, } from "./semantic-replay.js";
 export const METAMAP_REPLAY_VERSION = "1.0.0";
 const moduleDirectory = dirname(fileURLToPath(import.meta.url));
 const packageDirectory = dirname(moduleDirectory);
@@ -219,8 +220,12 @@ export function parseReplayBundle(value) {
         throw new Error(`Invalid Metamap replay bundle: ${validation.issues.map((entry) => `${entry.code}: ${entry.message}`).join("; ")}`);
     return value;
 }
-/** Capture compiler evaluation only. Sources, evidence producers, and activation stay outside this operation. */
 export function captureReplayBundle(graph, policy, options) {
+    if (policy.schemaVersion === "2.0.0")
+        return captureSemanticReplayBundle(graph, policy, options, replayCompilerIdentity);
+    return captureLegacyReplayBundle(graph, policy, options);
+}
+function captureLegacyReplayBundle(graph, policy, options) {
     if ("constraintRegistry" in options)
         throw new Error("Replay v1 supports only built-in constraint evaluators");
     const inputs = structuredClone({
@@ -254,8 +259,14 @@ export function captureReplayBundle(graph, policy, options) {
     parseReplayBundle(bundle);
     return freeze(bundle);
 }
-/** Recompute with an exact installed executor. A verified rejection is still not admitted. */
 export function replayMetamap(value) {
+    if (typeof value === "object" &&
+        value !== null &&
+        Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "2.0.0")
+        return replaySemanticMetamap(value, replayCompilerIdentity);
+    return replayLegacyMetamap(value);
+}
+function replayLegacyMetamap(value) {
     const validation = validateReplayBundle(value);
     if (!validation.valid)
         return { status: "rejected", issues: validation.issues };

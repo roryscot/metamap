@@ -74,10 +74,37 @@ An input that cannot reproduce returns a rejection identifying `before` or
 show its failures or a proposed recovery. Report digests protect content
 identity, not authenticity.
 
+## Semantic profile 2.0
+
+Two reproduced replay 2.0 captures produce a comparison 2.0 report using the same
+graph, issue, entry and impact comparison engine. Mixed profiles reject with
+`COUNTERFACTUAL_VERSION_MISMATCH`. The new report additionally records added,
+removed and changed derivations, assessments, uncertainty requirements, budgets
+and source receipts. For each requested consumer view it compares the used
+mapping closure, dependency records and risk summary only when both projections
+exist. A missing projection yields `null` deltas and explicit unknown flags.
+
+Captured proof references retain `premise -> proof -> result` paths after a
+premise is removed. An invalid dependent consumer remains an effect of changed
+inputs; it is not introduced as a new diagnostic origin. A reproduced rejection
+can be compared, but it does not establish a replacement active mapping set.
+
+Use `validateSemanticCounterfactualReport` and
+`parseSemanticCounterfactualJson` for the new contract. JCS/SHA-256 covers the
+full report except its own ID/digest, including `$schema` when present. The JSON
+reader rejects duplicate decoded keys. A rehashed report cannot claim measured
+projection deltas when a result is unknown. Content validation is separate from
+reproducing captures, authentication, approval and activation.
+
+Reserved assessment/budget inputs remain explicit unsupported requests until M3
+implements them. Source lineage capture and inspection remain P08. Comparison
+does not search for or apply repairs; bounded proposal search remains M5.
+
 ## Contract and evaluation
 
-The counterfactual report schema is version 1.0.0. It adds an opt-in sidecar
-without changing existing graph or generation contracts. Validation registers
+The legacy counterfactual report schema remains version 1.0.0. The explicit 2.0
+report has a separate schema identity. Neither changes existing legacy graph,
+generation or projection digests. Validation registers
 all referenced schemas locally and fetches nothing implicitly.
 
 `evaluation/first-release-corpus.json` fixes the acceptance requirements,

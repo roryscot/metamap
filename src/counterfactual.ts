@@ -20,6 +20,18 @@ import { valueDigest, valuesEqual } from "./stable.js";
 import { compileMetamap } from "./viability.js";
 import type { ImpactReport, ViabilityIssue } from "./viability-model.js";
 
+import type {
+  SemanticReplayBundle,
+  SemanticReplayInputs,
+  SemanticReplayOutputs,
+} from "./semantic-replay-model.js";
+import { compareSemanticMetamapBundles } from "./semantic-counterfactual.js";
+import type { SemanticCounterfactualResult } from "./semantic-counterfactual-model.js";
+import type { MetamapSemanticPolicy } from "./semantic-model.js";
+import { canonicalDigest } from "./canonical.js";
+type ComparableBundle = MetamapReplayBundle | SemanticReplayBundle;
+type ComparableOutputs = ReplayOutputs | SemanticReplayOutputs;
+
 export const METAMAP_COUNTERFACTUAL_VERSION = "1.0.0" as const;
 
 export interface CounterfactualInputChange {
@@ -191,7 +203,7 @@ function difference(
   return [...new Set(before)].filter((id) => !right.has(id)).sort();
 }
 
-function issuesFor(outputs: ReplayOutputs): CounterfactualIssue[] {
+function issuesFor(outputs: ComparableOutputs): CounterfactualIssue[] {
   const entries: CounterfactualIssue[] = outputs.compilation.issues.map(
     (issue) => ({ stage: "compilation", issue }),
   );
@@ -221,8 +233,8 @@ function issueKey(entry: CounterfactualIssue): string {
 }
 
 function projectionState(
-  bundle: MetamapReplayBundle,
-  outputs: ReplayOutputs,
+  bundle: ComparableBundle,
+  outputs: ComparableOutputs,
   specId: string,
 ): CounterfactualProjectionState {
   if (!bundle.inputs.projections.some((spec) => spec.id === specId))
@@ -271,10 +283,10 @@ function entriesChanged(
 }
 
 function projectionChanges(
-  before: MetamapReplayBundle,
-  after: MetamapReplayBundle,
-  left: ReplayOutputs,
-  right: ReplayOutputs,
+  before: ComparableBundle,
+  after: ComparableBundle,
+  left: ComparableOutputs,
+  right: ComparableOutputs,
 ): CounterfactualProjectionChange[] {
   const ids = [
     ...new Set(
@@ -329,13 +341,13 @@ function projectionChanges(
   });
 }
 
-function activeMappings(outputs: ReplayOutputs): string[] | undefined {
+function activeMappings(outputs: ComparableOutputs): string[] | undefined {
   return outputs.compilation.status === "viable"
     ? outputs.compilation.generation.activeMappings
     : undefined;
 }
 
-function supportSubjects(bundle: MetamapReplayBundle): string[] {
+function supportSubjects(bundle: ComparableBundle): string[] {
   return [
     ...new Set(
       bundle.inputs.policy.evidence
@@ -346,11 +358,11 @@ function supportSubjects(bundle: MetamapReplayBundle): string[] {
 }
 
 function changeSeeds(
-  before: MetamapReplayBundle,
-  after: MetamapReplayBundle,
+  before: ComparableBundle,
+  after: ComparableBundle,
   graph: GraphDiff,
-  left: ReplayOutputs,
-  right: ReplayOutputs,
+  left: ComparableOutputs,
+  right: ComparableOutputs,
 ): string[] {
   const seeds = new Set(graph.changes.map((entry) => entry.id));
   if (
@@ -405,10 +417,58 @@ function changeSeeds(
       }
     }
   }
+  if (a.schemaVersion === "2.0.0" && b.schemaVersion === "2.0.0") {
+    const leftPolicy = a as MetamapSemanticPolicy;
+    const rightPolicy = b as MetamapSemanticPolicy;
+    const changedRecords = <T extends { id: string }>(
+      leftRecords: T[],
+      rightRecords: T[],
+    ) => {
+      const leftById = new Map(leftRecords.map((entry) => [entry.id, entry]));
+      const rightById = new Map(rightRecords.map((entry) => [entry.id, entry]));
+      return [...new Set([...leftById.keys(), ...rightById.keys()])].filter(
+        (id) => {
+          const l = leftById.get(id),
+            r = rightById.get(id);
+          return !l || !r || canonicalDigest(l) !== canonicalDigest(r);
+        },
+      );
+    };
+    for (const id of changedRecords(
+      leftPolicy.derivations,
+      rightPolicy.derivations,
+    ))
+      seeds.add(id);
+    for (const id of changedRecords(
+      leftPolicy.assessments,
+      rightPolicy.assessments,
+    )) {
+      seeds.add(id);
+      for (const assessment of [
+        ...leftPolicy.assessments,
+        ...rightPolicy.assessments,
+      ])
+        if (assessment.id === id) seeds.add(assessment.subject);
+    }
+    for (const kind of ["uncertaintyRequirements", "riskBudgets"] as const) {
+      const changes = changedRecords<{ id: string }>(
+        leftPolicy[kind],
+        rightPolicy[kind],
+      );
+      for (const id of changes) seeds.add(id);
+      // The declared consumer rules can change admission of the mapping family.
+      if (changes.length)
+        for (const mapping of [
+          ...before.inputs.graph.mappings,
+          ...after.inputs.graph.mappings,
+        ])
+          seeds.add(mapping.id);
+    }
+  }
   return [...seeds].sort();
 }
 
-function impactFor(bundle: MetamapReplayBundle, seeds: string[]): ImpactReport {
+function impactFor(bundle: ComparableBundle, seeds: string[]): ImpactReport {
   const known = new Set(
     [
       ...bundle.inputs.graph.entities,
@@ -419,6 +479,20 @@ function impactFor(bundle: MetamapReplayBundle, seeds: string[]): ImpactReport {
       ...(bundle.inputs.policy.waivers ?? []),
     ].map((entry) => entry.id),
   );
+  if (bundle.inputs.policy.schemaVersion === "2.0.0") {
+    const policy = bundle.inputs.policy as MetamapSemanticPolicy;
+    for (const proof of policy.derivations) {
+      known.add(proof.id);
+      known.add(proof.result.id);
+      for (const premise of proof.premises) known.add(premise.mapping);
+    }
+    for (const record of [
+      ...policy.assessments,
+      ...policy.uncertaintyRequirements,
+      ...policy.riskBudgets,
+    ])
+      known.add(record.id);
+  }
   const changedSubjects = seeds.filter((id) => known.has(id));
   if (changedSubjects.length === 0)
     return { changedSubjects: [], affectedSubjects: [], paths: [] };
@@ -441,35 +515,19 @@ function freeze<T>(value: T): T {
 }
 
 /** Compare two independently reproduced candidates. Never repairs, rebinds, or activates. */
-export function compareMetamapBundles(
-  beforeValue: unknown,
-  afterValue: unknown,
-): CounterfactualResult {
-  const beforeReplay = replayMetamap(beforeValue);
-  const afterReplay = replayMetamap(afterValue);
-  if (beforeReplay.status === "rejected" || afterReplay.status === "rejected") {
-    return {
-      status: "rejected",
-      issues: [
-        ...(beforeReplay.status === "rejected"
-          ? beforeReplay.issues.map((issue) => ({
-              ...issue,
-              side: "before" as const,
-            }))
-          : []),
-        ...(afterReplay.status === "rejected"
-          ? afterReplay.issues.map((issue) => ({
-              ...issue,
-              side: "after" as const,
-            }))
-          : []),
-      ],
-    };
-  }
-  const before = beforeValue as MetamapReplayBundle;
-  const after = afterValue as MetamapReplayBundle;
-  const left = beforeReplay.outputs;
-  const right = afterReplay.outputs;
+export function compareReplayEvaluationContent(
+  before: ComparableBundle,
+  after: ComparableBundle,
+  left: ComparableOutputs,
+  right: ComparableOutputs,
+  beforeAdmitted: boolean,
+  afterAdmitted: boolean,
+  equals = valuesEqual,
+  inputDigest: (input: keyof SemanticReplayInputs, value: unknown) => string = (
+    _input,
+    value,
+  ) => valueDigest(value),
+) {
   const graph = diffMetamapDocuments(before.inputs.graph, after.inputs.graph);
   const aIssues = new Map(
     issuesFor(left).map((entry) => [issueKey(entry), entry]),
@@ -484,28 +542,42 @@ export function compareMetamapBundles(
   const aActive = activeMappings(left);
   const bActive = activeMappings(right);
   const seeds = changeSeeds(before, after, graph, left, right);
-  const inputChanges: CounterfactualInputChange[] = [];
-  for (const input of Object.keys(before.inputs).sort() as Array<
-    keyof ReplayInputs
-  >) {
-    if (!valuesEqual(before.inputs[input], after.inputs[input]))
+  const inputChanges: Array<{
+    input: keyof SemanticReplayInputs;
+    beforeDigest: string;
+    afterDigest: string;
+  }> = [];
+  for (const input of [
+    ...new Set([...Object.keys(before.inputs), ...Object.keys(after.inputs)]),
+  ].sort() as Array<keyof SemanticReplayInputs>) {
+    if (
+      !equals(
+        (before.inputs as SemanticReplayInputs)[input],
+        (after.inputs as SemanticReplayInputs)[input],
+      )
+    )
       inputChanges.push({
         input,
-        beforeDigest: valueDigest(before.inputs[input]),
-        afterDigest: valueDigest(after.inputs[input]),
+        beforeDigest: inputDigest(
+          input,
+          (before.inputs as SemanticReplayInputs)[input],
+        ),
+        afterDigest: inputDigest(
+          input,
+          (after.inputs as SemanticReplayInputs)[input],
+        ),
       });
   }
   const content = structuredClone({
-    schemaVersion: METAMAP_COUNTERFACTUAL_VERSION,
     before: {
       bundle: before.id,
       digest: before.digest,
-      admitted: beforeReplay.admitted,
+      admitted: beforeAdmitted,
     },
     after: {
       bundle: after.id,
       digest: after.digest,
-      admitted: afterReplay.admitted,
+      admitted: afterAdmitted,
     },
     inputChanges,
     graph,
@@ -541,6 +613,74 @@ export function compareMetamapBundles(
       after: impactFor(after, seeds),
     },
   });
+  return content;
+}
+
+export function compareMetamapBundles(
+  beforeValue: SemanticReplayBundle,
+  afterValue: SemanticReplayBundle,
+): SemanticCounterfactualResult;
+export function compareMetamapBundles(
+  beforeValue: MetamapReplayBundle,
+  afterValue: MetamapReplayBundle,
+): CounterfactualResult;
+export function compareMetamapBundles(
+  beforeValue: unknown,
+  afterValue: unknown,
+): CounterfactualResult | SemanticCounterfactualResult;
+export function compareMetamapBundles(
+  beforeValue: unknown,
+  afterValue: unknown,
+): CounterfactualResult | SemanticCounterfactualResult {
+  const version = (value: unknown) =>
+    typeof value === "object" && value !== null
+      ? Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value
+      : undefined;
+  if (version(beforeValue) === "2.0.0" || version(afterValue) === "2.0.0")
+    return compareSemanticMetamapBundles(beforeValue, afterValue);
+  return compareLegacyMetamapBundles(beforeValue, afterValue);
+}
+
+function compareLegacyMetamapBundles(
+  beforeValue: unknown,
+  afterValue: unknown,
+): CounterfactualResult {
+  const beforeReplay = replayMetamap(beforeValue as MetamapReplayBundle);
+  const afterReplay = replayMetamap(afterValue as MetamapReplayBundle);
+  if (beforeReplay.status === "rejected" || afterReplay.status === "rejected") {
+    return {
+      status: "rejected",
+      issues: [
+        ...(beforeReplay.status === "rejected"
+          ? beforeReplay.issues.map((issue) => ({
+              ...issue,
+              side: "before" as const,
+            }))
+          : []),
+        ...(afterReplay.status === "rejected"
+          ? afterReplay.issues.map((issue) => ({
+              ...issue,
+              side: "after" as const,
+            }))
+          : []),
+      ],
+    };
+  }
+  const before = beforeValue as MetamapReplayBundle;
+  const after = afterValue as MetamapReplayBundle;
+  const left = beforeReplay.outputs;
+  const right = afterReplay.outputs;
+  const content = {
+    schemaVersion: METAMAP_COUNTERFACTUAL_VERSION,
+    ...compareReplayEvaluationContent(
+      before,
+      after,
+      left,
+      right,
+      beforeReplay.admitted,
+      afterReplay.admitted,
+    ),
+  } as Omit<CounterfactualReport, "id" | "digest">;
   const digest = valueDigest(content);
   return {
     status: "compared",

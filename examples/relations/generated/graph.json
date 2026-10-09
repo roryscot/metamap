@@ -2,6 +2,7 @@
   "authorities": [],
   "entities": [
     {
+      "attributes": { "path": "/network/:networkId" },
       "id": "urn:example:consumer",
       "kind": "configuration",
       "label": "consumer"

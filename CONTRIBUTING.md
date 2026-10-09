@@ -16,6 +16,7 @@ npm run example:compile
 npm run example:research
 npm run example:routing
 npm run example:bindings
+npm run example:relations
 npm run example:path-tree
 npm run example:topology
 npm run example:replay
@@ -39,6 +40,18 @@ Changes to viability policies, generations, context expressions, constraints,
 impact propagation, evidence, or waivers are also contract changes. New
 constraint kinds must include deterministic evaluator tests and documentation;
 unknown kinds must continue to fail closed.
+
+Published legacy schema bytes and compiled identities are pinned in
+`evaluation/legacy-compatibility.json`. Preserve those pins and the original
+evaluation protocols, scorers and results. New semantic profile artifacts use
+separate schema identities and JCS content binding; legacy graph references
+retain their old convention. See [CONTRACTS.md](CONTRACTS.md).
+
+Every new semantic input must be captured and recomputed in replay in the same
+increment. Test changed, missing and rehashed inputs, rejected candidates,
+mixed-version rejection and unknown result states. Projection and path-tree
+changes also require native checks of their generated TypeScript. Use
+`npm run example:relations` for the opt-in proof-carrying workflow.
 
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather

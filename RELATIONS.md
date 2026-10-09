@@ -75,30 +75,56 @@ for M3. Nonempty requests reject with `TYPED_UNCERTAINTY_NOT_IMPLEMENTED` until
 the evaluator exists; they are never ignored. An empty profile reports
 `riskEvaluation: "not-evaluated"`.
 
-V2 generation admission is implemented. Projection, replay and comparison v2
-integration remains P05 of [BUILD_PLAN.md](BUILD_PLAN.md); legacy readers reject
-these new artifacts. Both existing activation APIs and the CLI reject v2
-promotion with `PROTECTED_ACTIVATION_REQUIRED`. Protected promotion is M4,
-and this increment does not claim an authenticated governance boundary.
+V2 admission, projection, path-tree, replay and comparison use explicit version
+dispatch. A projection spec names its consumer and an explicit `budget: null`
+when no typed budget is evaluated. Non-null budgets remain unsupported until M3.
+The projection binds the actual generation and spec, the unique used mapping
+closure, exact proof bindings and uncertainty summaries. Shared premises appear
+once; inactive and unused mappings do not enter the closure. A path tree binds
+that actual v2 projection and spec while preserving the existing hydration rules.
+
+Projection compilation rechecks captured pack values, proofs, active premises,
+resolved declarations and dependency records against the supplied graph. A
+content digest alone is not admission or authentication. Mixed generation/spec
+versions reject. Use the explicit `parseSemanticProjectionSpec`,
+`parseSemanticProjection` and `parseSemanticPathTree` readers for these artifacts;
+their `Json` variants reject duplicate decoded keys. Legacy readers remain v1.
+
+Replay captures the complete evaluation and recomputes it with the exact
+installed executor. Comparison retains unknown states after rejection and
+includes proof, assessment, requirement, budget and projection-dependency deltas.
+See [REPLAY.md](REPLAY.md) and [COUNTERFACTUAL.md](COUNTERFACTUAL.md).
+
+Both existing activation APIs and the CLI reject v2 promotion with
+`PROTECTED_ACTIVATION_REQUIRED`. Protected promotion is M4; this increment does
+not establish an authenticated governance boundary.
 
 ## Runnable dependency example
 
 Run `npm run example:relations`. The example declares a consumer's dependency
 on a service and the service's dependency on a schema, then proposes and checks
 the consumer's dependency on that schema. It writes candidate graph, policy,
-proposal and generation files under `examples/relations/generated/`.
-It performs no source or active-state replacement.
+proposal, generation, projection, nested path tree and generated TypeScript under
+`examples/relations/generated/`. It executes the generated consumer bindings and
+path hydration, reproduces an admitted evaluation, and compares it with a
+reproduced rejection after a premise is removed. Both generated TypeScript
+modules are checked by the native compiler. Replay captures remain in memory
+because their executor identities depend on the installed runtime.
+The example performs no source or active-state replacement.
 
 The CLI also supports:
 
 ```sh
 metamap compose examples/relations/graph.json examples/relations/request.json proposal.json --relation-pack examples/relations/pack.json
-metamap compile examples/relations/generated/graph.json examples/relations/generated/policy.json generation.json --context context.json --as-of 2026-10-09T00:00:00.000Z --relation-pack examples/relations/pack.json
+metamap compile examples/relations/generated/graph.json examples/relations/generated/policy.json generation.json --context examples/relations/context.json --as-of 2026-10-09T00:00:00.000Z --relation-pack examples/relations/pack.json
+metamap link examples/relations/generated/graph.json generation.json examples/relations/projection.json projection.json --relation-pack examples/relations/pack.json
+metamap capture examples/relations/generated/graph.json examples/relations/generated/policy.json relations.replay.json --context examples/relations/context.json --as-of 2026-10-09T00:00:00.000Z --projection examples/relations/projection.json --relation-pack examples/relations/pack.json
+metamap replay relations.replay.json
 ```
 
-For the second command, `context.json` must contain the captured
-`{"environment":"example"}` context. A rejected composition or compilation
-preserves an existing requested output file.
+The context file contains the captured `{"environment":"example"}` context.
+A rejected composition, compilation or link preserves an existing requested
+output file. Capture and comparison require a new output path.
 
 Scientific profiles must identify the rules they actually adopt. SKOS
 `closeMatch` is not transitive and does not become `exactMatch` by chaining;

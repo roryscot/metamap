@@ -6,18 +6,18 @@
     "urn:example:service-schema"
   ],
   "context": { "environment": "example" },
-  "digest": "sha256:c01f332c07fa9e03f9b348114d62a99ac1db292a626697edea0ee1b43dd83a9e",
+  "digest": "sha256:6af7ab27c4a76a19b1f521cc5cc1ef4e17d0eec90421bbf2e2a24896821adca5",
   "evaluatedAt": "2026-10-09T00:00:00.000Z",
   "evidence": [],
   "graph": {
-    "digest": "sha256:c56be09faf275963fda8aa5094d7a03b5a69aa366804e44cbe51acf372119eaa",
+    "digest": "sha256:567b24c8c2e3e246ebb49b0b9fa10254d5c39853d66c93735e4bb4f502a263de",
     "id": "urn:metamap:example:dependency-graph",
     "revision": "1"
   },
-  "id": "urn:metamap:generation:c01f332c07fa9e03f9b348114d62a99ac1db292a626697edea0ee1b43dd83a9e",
+  "id": "urn:metamap:generation:6af7ab27c4a76a19b1f521cc5cc1ef4e17d0eec90421bbf2e2a24896821adca5",
   "inactiveMappings": [],
   "policy": {
-    "digest": "sha256:b4d49047312bfebaab38abf6d2fcc9fd26eaa9827bf9b323c8c5798e77fc0bf1",
+    "digest": "sha256:c5b51e3938188dfaa5550b5b799e5e1e82ae6681ed8de0656bdac0ff7fbbe7eb",
     "id": "urn:metamap:example:dependency-policy"
   },
   "schemaVersion": "2.0.0",

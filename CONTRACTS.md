@@ -106,6 +106,38 @@ Unicode is not normalized. The current trusted clock, not captured `as-of`,
 controls expiry and revocation. These algorithms require executable conformance
 and tampering tests in M2–M4; they are design decisions here.
 
+## P05 projection and replay bindings
+
+Projection spec 2.0.0 names a consumer and an explicit `budget` ID or `null`.
+Null means that no typed budget was evaluated, not a zero cost. A consumer with
+a declared budget must select a matching budget; opting out cannot bypass that
+consumer's policy. Non-null budgets reject until M3 implements their evaluator.
+The result binds the exact generation/spec, unique used mapping dependency
+closure, proof bindings, and a risk summary. Unused and inactive mappings are
+excluded. The existing cardinality/kind selection algorithm remains shared.
+
+Path-tree 2.0.0 is necessary because its projection and specification use new
+digest conventions. It retains the existing tree structure and hydration
+algorithm; it binds the actual v2 projection and spec, not internal legacy views.
+Mixed wire versions reject. Existing 1.0.0 path-tree bytes are unchanged.
+
+Replay 2.0.0 captures the full v2 policy, all registered pack values in dependency
+order, exact graph/context/time, selected projection specs, expected outcomes
+and installed executor identity. Its input contract reserves the existing
+`MetamapSnapshot` value and source-receipt 1.0.0 records for P08; requested source
+capture fails explicitly until implemented. Missing raw source bytes never
+cause a fetch. Source receipts bind source/revision, adapter/version,
+configuration, existing adapter input bytes and emitted shard, without granting
+authentication. A verified rejection remains rejected and returns no projection.
+
+Comparison 2.0.0 reuses the existing issue, evidence and consumer-entry diff
+logic. It additionally binds proof, assessment, requirement, budget and lineage
+changes, with dependency impact on both captured graphs. Derived activation
+changes are unknown after a rejected generation; errors are effects rather than
+automatically asserted change origins. All new content addresses cover the
+entire JCS value except their own `id` and `digest`, including `$schema` when
+present. No comparison or replay operation authorizes activation.
+
 ## Migration and fixed acceptance inputs
 
 A v1 graph/policy continues through the existing compiler unchanged. A consumer

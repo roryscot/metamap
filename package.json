@@ -26,7 +26,8 @@
     "APPLICATION_TOPOLOGY.md",
     "ROUTING.md",
     "VIABILITY.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "RELATIONS.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -44,7 +45,7 @@
     "example:path-tree": "npm run build && node dist/cli.js compile examples/path-tree/graph.json examples/path-tree/viability-policy.json examples/path-tree/generated/generation.json --relation-pack relation-packs/routing.json --as-of 2026-09-15T00:00:00.000Z && node dist/cli.js link examples/path-tree/graph.json examples/path-tree/generated/generation.json examples/path-tree/projection.json examples/path-tree/generated/routes.json --format path-tree --relation-pack relation-packs/routing.json && node dist/cli.js link examples/path-tree/graph.json examples/path-tree/generated/generation.json examples/path-tree/projection.json examples/path-tree/generated/routes.ts --format path-tree-typescript --export routes --relation-pack relation-packs/routing.json && prettier --write examples/path-tree/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/path-tree/generated/routes.ts",
     "example:topology": "npm run build && node dist/cli.js compile examples/application-topology/graph.json examples/application-topology/viability-policy.json examples/application-topology/generated/generation.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json --as-of 2026-09-08T00:00:00.000Z && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.ts --format typescript --export applicationTopology --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && prettier --write examples/application-topology/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/application-topology/generated/application-topology.ts",
     "prepare": "npm run build",
-    "example:relations": "npm run build && node examples/relations/build.mjs && prettier --write examples/relations/generated"
+    "example:relations": "npm run build && node examples/relations/build.mjs && prettier --write examples/relations/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/relations/generated/dependency-bindings.ts examples/relations/generated/dependency-tree.ts"
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -160,7 +161,42 @@
     "./schemas/metamap-composition-request.schema.json": "./schemas/metamap-composition-request.schema.json",
     "./schemas/metamap-composition-result.schema.json": "./schemas/metamap-composition-result.schema.json",
     "./schemas/metamap-viability-v2.schema.json": "./schemas/metamap-viability-v2.schema.json",
-    "./schemas/metamap-generation-v2.schema.json": "./schemas/metamap-generation-v2.schema.json"
+    "./schemas/metamap-generation-v2.schema.json": "./schemas/metamap-generation-v2.schema.json",
+    "./semantic-projection-model": {
+      "import": "./dist/semantic-projection-model.js",
+      "types": "./dist/semantic-projection-model.d.ts"
+    },
+    "./semantic-projection": {
+      "import": "./dist/semantic-projection.js",
+      "types": "./dist/semantic-projection.d.ts"
+    },
+    "./semantic-path-tree": {
+      "import": "./dist/semantic-path-tree.js",
+      "types": "./dist/semantic-path-tree.d.ts"
+    },
+    "./semantic-replay-model": {
+      "import": "./dist/semantic-replay-model.js",
+      "types": "./dist/semantic-replay-model.d.ts"
+    },
+    "./semantic-replay": {
+      "import": "./dist/semantic-replay.js",
+      "types": "./dist/semantic-replay.d.ts"
+    },
+    "./semantic-counterfactual-model": {
+      "import": "./dist/semantic-counterfactual-model.js",
+      "types": "./dist/semantic-counterfactual-model.d.ts"
+    },
+    "./semantic-counterfactual": {
+      "import": "./dist/semantic-counterfactual.js",
+      "types": "./dist/semantic-counterfactual.d.ts"
+    },
+    "./schemas/metamap-projection-spec-v2.schema.json": "./schemas/metamap-projection-spec-v2.schema.json",
+    "./schemas/metamap-projection-v2.schema.json": "./schemas/metamap-projection-v2.schema.json",
+    "./schemas/metamap-path-tree-v2.schema.json": "./schemas/metamap-path-tree-v2.schema.json",
+    "./schemas/metamap-replay-v2.schema.json": "./schemas/metamap-replay-v2.schema.json",
+    "./schemas/metamap-counterfactual-v2.schema.json": "./schemas/metamap-counterfactual-v2.schema.json",
+    "./schemas/metamap-source-receipt.schema.json": "./schemas/metamap-source-receipt.schema.json",
+    "./schemas/metamap-snapshot.schema.json": "./schemas/metamap-snapshot.schema.json"
   },
   "repository": {
     "type": "git",

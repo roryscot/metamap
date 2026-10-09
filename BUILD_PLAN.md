@@ -16,9 +16,10 @@ P01–P17. Building and verifying these capabilities is now authorized. Mileston
 remain planned until their acceptance checks pass; production deployment,
 consumer activation, authority grants, production signing, and restricted-data
 acquisition retain their separate authorization boundaries. M0's version and
-digest decisions are recorded in [CONTRACTS.md](CONTRACTS.md). The relation-pack,
-derivation and admission contracts now have a verified foundation; downstream
-projection/replay integration and later capabilities remain outstanding.
+digest decisions are recorded in [CONTRACTS.md](CONTRACTS.md). M0–M2 are locally
+implemented and verified, including checked derivations through projection,
+path-tree, replay and comparison. Typed uncertainty/budgets and M4–M8 remain
+outstanding; the full goal is active.
 
 ## 1. Product outcome and controlling sources
 
@@ -753,8 +754,10 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The next executable job is P05: bind checked derivations and every new semantic
-input into version 2 projection, replay and comparison. Governance or scientific work
+The next executable job is P06: implement typed uncertainty assessments and
+conservative propagation, followed by P07 consumer risk budgets. Every added
+semantic input must extend the existing P05 capture and comparison contracts in
+the same increment. Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
 environment before crossing its activation or ingestion boundary.
 
@@ -762,13 +765,14 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: M2/P05 downstream projection, replay and comparison integration,
-  following verified P03/P04 pack laws, proof admission and invalidation paths.
+- Current work: M3/P06 typed uncertainty assessments and propagation, followed
+  by P07 per-consumer risk accounting and budget checks.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
-- Locally implemented and verified: M0 and M1. Human acceptance, release and
-  production activation are not inferred. M2's P03/P04 foundation is verified;
-  M2 completion still requires P05. M3–M8 remain outstanding.
+- Locally implemented and verified: M0–M2, including P03/P04 law admission and
+  the M2 portion of P05 downstream bindings. P05 continues as later semantic
+  inputs land. Human acceptance, release and production activation are not
+  inferred. M3–M8 remain outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -853,6 +857,49 @@ environment before crossing its activation or ingestion boundary.
   evaluator. Both existing activation APIs and the CLI reject v2 promotion
   pending M4's protected boundary. No release, merge or production activation
   has occurred; the full M0–M8 goal remains active.
+
+### M2 P05 downstream binding increment, 2026-10-09
+
+- The public projection, path-tree, capture, replay and comparison APIs dispatch
+  explicitly to the v2 profile. New portable schemas and strict JSON readers
+  have separate identities; mixed profiles and duplicate decoded keys reject.
+  Existing v1 algorithms, schema bytes and compiled identities are preserved.
+- Projection spec 2.0 names the consumer and an explicit nullable budget.
+  Projection 2.0 binds the actual generation/spec, exact used mapping closure,
+  proof bindings and conservative uncertainty summary. Shared dependencies are
+  unique; unused and inactive mappings are excluded. Captured packs, proofs,
+  declarations and dependency records are rechecked against the supplied graph.
+- Path tree 2.0 binds the actual projection/spec and reuses the existing tree and
+  hydration algorithms. The dependency example executes both emitted native
+  modules and checks their TypeScript; parameters hydrate paths without changing
+  the accepted binding structure.
+- Replay 2.0 captures all currently executable semantic inputs and outputs,
+  including proofs, full pack values, context/time and consumer specs. It requires
+  the exact installed executor and recomputes expected outputs even after a
+  tampered capture is rehashed. Reproduced compilation/projection rejection
+  remains separate from admission, approval and activation.
+- Comparison 2.0 reuses the existing graph, issue, entry and impact engine, adding
+  semantic record and consumer-dependency/risk deltas. Removing a premise retains
+  its captured proof path. Unknown generation/projection states produce no
+  invented deactivations or measured dependency/risk change.
+- Validation passed: the complete 20-command gate, including formatting,
+  typecheck, `npm test` (218 tests in 30 files, 28 new behavioral tests), build,
+  every existing example, the extended native dependency example, the previous
+  five CLI cases, 19 new CLI cases plus their native TypeScript check, package
+  inspection and diff checks. All 20 previously published schema/pack files,
+  frozen legacy inputs/results and original evaluation files remain unchanged.
+  The package contains new public contracts/modules/examples and excludes caches,
+  work files and evaluation records.
+- Review and initial checks corrected malformed-input error-code compatibility,
+  the new report's `$schema` contract, fixture law/target-kind alignment and
+  immutable pack typing. A projection now rejects omitted or duplicated captured
+  declarations even when its supplied generation has a recomputed content hash.
+- M2's scoped acceptance is verified. Typed assessment/budget execution remains
+  M3; nonempty or non-null requests reject explicitly. Source-receipt/snapshot
+  fields reserve P08 capture; requested lineage rejects until that work exists.
+  Both legacy promoters continue to block v2. M3–M8, protected governance and
+  separate Seeder adoption remain outstanding. No release, merge or production
+  activation has occurred; the full goal remains active.
 
 ---
 
