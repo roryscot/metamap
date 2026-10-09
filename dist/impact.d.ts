@@ -1,4 +1,5 @@
 import type { MetamapDocument } from "./model.js";
+import type { CorrespondenceDerivation } from "./derivation-model.js";
 import { RelationRegistry } from "./relations.js";
 import type { ImpactReport, MetamapViabilityPolicy } from "./viability-model.js";
 export interface ImpactOptions {
@@ -6,6 +7,8 @@ export interface ImpactOptions {
     activeMappings?: ReadonlySet<string>;
     policy?: MetamapViabilityPolicy;
     registry?: RelationRegistry;
+    /** Captured dependency claims explain invalidation even after a premise is removed. */
+    derivations?: readonly CorrespondenceDerivation[];
 }
 /**
  * Calculate the causal blast radius of changed subjects. Paths include mapping

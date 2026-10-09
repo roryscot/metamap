@@ -8,6 +8,8 @@ import { analyzeImpact } from "./impact.js";
 import { isReferenceIdentifier, isRelationIdentifier } from "./references.js";
 import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
+import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
+import { compileSemanticMetamap } from "./semantic.js";
 import { validateMetamapDocument } from "./validator.js";
 import { METAMAP_GENERATION_VERSION, METAMAP_VIABILITY_POLICY_VERSION, } from "./viability-model.js";
 const Ajv2020 = Ajv2020Module.default;
@@ -400,11 +402,33 @@ function deepFreeze(value) {
     }
     return Object.freeze(value);
 }
-/**
- * Compile a graph and contextual policy into an immutable viable generation.
- * No generation is returned if any unwaived error remains.
- */
 export function compileMetamap(document, policy, options = {}) {
+    if (policy.schemaVersion === "2.0.0")
+        return compileSemanticMetamap(document, policy, options, {
+            compile: compileLegacyMetamap,
+            declarations: (graph, view) => resolvedDeclarations(graph, view).byMapping,
+        });
+    const registry = options.relationRegistry ?? new RelationRegistry();
+    if (registry.executablePacks().length > 0 ||
+        document.mappings.some((mapping) => mapping.attributes &&
+            Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE))) {
+        const impact = analyzeImpact(document, {
+            changedSubjects: options.changedSubjects ?? [],
+            policy,
+            registry,
+        });
+        return {
+            status: "rejected",
+            issues: [
+                issue("EXECUTABLE_POLICY_REQUIRED", "Executable packs and proof claims require the version 2 policy profile", policy.id),
+            ],
+            impact,
+            quarantinedSubjects: impact.affectedSubjects,
+        };
+    }
+    return compileLegacyMetamap(document, policy, options);
+}
+function compileLegacyMetamap(document, policy, options = {}) {
     const relationRegistry = options.relationRegistry ?? new RelationRegistry();
     const constraintRegistry = options.constraintRegistry ?? new ConstraintRegistry();
     const context = options.context ?? {};
@@ -504,6 +528,24 @@ export class MetamapActivator {
         return this.generation;
     }
     activate(document, policy, options = {}) {
+        if (policy.schemaVersion !== "1.0.0") {
+            const impact = analyzeImpact(document, {
+                changedSubjects: options.changedSubjects ?? [],
+                registry: this.relationRegistry,
+            });
+            return {
+                activated: false,
+                current: this.generation,
+                compilation: {
+                    status: "rejected",
+                    issues: [
+                        issue("PROTECTED_ACTIVATION_REQUIRED", "Version 2 candidates require the protected activation boundary", policy.id),
+                    ],
+                    impact,
+                    quarantinedSubjects: impact.affectedSubjects,
+                },
+            };
+        }
         const compilation = compileMetamap(document, policy, {
             ...options,
             relationRegistry: this.relationRegistry,

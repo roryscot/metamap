@@ -11,6 +11,9 @@ import { loadRelationPack } from "./relation-pack.js";
 import { RelationRegistry } from "./relations.js";
 import { renderDriftReport } from "./report.js";
 import { stableJson } from "./stable.js";
+import { canonicalJson, parseStrictJson } from "./canonical.js";
+import { composeCorrespondences, parseCompositionRequestJson, } from "./derivation.js";
+import { parseSemanticPolicy } from "./semantic.js";
 import { captureReplayBundle, replayMetamap } from "./replay.js";
 import { compareMetamapBundles } from "./counterfactual.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -21,6 +24,7 @@ import { checkWorkspace, discoverWorkspace, workspaceHasErrors, writeWorkspaceOu
 function usage() {
     return `Usage:
   metamap validate <graph.json> [--relation-pack pack.json]...
+  metamap compose <graph.json> <composition-request.json> [proposal.json] [--relation-pack pack.json]...
   metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
@@ -96,6 +100,31 @@ function printProjectionIssues(issues) {
 }
 async function main(args) {
     const [command, ...rest] = args;
+    if (command === "compose") {
+        const parsed = parseArguments(rest, new Set(["--relation-pack"]));
+        const [graphPath, requestPath, outputPath, ...extra] = parsed.positionals;
+        if (!graphPath || !requestPath || extra.length > 0) {
+            console.error(usage());
+            return 2;
+        }
+        const registry = await relationRegistryFrom(parsed);
+        const graph = parseStrictJson(await readFile(resolve(graphPath), "utf8"));
+        const request = parseCompositionRequestJson(await readFile(resolve(requestPath), "utf8"));
+        const result = composeCorrespondences(graph, request, registry);
+        if (result.status !== "proposed") {
+            for (const issue of result.issues)
+                console.error(`${result.status.toUpperCase()} ${issue.code}: ${issue.message}`);
+            if (!outputPath)
+                process.stdout.write(`${canonicalJson(result)}\n`);
+            return 1;
+        }
+        const serialized = `${canonicalJson(result)}\n`;
+        if (outputPath)
+            await writeFile(resolve(outputPath), serialized, "utf8");
+        else
+            process.stdout.write(serialized);
+        return 0;
+    }
     if (command === "compare") {
         const parsed = parseArguments(rest, new Set());
         const [beforePath, afterPath, outputPath] = parsed.positionals;
@@ -208,13 +237,21 @@ async function main(args) {
             printIssues(graphValidation.issues);
             return 1;
         }
-        const policy = parseViabilityPolicy(await readJson(policyPath));
+        const policyText = await readFile(resolve(policyPath), "utf8");
+        const policyValue = JSON.parse(policyText);
+        const policy = policyValue.schemaVersion === "2.0.0"
+            ? parseSemanticPolicy(parseStrictJson(policyText))
+            : parseViabilityPolicy(policyValue);
         const contextPath = parsed.options.get("--context")?.[0];
         const context = contextPath
             ? parseEvaluationContext(await readJson(contextPath))
             : {};
         const evaluatedAt = parsed.options.get("--as-of")?.[0];
         if (command === "promote") {
+            if (policy.schemaVersion !== "1.0.0") {
+                console.error("PROTECTED_ACTIVATION_REQUIRED: version 2 candidates require the protected promoter");
+                return 1;
+            }
             const promoted = await promoteMetamapGeneration(graphValue, policy, outputPath, { context, evaluatedAt, changedSubjects, relationRegistry });
             printViabilityIssues(promoted.compilation.issues);
             if (!promoted.activated) {
@@ -239,7 +276,9 @@ async function main(args) {
             console.error(`REJECTED: ${result.issues.filter((entry) => entry.severity === "error").length} error(s); ${result.quarantinedSubjects.length} subject(s) quarantined`);
             return 1;
         }
-        const serialized = stableJson(result.generation, true);
+        const serialized = result.generation.schemaVersion === "2.0.0"
+            ? `${canonicalJson(result.generation)}\n`
+            : stableJson(result.generation, true);
         if (outputPath) {
             await writeFile(resolve(outputPath), serialized, "utf8");
             console.error(`Wrote viable generation ${outputPath}`);

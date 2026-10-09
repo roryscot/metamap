@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, open, readFile, rename, unlink } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 import type { MetamapDocument } from "./model.js";
+import { analyzeImpact } from "./impact.js";
 import { stableJson } from "./stable.js";
 import {
   compileMetamap,
@@ -55,6 +56,31 @@ export async function promoteMetamapGeneration(
   const path = resolve(outputPath);
   const previous = await currentGeneration(path);
   const previousDigest = previous?.digest;
+  if ((policy as { schemaVersion: string }).schemaVersion !== "1.0.0") {
+    const impact = analyzeImpact(document, {
+      changedSubjects: options.changedSubjects ?? [],
+      registry: options.relationRegistry,
+    });
+    return {
+      activated: false,
+      path,
+      previousDigest,
+      compilation: {
+        status: "rejected",
+        issues: [
+          {
+            severity: "error",
+            code: "PROTECTED_ACTIVATION_REQUIRED",
+            message:
+              "Version 2 candidates require the protected activation boundary",
+            subjectId: policy.id,
+          },
+        ],
+        impact,
+        quarantinedSubjects: impact.affectedSubjects,
+      },
+    };
+  }
   const compilation = compileMetamap(document, policy, options);
   if (compilation.status === "rejected") {
     return {

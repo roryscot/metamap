@@ -139,13 +139,59 @@ export interface RelationDefinition {
   impactDirection?: ImpactDirection;
 }
 
-export interface RelationPack {
+export interface LegacyRelationPack {
+  $schema?: string;
   schemaVersion: "1.0.0";
   id: string;
   version: string;
   description?: string;
   relations: readonly RelationDefinition[];
 }
+
+export interface RelationLawConditions {
+  context?: import("./viability-model.js").ContextExpression;
+  sourceKinds?: readonly string[];
+  middleKinds?: readonly string[];
+  targetKinds?: readonly string[];
+}
+
+interface RelationLawBase {
+  id: string;
+  resultRelation: string;
+  conditions?: RelationLawConditions;
+  handling: {
+    lossiness: "conservative";
+    uncertainty: "conservative";
+    authority: "none";
+  };
+}
+
+export type RelationLaw = RelationLawBase &
+  (
+    | { operation: "reverse"; operands: readonly [string] }
+    | { operation: "chain"; operands: readonly [string, string] }
+  );
+
+export interface ExecutableRelationDefinition extends RelationDefinition {
+  /** Applies to active binary assertions in the explicitly selected profile. */
+  disjointWith?: readonly string[];
+}
+
+export interface ExecutableRelationPack {
+  $schema?: string;
+  schemaVersion: "2.0.0";
+  id: string;
+  version: string;
+  description?: string;
+  /** All externally referenced relation definitions require exact imports. */
+  imports?: readonly Required<
+    Pick<RelationPackReference, "id" | "version" | "digest">
+  >[];
+  relations: readonly ExecutableRelationDefinition[];
+  laws: readonly RelationLaw[];
+}
+
+export type RelationPack = LegacyRelationPack | ExecutableRelationPack;
 
 export type ValidationSeverity = "error" | "warning";
 

@@ -1,6 +1,7 @@
 import { ConstraintRegistry } from "./constraints.js";
 import type { MetamapDocument } from "./model.js";
 import { RelationRegistry } from "./relations.js";
+import type { MetamapSemanticPolicy, SemanticCompilationResult } from "./semantic-model.js";
 import { type ActivationResult, type CompilationResult, type CompileOptions, type MetamapViabilityPolicy, type ViabilityValidationResult, type ViableGeneration } from "./viability-model.js";
 export interface CompilationRuntimeOptions extends CompileOptions {
     relationRegistry?: RelationRegistry;
@@ -14,7 +15,9 @@ export declare function validateViableGeneration(value: unknown): ViabilityValid
  * Compile a graph and contextual policy into an immutable viable generation.
  * No generation is returned if any unwaived error remains.
  */
+export declare function compileMetamap(document: MetamapDocument, policy: MetamapSemanticPolicy, options?: CompilationRuntimeOptions): SemanticCompilationResult;
 export declare function compileMetamap(document: MetamapDocument, policy: MetamapViabilityPolicy, options?: CompilationRuntimeOptions): CompilationResult;
+export declare function compileMetamap(document: MetamapDocument, policy: MetamapViabilityPolicy | MetamapSemanticPolicy, options?: CompilationRuntimeOptions): CompilationResult | SemanticCompilationResult;
 /**
  * Atomic in-memory activation. Rejected candidates leave the last viable
  * generation untouched and report the quarantined blast radius.

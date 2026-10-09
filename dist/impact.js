@@ -32,6 +32,17 @@ function mappingEdges(document, activeMappings, registry) {
 export function analyzeImpact(document, options) {
     const registry = options.registry ?? new RelationRegistry();
     const adjacency = mappingEdges(document, options.activeMappings, registry);
+    const proofEdges = new Map();
+    const proofEdge = (from, to) => {
+        const targets = proofEdges.get(from) ?? new Set();
+        targets.add(to);
+        proofEdges.set(from, targets);
+    };
+    for (const proof of options.derivations ?? []) {
+        for (const premise of proof.premises)
+            proofEdge(premise.mapping, proof.id);
+        proofEdge(proof.id, proof.result.id);
+    }
     const mappings = new Map(document.mappings.map((entry) => [entry.id, entry]));
     const authorities = new Map(document.authorities.map((entry) => [entry.id, entry]));
     const constraints = new Map((options.policy?.constraints ?? []).map((entry) => [entry.id, entry]));
@@ -70,9 +81,22 @@ export function analyzeImpact(document, options) {
     for (let cursor = 0; cursor < queue.length; cursor += 1) {
         const current = queue[cursor];
         const currentPath = paths.get(current) ?? [current];
+        for (const target of [...(proofEdges.get(current) ?? [])].sort())
+            enqueue(target, [...currentPath, target]);
+        if (options.derivations?.length) {
+            const mapping = mappings.get(current);
+            for (const endpoint of [
+                ...(mapping?.sources ?? []),
+                ...(mapping?.targets ?? []),
+            ])
+                enqueue(endpoint, [...currentPath, endpoint]);
+        }
         for (const edge of adjacency.get(current) ?? []) {
             const mappingPath = [...currentPath, edge.mapping.id];
-            if (!paths.has(edge.mapping.id)) {
+            if (options.derivations?.length) {
+                enqueue(edge.mapping.id, mappingPath);
+            }
+            else if (!paths.has(edge.mapping.id)) {
                 paths.set(edge.mapping.id, mappingPath);
             }
             enqueue(edge.target, [...mappingPath, edge.target]);

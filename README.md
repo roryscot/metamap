@@ -364,6 +364,10 @@ the complete fail-fast model and portable contracts.
 
 Use [REPLAY.md](REPLAY.md) to capture and reproduce an exact compiler evaluation.
 Use [COUNTERFACTUAL.md](COUNTERFACTUAL.md) to compare two reproduced candidates.
+Use [RELATIONS.md](RELATIONS.md) for explicit binary relation laws, bounded
+composition proposals and checked v2 admission. Its current integration
+boundaries are documented there; typed budgets, v2 replay and protected
+promotion remain later build increments.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 

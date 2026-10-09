@@ -16,8 +16,9 @@ P01–P17. Building and verifying these capabilities is now authorized. Mileston
 remain planned until their acceptance checks pass; production deployment,
 consumer activation, authority grants, production signing, and restricted-data
 acquisition retain their separate authorization boundaries. M0's version and
-digest decisions are recorded in [CONTRACTS.md](CONTRACTS.md); the new wire
-versions remain unimplemented until their respective milestones land.
+digest decisions are recorded in [CONTRACTS.md](CONTRACTS.md). The relation-pack,
+derivation and admission contracts now have a verified foundation; downstream
+projection/replay integration and later capabilities remain outstanding.
 
 ## 1. Product outcome and controlling sources
 
@@ -723,8 +724,8 @@ authorized identity.
 
 The planning-only edit used formatting, document references, plan coverage,
 and preservation of source/evaluation files. Runtime implementation checks now
-apply to each completed increment. M0/M1's executed checks are recorded below;
-later milestone acceptance checks remain unrun.
+apply to each completed increment. Executed M0/M1 and M2 foundation checks are
+recorded below; outstanding milestone acceptance checks remain unrun.
 
 ## 18. Decisions, dependencies, and principal risks
 
@@ -752,8 +753,8 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The next executable job is P03: implement M2's typed relation-pack laws and
-registry validation, followed by explicit derivation checking. Governance or scientific work
+The next executable job is P05: bind checked derivations and every new semantic
+input into version 2 projection, replay and comparison. Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
 environment before crossing its activation or ingestion boundary.
 
@@ -761,12 +762,13 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: M2/P03 executable relation laws, following locally verified M0/P01
-  contract decisions and M1/P02 native consumer bindings.
+- Current work: M2/P05 downstream projection, replay and comparison integration,
+  following verified P03/P04 pack laws, proof admission and invalidation paths.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
 - Locally implemented and verified: M0 and M1. Human acceptance, release and
-  production activation are not inferred. M2–M8 remain outstanding.
+  production activation are not inferred. M2's P03/P04 foundation is verified;
+  M2 completion still requires P05. M3–M8 remain outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -806,6 +808,51 @@ environment before crossing its activation or ingestion boundary.
   activation transaction. Direct filesystem writers remain able to bypass it.
   M4 must enforce the external promoter and artifact permissions; M8 must verify
   separate Seeder adoption. Comparative-benefit metrics remain deferred.
+
+### M2 P03/P04 foundation increment, 2026-10-09
+
+- [RELATIONS.md](RELATIONS.md) documents the explicit pack 2.0.0 law profile,
+  bounded composition request/result and proof 1.0.0 sidecars, and policy and
+  generation 2.0.0 admission contracts. Models, portable schemas, parsers,
+  package exports, CLI commands and a runnable dependency example are aligned.
+- The existing relation registry validates exact imported packs, operand/result
+  references, compatible kinds, unique laws and executable property claims.
+  Registered v2 values are copied and frozen; legacy import drift invalidates
+  their dependents. Invalid registration no longer leaves partial definitions.
+- Composition supports explicit binary reverse/chain laws and returns a
+  proposal only. It never flattens n-ary mappings, composes unsupported transforms,
+  transfers authority or converts scalar confidence into evidence strength.
+  Full-context, premise, pack, dependency, depth/count and content bindings are
+  checked by the same proof engine during v2 admission.
+- V2 admission reuses the contextual compiler and declaration selector engine.
+  An active derived mapping requires active premises; coverage, determinism and
+  reversibility cannot improve through composition. Reversal requires a
+  reversible premise. Active disjoint relations reject; absent materialized
+  transitive edges are not treated as inconsistent. Impact includes captured
+  `premise -> proof -> result` dependencies after a premise is removed.
+- New values use JCS, including its numeric-zero semantics. Review identified
+  a potential mismatch between hashing canonical JSON and evaluating its raw
+  negative-zero representation; canonical evaluation and regression checks now
+  align them. Programmatic legacy optional fields preserve their original
+  digest convention without executing getters during materialization.
+- Validation passed: `npm run format:check`, `npm run typecheck`, `npm test`
+  (190 tests in 27 files), `npm run build`, `npm run validate:example`, every
+  existing example script, `npm run example:relations`, five CLI acceptance
+  cases, `npm pack --dry-run --json`, and `git diff --check`. The new 71 tests
+  cover canonicalization, pack contracts, derivations and admission. Frozen
+  legacy schema/pack bytes and native output identities still pass; existing
+  tracked examples remain unchanged. The package inspection includes the new
+  schemas and generated example and excludes caches and evaluation/work files.
+- Initial checks found a missing strict-schema type declaration, a conditional
+  schema requirement declaration, fixture namespace errors and test union
+  typing errors. These were corrected; no legacy pins, experimental scorers,
+  acceptance vectors or recorded negative results were changed.
+- This increment does not complete M2. P05 must add v2 projection, replay and
+  comparison binding. Typed assessment/budget members are reserved strict
+  contracts; nonempty inputs explicitly reject until M3 implements their
+  evaluator. Both existing activation APIs and the CLI reject v2 promotion
+  pending M4's protected boundary. No release, merge or production activation
+  has occurred; the full M0–M8 goal remains active.
 
 ---
 

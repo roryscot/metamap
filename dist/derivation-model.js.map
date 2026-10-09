@@ -1,0 +1,1 @@
+{"version":3,"file":"derivation-model.js","sourceRoot":"","sources":["../src/derivation-model.ts"],"names":[],"mappings":"AAKA,MAAM,CAAC,MAAM,0BAA0B,GAAG,OAAgB,CAAC;AAC3D,MAAM,CAAC,MAAM,oBAAoB,GAAG,oBAA6B,CAAC;AAClE,MAAM,CAAC,MAAM,sBAAsB,GAAG;IACpC,UAAU;IACV,SAAS;IACT,YAAY;IACZ,cAAc;IACd,kBAAkB;IAClB,uBAAuB;CACf,CAAC"}

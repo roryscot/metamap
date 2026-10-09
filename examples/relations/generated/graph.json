@@ -1,0 +1,55 @@
+{
+  "authorities": [],
+  "entities": [
+    {
+      "id": "urn:example:consumer",
+      "kind": "configuration",
+      "label": "consumer"
+    },
+    {
+      "id": "urn:example:service",
+      "kind": "configuration",
+      "label": "service"
+    },
+    { "id": "urn:example:schema", "kind": "configuration", "label": "schema" }
+  ],
+  "id": "urn:metamap:example:dependency-graph",
+  "mappings": [
+    {
+      "cardinality": "one-to-one",
+      "id": "urn:example:consumer-service",
+      "lossiness": "lossless",
+      "provenance": { "assertedBy": "consumer-owner", "status": "declared" },
+      "relation": "example:depends",
+      "sources": ["urn:example:consumer"],
+      "targets": ["urn:example:service"]
+    },
+    {
+      "cardinality": "one-to-one",
+      "id": "urn:example:service-schema",
+      "lossiness": "lossless",
+      "provenance": { "assertedBy": "service-owner", "status": "declared" },
+      "relation": "example:depends",
+      "sources": ["urn:example:service"],
+      "targets": ["urn:example:schema"]
+    },
+    {
+      "attributes": {
+        "metamap:derivation": "urn:metamap:derivation:0d11d8d14b23f1cee0dad7a60ed7fab4bb9bd1856befa1c6a5baaf61650fe153"
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:consumer-schema",
+      "lossiness": "lossless",
+      "provenance": {
+        "assertedBy": "urn:metamap:example:law:dependency-chain",
+        "status": "inferred"
+      },
+      "relation": "example:depends",
+      "sources": ["urn:example:consumer"],
+      "targets": ["urn:example:schema"]
+    }
+  ],
+  "namespace": "dependency-example",
+  "revision": "1",
+  "schemaVersion": "2.0.0"
+}

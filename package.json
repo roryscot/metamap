@@ -43,7 +43,8 @@
     "example:routing": "npm run build && node dist/cli.js compile examples/routing/graph.json examples/routing/viability-policy.json examples/routing/generated/generation.json --relation-pack relation-packs/routing.json --as-of 2026-09-02T00:00:00.000Z && node dist/cli.js link examples/routing/graph.json examples/routing/generated/generation.json examples/routing/projection.json examples/routing/generated/command-router.json --relation-pack relation-packs/routing.json && node dist/cli.js link examples/routing/graph.json examples/routing/generated/generation.json examples/routing/projection.json examples/routing/generated/command-router.ts --format typescript --export commandRoutes --relation-pack relation-packs/routing.json && prettier --write examples/routing/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/routing/generated/command-router.ts",
     "example:path-tree": "npm run build && node dist/cli.js compile examples/path-tree/graph.json examples/path-tree/viability-policy.json examples/path-tree/generated/generation.json --relation-pack relation-packs/routing.json --as-of 2026-09-15T00:00:00.000Z && node dist/cli.js link examples/path-tree/graph.json examples/path-tree/generated/generation.json examples/path-tree/projection.json examples/path-tree/generated/routes.json --format path-tree --relation-pack relation-packs/routing.json && node dist/cli.js link examples/path-tree/graph.json examples/path-tree/generated/generation.json examples/path-tree/projection.json examples/path-tree/generated/routes.ts --format path-tree-typescript --export routes --relation-pack relation-packs/routing.json && prettier --write examples/path-tree/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/path-tree/generated/routes.ts",
     "example:topology": "npm run build && node dist/cli.js compile examples/application-topology/graph.json examples/application-topology/viability-policy.json examples/application-topology/generated/generation.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json --as-of 2026-09-08T00:00:00.000Z && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.ts --format typescript --export applicationTopology --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && prettier --write examples/application-topology/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/application-topology/generated/application-topology.ts",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "example:relations": "npm run build && node examples/relations/build.mjs && prettier --write examples/relations/generated"
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -133,7 +134,33 @@
     "./relation-packs/core.json": "./relation-packs/core.json",
     "./relation-packs/research.json": "./relation-packs/research.json",
     "./relation-packs/routing.json": "./relation-packs/routing.json",
-    "./relation-packs/application-topology.json": "./relation-packs/application-topology.json"
+    "./relation-packs/application-topology.json": "./relation-packs/application-topology.json",
+    "./canonical": {
+      "import": "./dist/canonical.js",
+      "types": "./dist/canonical.d.ts"
+    },
+    "./derivation": {
+      "import": "./dist/derivation.js",
+      "types": "./dist/derivation.d.ts"
+    },
+    "./derivation-model": {
+      "import": "./dist/derivation-model.js",
+      "types": "./dist/derivation-model.d.ts"
+    },
+    "./semantic": {
+      "import": "./dist/semantic.js",
+      "types": "./dist/semantic.d.ts"
+    },
+    "./semantic-model": {
+      "import": "./dist/semantic-model.js",
+      "types": "./dist/semantic-model.d.ts"
+    },
+    "./schemas/relation-pack-v2.schema.json": "./schemas/relation-pack-v2.schema.json",
+    "./schemas/metamap-derivation.schema.json": "./schemas/metamap-derivation.schema.json",
+    "./schemas/metamap-composition-request.schema.json": "./schemas/metamap-composition-request.schema.json",
+    "./schemas/metamap-composition-result.schema.json": "./schemas/metamap-composition-result.schema.json",
+    "./schemas/metamap-viability-v2.schema.json": "./schemas/metamap-viability-v2.schema.json",
+    "./schemas/metamap-generation-v2.schema.json": "./schemas/metamap-generation-v2.schema.json"
   },
   "repository": {
     "type": "git",

@@ -14,6 +14,12 @@ import type {
 import { isReferenceIdentifier, isRelationIdentifier } from "./references.js";
 import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
+import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
+import { compileSemanticMetamap } from "./semantic.js";
+import type {
+  MetamapSemanticPolicy,
+  SemanticCompilationResult,
+} from "./semantic-model.js";
 import { validateMetamapDocument } from "./validator.js";
 import {
   METAMAP_GENERATION_VERSION,
@@ -708,6 +714,62 @@ function deepFreeze<T>(value: T): T {
  */
 export function compileMetamap(
   document: MetamapDocument,
+  policy: MetamapSemanticPolicy,
+  options?: CompilationRuntimeOptions,
+): SemanticCompilationResult;
+export function compileMetamap(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy,
+  options?: CompilationRuntimeOptions,
+): CompilationResult;
+export function compileMetamap(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
+  options?: CompilationRuntimeOptions,
+): CompilationResult | SemanticCompilationResult;
+export function compileMetamap(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
+  options: CompilationRuntimeOptions = {},
+): CompilationResult | SemanticCompilationResult {
+  if (policy.schemaVersion === "2.0.0")
+    return compileSemanticMetamap(document, policy, options, {
+      compile: compileLegacyMetamap,
+      declarations: (graph, view) =>
+        resolvedDeclarations(graph, view).byMapping,
+    });
+  const registry = options.relationRegistry ?? new RelationRegistry();
+  if (
+    registry.executablePacks().length > 0 ||
+    document.mappings.some(
+      (mapping) =>
+        mapping.attributes &&
+        Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE),
+    )
+  ) {
+    const impact = analyzeImpact(document, {
+      changedSubjects: options.changedSubjects ?? [],
+      policy,
+      registry,
+    });
+    return {
+      status: "rejected",
+      issues: [
+        issue(
+          "EXECUTABLE_POLICY_REQUIRED",
+          "Executable packs and proof claims require the version 2 policy profile",
+          policy.id,
+        ),
+      ],
+      impact,
+      quarantinedSubjects: impact.affectedSubjects,
+    };
+  }
+  return compileLegacyMetamap(document, policy, options);
+}
+
+function compileLegacyMetamap(
+  document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   options: CompilationRuntimeOptions = {},
 ): CompilationResult {
@@ -847,6 +909,28 @@ export class MetamapActivator {
     policy: MetamapViabilityPolicy,
     options: CompileOptions = {},
   ): ActivationResult {
+    if ((policy as { schemaVersion: string }).schemaVersion !== "1.0.0") {
+      const impact = analyzeImpact(document, {
+        changedSubjects: options.changedSubjects ?? [],
+        registry: this.relationRegistry,
+      });
+      return {
+        activated: false,
+        current: this.generation,
+        compilation: {
+          status: "rejected",
+          issues: [
+            issue(
+              "PROTECTED_ACTIVATION_REQUIRED",
+              "Version 2 candidates require the protected activation boundary",
+              policy.id,
+            ),
+          ],
+          impact,
+          quarantinedSubjects: impact.affectedSubjects,
+        },
+      };
+    }
     const compilation = compileMetamap(document, policy, {
       ...options,
       relationRegistry: this.relationRegistry,

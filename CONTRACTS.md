@@ -84,7 +84,22 @@ unavailable.
 Existing v1 value digests continue to use `stableJson`, including its locale
 key ordering and trailing newline. New v2 values and new 1.0 sidecars use
 RFC 8785 JSON Canonicalization Scheme (JCS), UTF-8, SHA-256, and the
-`sha256:` prefix. Signing uses Ed25519 over JCS UTF-8 bytes of the approval
+`sha256:` prefix. A reference retains the referenced component's convention:
+graph 2.0.0 documents, their explicit mappings, and imported relation packs
+1.0.0 retain `valueDigest`, including when referenced from a new document.
+A derivation's digest covers its complete JCS value except `id` and `digest`;
+its optional `$schema` is covered when present. Its result excludes its own
+`metamap:derivation` back-reference, preventing a digest cycle. A composition
+request binds the full context; missing required keys are unknown, and a
+changed context invalidates a captured proof. Depth counts the longest proof
+chain; derivation count counts unique proof records in its dependency closure.
+Both are explicitly bounded. Limits also bound proof validation work.
+New-profile evaluation uses the canonical JSON value, so ECMAScript negative
+zero is evaluated as the serialized zero. Existing programmatic graph values
+may omit optional object fields with `undefined`; their reference digest still
+omits those fields. Materialization checks data descriptors before copying and
+does not run getters or `toJSON`. New policy and sidecar values reject undefined.
+Signing uses Ed25519 over JCS UTF-8 bytes of the approval
 payload excluding `signature`. Untrusted duplicate JSON keys, invalid Unicode,
 nonfinite numbers and unsupported payload fields reject before verification.
 Unicode is not normalized. The current trusted clock, not captured `as-of`,

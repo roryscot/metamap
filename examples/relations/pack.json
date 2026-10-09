@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/relation-pack-v2.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:metamap:example:relation-pack:dependencies",
+  "version": "1.0.0",
+  "description": "Explicit directional dependency chaining; no identity or authority inference.",
+  "relations": [
+    {
+      "id": "example:depends",
+      "cyclePolicy": "forbid",
+      "transitive": true,
+      "impactDirection": "target-to-source"
+    }
+  ],
+  "laws": [
+    {
+      "id": "urn:metamap:example:law:dependency-chain",
+      "operation": "chain",
+      "operands": ["example:depends", "example:depends"],
+      "resultRelation": "example:depends",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    }
+  ]
+}
