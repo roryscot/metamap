@@ -145,11 +145,11 @@ The continuation's dependency-link evaluation passed: 31/31 required failures
 and 11/11 producers connected to their changed mapping origins, versus 0/31 and
 1/11 in the prior report. Equivalent direct checks match the repaired report.
 All 13 compiler-output pairs are preserved, and both valid controls pass. The
-unchanged original pilot still meets only 3/4 producer-issue criteria and exits
-
-1. Its expansion gate remains unmet. Package 0.7.1 preserves all portable
-contracts. Native tests pass (88 tests in 21 files) and type checking passes;
-formatting, build, all native examples, generated-output consistency, and package
-dry-run also pass. The protocol, script, and current executor identities match
-the stored localization experiment. The original pilot's protocol, scorer, and
-first two reports are unchanged.
+unchanged original pilot still meets only 3/4 producer-issue criteria and returns
+exit status `1`. Its expansion gate remains unmet. Package 0.7.1 preserves all
+portable contracts. Native tests pass (88 tests in 21 files) and type checking
+passes; formatting, build, all native examples, generated-output consistency,
+and package dry-run also pass. The protocol, script, and current executor
+identities match the stored localization experiment. The original pilot's
+protocol, scorer, and first two reports are unchanged. The implementation fix
+was pushed on the same branch as commit `95bf738`.
