@@ -8,6 +8,10 @@ without copying every source into one universal data model.
 
 See [VISION.md](VISION.md) for the longer-term direction: making Metamap a
 trust layer for governed, evidence-bearing relationships between systems.
+The [build plan](BUILD_PLAN.md) translates that direction into capability
+milestones, compatibility decisions, and observable acceptance checks.
+[Contract decisions](CONTRACTS.md) define the selected lifecycle, versioning,
+and digest boundaries for that implementation.
 
 The governing rule is:
 
@@ -158,6 +162,7 @@ npm run example:check
 npm run example:compile
 npm run example:research
 npm run example:routing
+npm run example:bindings
 npm run example:path-tree
 npm run example:topology
 npm run example:replay
@@ -293,6 +298,12 @@ not maintain a second enum. The runtime uses the generated table or path tree
 and never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
 [`examples/routing`](examples/routing) project. Nested URL maps from the same
 generation are in [`examples/path-tree`](examples/path-tree).
+
+The [owned-source example](examples/routing/bindings/README.md) generates native
+consumer imports from separately owned operation/schema and handler/endpoint
+shards. It executes a real request and preserves the stable operation identity
+when the handler moves. The consumer's typed identity set is generated with its
+bindings; rejected candidates preserve the accepted artifacts and captured code.
 
 For exhaustive application routing, the application-topology pack maps the
 semantic route onto its framework implementation, nearest container, content,

@@ -23,3 +23,7 @@ native imports without putting TypeScript semantics in the Metamap kernel.
 
 Try removing the handler mapping, adding a second handler, or changing the
 handler kind. Compilation fails instead of emitting a partially valid router.
+
+[The owned-source binding example](bindings/README.md) extends this with two
+independently owned sources and a consumer that executes checked native imports.
+Run `npm run example:bindings` to generate and call it.

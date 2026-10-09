@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:bindings:shard:service",
+  "namespace": "bindings-service",
+  "revision": "1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:routing",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:bindings:handler:create-user",
+      "kind": "routing:handler",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:service"
+      },
+      "locators": [
+        {
+          "uri": "javascript:service/handlers/create-user.mjs#createUser",
+          "digest": "sha256:689adf3371d4bdce1c6af91d9c93354133a7c10719e794a8b1c93f30ee2d5c1b"
+        }
+      ]
+    },
+    {
+      "id": "urn:bindings:endpoint:production",
+      "kind": "routing:endpoint",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:service"
+      },
+      "attributes": {
+        "method": "POST",
+        "path": "/users",
+        "environment": "production"
+      }
+    },
+    {
+      "id": "urn:bindings:endpoint:development",
+      "kind": "routing:endpoint",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:service"
+      },
+      "attributes": {
+        "method": "POST",
+        "path": "/dev/users",
+        "environment": "development"
+      }
+    }
+  ],
+  "mappings": [],
+  "authorities": [
+    {
+      "id": "urn:bindings:authority:implementation",
+      "concept": "urn:bindings:command:create-user",
+      "source": "urn:bindings:handler:create-user",
+      "facts": ["implementation", "documentation"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:service"
+      }
+    },
+    {
+      "id": "urn:bindings:authority:endpoint",
+      "concept": "urn:bindings:command:create-user",
+      "source": "urn:bindings:handler:create-user",
+      "facts": ["endpoint"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:service"
+      }
+    }
+  ]
+}

@@ -1,5 +1,19 @@
 # First-release evaluation
 
+Planning update, 2026-10-09: the user deferred review-time and comparative-benefit
+studies and requested the capability sequence in [BUILD_PLAN.md](../BUILD_PLAN.md).
+The expansion decisions below record the original empirical gate and remain
+unchanged; that gate is no longer the prerequisite for the proposed capability
+work. No new empirical advantage is claimed by the updated plan.
+
+The new [capability corpus](capability-corpus.json) fixes functional expectations
+for M0–M7. Its native binding cases are executable integration checks; later
+milestone vectors remain design fixtures until their evaluators exist.
+[Legacy compatibility pins](legacy-compatibility.json) preserve fourteen
+schema/relation-pack byte identities and five compiled example identities from
+`f571a3bb49781f56f24f7a2414ec665847edc847`. These are compatibility controls,
+not additional runs of the historical empirical protocols.
+
 `first-release-corpus.json` states the visible regression requirements used to
 implement replay and comparison. All those cases were available during
 development. They establish contract behavior, not an empirical advantage.
