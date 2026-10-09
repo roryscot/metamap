@@ -1,6 +1,6 @@
 {
   "name": "@roryscot/metamap",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "license": "Apache-2.0",
   "description": "Language-neutral semantic linker, authority graph, and static projection compiler",
   "type": "module",

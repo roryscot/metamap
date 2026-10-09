@@ -1,0 +1,532 @@
+{
+  "compiler": {
+    "dependencies": [
+      {
+        "digest": "sha256:e362db57bfb684051a81e28f4c91307864874e59d79ae24c1bb51eed5cad22bd",
+        "name": "ajv-formats",
+        "version": "3.0.1"
+      },
+      {
+        "digest": "sha256:90bc9304f163daeaf2e44bb0f71ebedda20a982e8ede9f6c55402a35abebbf75",
+        "name": "ajv",
+        "version": "8.20.0"
+      },
+      {
+        "digest": "sha256:80ee1afe6de3cc69e7896df04675d05e2bd54bae580565d8ef1a8a3ffad4a88f",
+        "name": "fast-deep-equal",
+        "version": "3.1.3"
+      },
+      {
+        "digest": "sha256:99446cb0e74d2aca9d67c6ef4c7bd61d6f206a7f1e7c1b2d148e68b1b2e6e22a",
+        "name": "fast-uri",
+        "version": "3.1.6"
+      },
+      {
+        "digest": "sha256:26fa5a55010ec03b0d8fbaf7f8602af2274434827d450c5040cf7d7f6e3f7c4d",
+        "name": "json-schema-traverse",
+        "version": "1.0.0"
+      },
+      {
+        "digest": "sha256:c9c262f448a70ffd20f02bbcc11b3e1e2083af16b7cac4e991a81cf7ceb34c0d",
+        "name": "require-from-string",
+        "version": "2.0.2"
+      },
+      {
+        "digest": "sha256:680ea87f46cac3b57cf6e73b68d20126cf1e7cff20e0e741d60285df177e56ae",
+        "name": "typescript",
+        "version": "5.9.3"
+      }
+    ],
+    "digest": "sha256:5853a51718ad03a37250be962b7bec2ce7baec78ea877a178e7bbcbcbb73e894",
+    "format": "distribution",
+    "name": "@roryscot/metamap",
+    "runtime": {
+      "icu": "77.1",
+      "locale": "en-US",
+      "node": "22.16.0"
+    },
+    "version": "0.7.1"
+  },
+  "evaluatedAt": "2026-09-18T00:00:00.000Z",
+  "expansionGate": {
+    "conclusion": "No measured advantage satisfying the predeclared gate; broader expansion remains gated",
+    "regressionFree": false,
+    "rule": "An advantage in held-out correctness or runtime-change localization at no additional false rejections must be demonstrated before broader scope. A tie does not satisfy this gate. Timing is reported as overhead, not a replacement for correctness.",
+    "satisfied": false
+  },
+  "fixtureChecks": {
+    "routes": {
+      "entities": 56,
+      "mappings": 35,
+      "projectedSubjects": 21
+    },
+    "topology": {
+      "entities": 261,
+      "mappings": 445,
+      "projectedSubjects": 21
+    }
+  },
+  "methods": {
+    "baseline": "Direct compileMetamap, compileProjection, stable-ID diff, and runtime-entry comparison, supplied the same graph, policy, packs, context, time, and projection specification.",
+    "notMeasured": [
+      "human review effort",
+      "independent kernel advantage",
+      "population-level error rates"
+    ],
+    "scope": "Bounded pilot of the replay/comparison additions on pinned consumer data. The direct baseline shares the existing compiler and constraint semantics; this is not an independent test that the Metamap kernel beats every simpler graph.",
+    "timing": "Three warm comparisons per case; captures excluded; direct gates shared; results are descriptive, not population estimates"
+  },
+  "protocolDigest": "sha256:18dd8781462dc8e929aaf18a58f3bedb99fd21ef3de5e2ccd9c52300b40e01db",
+  "results": [
+    {
+      "baseline": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 4.672375000000102,
+        "samplesMs": [4.831166999999937, 4.672375000000102, 4.369042000000036],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": true
+        },
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "comparison": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 53.64304200000004,
+        "samplesMs": [52.493582999999944, 54.19524999999999, 53.64304200000004],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": true
+        },
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "expectedAdmission": false,
+      "fixture": "routes",
+      "id": "route-endpoint-removal",
+      "oracle": {
+        "expectedSubjects": [],
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 4.407249999999976,
+        "samplesMs": [4.9979170000000295, 4.26279199999999, 4.407249999999976],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": true
+        },
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "comparison": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 50.99483299999997,
+        "samplesMs": [
+          51.501916999999935, 50.99483299999997, 49.868582999999944
+        ],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": true
+        },
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "expectedAdmission": false,
+      "fixture": "routes",
+      "id": "route-endpoint-ambiguity",
+      "oracle": {
+        "expectedSubjects": [],
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": true,
+        "changedSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination"
+        ],
+        "medianMs": 5.1066249999998945,
+        "samplesMs": [5.1066249999998945, 5.813290999999936, 4.882082999999966],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "comparison": {
+        "admitted": true,
+        "changedSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination"
+        ],
+        "medianMs": 56.189542000000074,
+        "samplesMs": [56.66799999999989, 53.00375000000008, 56.189542000000074],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "expectedAdmission": true,
+      "fixture": "routes",
+      "id": "route-policy-swap",
+      "oracle": {
+        "expectedSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination"
+        ],
+        "violationSubjects": []
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": true,
+        "changedSubjects": ["urn:seeder:web:route:admin-chat"],
+        "medianMs": 4.773415999999997,
+        "samplesMs": [5.079040999999961, 4.655916000000161, 4.773415999999997],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "comparison": {
+        "admitted": true,
+        "changedSubjects": ["urn:seeder:web:route:admin-chat"],
+        "medianMs": 52.7455829999999,
+        "samplesMs": [52.7455829999999, 50.21845899999994, 53.04708299999993],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "expectedAdmission": true,
+      "fixture": "routes",
+      "id": "route-stable-move",
+      "oracle": {
+        "expectedSubjects": ["urn:seeder:web:route:admin-chat"],
+        "violationSubjects": []
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": true,
+        "changedSubjects": [],
+        "medianMs": 5.445541000000048,
+        "samplesMs": [4.980457999999999, 5.445541000000048, 5.564666999999872],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "comparison": {
+        "admitted": true,
+        "changedSubjects": [],
+        "medianMs": 50.913125000000036,
+        "samplesMs": [51.89454100000012, 50.913125000000036, 50.23245800000018],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "expectedAdmission": true,
+      "fixture": "routes",
+      "id": "route-metadata-control",
+      "oracle": {
+        "expectedSubjects": [],
+        "violationSubjects": []
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 32.70625000000018,
+        "samplesMs": [33.95783299999994, 32.70625000000018, 31.39995799999997],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": true
+        },
+        "violationSubjects": [
+          "urn:seeder:topology-page:web-app%3Aadmin%2Fchat%3Apage",
+          "urn:seeder:web:route:admin-chat"
+        ]
+      },
+      "comparison": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 109.28462499999978,
+        "samplesMs": [
+          111.78516599999966, 109.28462499999978, 106.63758300000018
+        ],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": true
+        },
+        "violationSubjects": [
+          "urn:seeder:topology-page:web-app%3Aadmin%2Fchat%3Apage",
+          "urn:seeder:web:route:admin-chat"
+        ]
+      },
+      "expectedAdmission": false,
+      "fixture": "topology",
+      "id": "topology-implementation-removal",
+      "oracle": {
+        "expectedSubjects": [],
+        "violationSubjects": ["urn:seeder:web:route:admin-chat"]
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 30.140791000000263,
+        "samplesMs": [31.62387499999977, 29.67766699999993, 30.140791000000263],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": false
+        },
+        "violationSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination",
+          "urn:seeder:web:route:admin-dashboard",
+          "urn:seeder:web:route:admin-feedback",
+          "urn:seeder:web:route:admin-initiatives",
+          "urn:seeder:web:route:admin-users",
+          "urn:seeder:web:route:creative-preflight",
+          "urn:seeder:web:route:demo-dashboard",
+          "urn:seeder:web:route:development-agentic-flow",
+          "urn:seeder:web:route:development-ai-insights",
+          "urn:seeder:web:route:development-meta-m-theory",
+          "urn:seeder:web:route:development-monitoring",
+          "urn:seeder:web:route:development-root",
+          "urn:seeder:web:route:example-protected",
+          "urn:seeder:web:route:home",
+          "urn:seeder:web:route:login",
+          "urn:seeder:web:route:register",
+          "urn:seeder:web:route:superadmin-flags",
+          "urn:seeder:web:route:superadmin-plans",
+          "urn:seeder:web:route:superadmin-root",
+          "urn:seeder:web:route:superadmin-tenants"
+        ]
+      },
+      "comparison": {
+        "admitted": false,
+        "changedSubjects": null,
+        "medianMs": 109.1242500000003,
+        "samplesMs": [
+          109.66816700000027, 105.32095800000025, 109.1242500000003
+        ],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": null,
+          "violationLocalized": false
+        },
+        "violationSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination",
+          "urn:seeder:web:route:admin-dashboard",
+          "urn:seeder:web:route:admin-feedback",
+          "urn:seeder:web:route:admin-initiatives",
+          "urn:seeder:web:route:admin-users",
+          "urn:seeder:web:route:creative-preflight",
+          "urn:seeder:web:route:demo-dashboard",
+          "urn:seeder:web:route:development-agentic-flow",
+          "urn:seeder:web:route:development-ai-insights",
+          "urn:seeder:web:route:development-meta-m-theory",
+          "urn:seeder:web:route:development-monitoring",
+          "urn:seeder:web:route:development-root",
+          "urn:seeder:web:route:example-protected",
+          "urn:seeder:web:route:home",
+          "urn:seeder:web:route:login",
+          "urn:seeder:web:route:register",
+          "urn:seeder:web:route:superadmin-flags",
+          "urn:seeder:web:route:superadmin-plans",
+          "urn:seeder:web:route:superadmin-root",
+          "urn:seeder:web:route:superadmin-tenants"
+        ]
+      },
+      "expectedAdmission": false,
+      "fixture": "topology",
+      "id": "topology-provider-removal",
+      "oracle": {
+        "expectedSubjects": [],
+        "violationSubjects": [
+          "urn:seeder:topology-container:web-app%3A.%3Alayout"
+        ]
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": true,
+        "changedSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination"
+        ],
+        "medianMs": 40.50762500000019,
+        "samplesMs": [38.293959000000086, 41.03204199999982, 40.50762500000019],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "comparison": {
+        "admitted": true,
+        "changedSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination"
+        ],
+        "medianMs": 139.2779169999999,
+        "samplesMs": [139.2779169999999, 132.9511669999997, 144.3699999999999],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "expectedAdmission": true,
+      "fixture": "topology",
+      "id": "topology-policy-swap",
+      "oracle": {
+        "expectedSubjects": [
+          "urn:seeder:web:route:admin-chat",
+          "urn:seeder:web:route:admin-coordination"
+        ],
+        "violationSubjects": []
+      },
+      "split": "held-out-consumer"
+    },
+    {
+      "baseline": {
+        "admitted": true,
+        "changedSubjects": [],
+        "medianMs": 46.40141700000004,
+        "samplesMs": [46.40141700000004, 96.3330420000002, 39.385291999999936],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "comparison": {
+        "admitted": true,
+        "changedSubjects": [],
+        "medianMs": 136.62379200000032,
+        "samplesMs": [
+          317.8856249999999, 136.62379200000032, 103.66925000000083
+        ],
+        "score": {
+          "admissionCorrect": true,
+          "runtimeChangesCorrect": true,
+          "violationLocalized": null
+        },
+        "violationSubjects": []
+      },
+      "expectedAdmission": true,
+      "fixture": "topology",
+      "id": "topology-metadata-control",
+      "oracle": {
+        "expectedSubjects": [],
+        "violationSubjects": []
+      },
+      "split": "held-out-consumer"
+    }
+  ],
+  "scriptDigest": "sha256:7bd10b5dd071565ef66741d1c090e36bac839ce78d99a354153f829a52167273",
+  "source": {
+    "inputs": [
+      {
+        "digest": "sha256:661a77fd9e6a821685a31c568c77ee1364ba7feab7e6412e0525bc1c9ba4b3cc",
+        "path": "web-routes.graph.json"
+      },
+      {
+        "digest": "sha256:a50cd2d90b8f173d68f7a56e488b32b5e68bcb84f75a9abc197030eea557943f",
+        "path": "web-routes.viability.json"
+      },
+      {
+        "digest": "sha256:32db802f85bba4acf1020f91bca3f5a69498afa813571b92e8b09dd3b5820fe8",
+        "path": "web-routes.projection.json"
+      },
+      {
+        "digest": "sha256:124952823f74981737d04039ea929e08e31d5420f475493640b3a99dcfff9aac",
+        "path": "generated/application-topology.graph.json"
+      },
+      {
+        "digest": "sha256:4f172a477e7cff0c9963ba571ec5f6e170e79465453231adc75df330c7b2274d",
+        "path": "generated/application-topology.viability.json"
+      },
+      {
+        "digest": "sha256:0969f82bbb9a83f2a6c0179f674287b4bf790df36327d91bdfe098c115a3b33c",
+        "path": "application-topology.projection.json"
+      },
+      {
+        "digest": "sha256:d65da0b80e395c4db2b40d8267d37fe38d444870948a4088aac3282f40f468f4",
+        "path": "scripts/generate-application-topology.mjs"
+      }
+    ],
+    "pinMeaning": "File digests pin the actual inputs; the commit supplies context and is not a claim that these files are unchanged from that commit.",
+    "source": "Seeder packages/metamaps",
+    "sourceContextCommit": "8ce88adf817c3817326dfe298a573066eae15be6",
+    "version": "1.0.0"
+  },
+  "summary": {
+    "baseline": {
+      "admissionCorrect": 9,
+      "cases": 9,
+      "falseRejections": 0,
+      "localizationCases": 4,
+      "medianComparisonMs": 5.445541000000048,
+      "missedRequiredRejections": 0,
+      "requiredRejections": 4,
+      "runtimeCases": 5,
+      "runtimeChangesCorrect": 5,
+      "validControls": 5,
+      "violationsLocalized": 3
+    },
+    "comparison": {
+      "admissionCorrect": 9,
+      "cases": 9,
+      "falseRejections": 0,
+      "localizationCases": 4,
+      "medianComparisonMs": 56.189542000000074,
+      "missedRequiredRejections": 0,
+      "requiredRejections": 4,
+      "runtimeCases": 5,
+      "runtimeChangesCorrect": 5,
+      "validControls": 5,
+      "violationsLocalized": 3
+    }
+  },
+  "version": "1.0.0"
+}

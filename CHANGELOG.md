@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.1
+
+- Keep comparison impact paths rooted in actual input changes and explicit
+  diagnostic seeds. Failing consumers no longer mask paths from a removed
+  provider mapping by seeding themselves.
+- Preserve original compiler issue subjects, admission decisions, captured
+  outputs, and all portable contract versions. Dependency paths explain declared
+  propagation; they do not prove a unique cause or add a producer-rule violation.
+- Evaluate producer-to-consumer links against the prior distribution and direct
+  checks with a frozen consumer protocol; retain the original failed pilot.
+
 ## 0.7.0
 
 - Add a versioned compiler replay sidecar, capture/replay API, and CLI commands.

@@ -39,6 +39,16 @@ runtime subjects. Changed diagnostic seed inputs include the explicitly named
 subjects that are known in each graph. Impact paths are declared dependency propagation, not proof
 of physical causation or a minimal affected set.
 
+Impact starts with actual input changes and explicitly changed diagnostic seed
+inputs. A failed consumer is not automatically treated as a changed input:
+otherwise its one-node path would hide a path from the changed producer. For a
+removed mapping, inspect the before graph's paths to the producer and failed
+consumer. The original issue retains its compiler-assigned subject and causal
+path; comparison does not invent an additional producer-rule violation. An
+existing failure plus unrelated graph metadata does not establish a new
+dependency origin. Conservative family seeding and one reported path per subject
+still limit precision when several inputs change together.
+
 Removing a required handler can reject the candidate and explain its dependency
 paths while the active generation remains untouched. Changing an authorization
 target can leave both candidates policy-admitted; the report still shows the

@@ -1,0 +1,2068 @@
+{
+  "equivalentDirectChecksMatch": true,
+  "evaluatedAt": "2026-09-18T00:00:00.000Z",
+  "executors": {
+    "current": {
+      "dependencies": [
+        {
+          "digest": "sha256:e362db57bfb684051a81e28f4c91307864874e59d79ae24c1bb51eed5cad22bd",
+          "name": "ajv-formats",
+          "version": "3.0.1"
+        },
+        {
+          "digest": "sha256:90bc9304f163daeaf2e44bb0f71ebedda20a982e8ede9f6c55402a35abebbf75",
+          "name": "ajv",
+          "version": "8.20.0"
+        },
+        {
+          "digest": "sha256:80ee1afe6de3cc69e7896df04675d05e2bd54bae580565d8ef1a8a3ffad4a88f",
+          "name": "fast-deep-equal",
+          "version": "3.1.3"
+        },
+        {
+          "digest": "sha256:99446cb0e74d2aca9d67c6ef4c7bd61d6f206a7f1e7c1b2d148e68b1b2e6e22a",
+          "name": "fast-uri",
+          "version": "3.1.6"
+        },
+        {
+          "digest": "sha256:26fa5a55010ec03b0d8fbaf7f8602af2274434827d450c5040cf7d7f6e3f7c4d",
+          "name": "json-schema-traverse",
+          "version": "1.0.0"
+        },
+        {
+          "digest": "sha256:c9c262f448a70ffd20f02bbcc11b3e1e2083af16b7cac4e991a81cf7ceb34c0d",
+          "name": "require-from-string",
+          "version": "2.0.2"
+        },
+        {
+          "digest": "sha256:680ea87f46cac3b57cf6e73b68d20126cf1e7cff20e0e741d60285df177e56ae",
+          "name": "typescript",
+          "version": "5.9.3"
+        }
+      ],
+      "digest": "sha256:5853a51718ad03a37250be962b7bec2ce7baec78ea877a178e7bbcbcbb73e894",
+      "format": "distribution",
+      "name": "@roryscot/metamap",
+      "runtime": {
+        "icu": "77.1",
+        "locale": "en-US",
+        "node": "22.16.0"
+      },
+      "version": "0.7.1"
+    },
+    "previous": {
+      "dependencies": [
+        {
+          "digest": "sha256:e362db57bfb684051a81e28f4c91307864874e59d79ae24c1bb51eed5cad22bd",
+          "name": "ajv-formats",
+          "version": "3.0.1"
+        },
+        {
+          "digest": "sha256:90bc9304f163daeaf2e44bb0f71ebedda20a982e8ede9f6c55402a35abebbf75",
+          "name": "ajv",
+          "version": "8.20.0"
+        },
+        {
+          "digest": "sha256:80ee1afe6de3cc69e7896df04675d05e2bd54bae580565d8ef1a8a3ffad4a88f",
+          "name": "fast-deep-equal",
+          "version": "3.1.3"
+        },
+        {
+          "digest": "sha256:99446cb0e74d2aca9d67c6ef4c7bd61d6f206a7f1e7c1b2d148e68b1b2e6e22a",
+          "name": "fast-uri",
+          "version": "3.1.6"
+        },
+        {
+          "digest": "sha256:26fa5a55010ec03b0d8fbaf7f8602af2274434827d450c5040cf7d7f6e3f7c4d",
+          "name": "json-schema-traverse",
+          "version": "1.0.0"
+        },
+        {
+          "digest": "sha256:c9c262f448a70ffd20f02bbcc11b3e1e2083af16b7cac4e991a81cf7ceb34c0d",
+          "name": "require-from-string",
+          "version": "2.0.2"
+        },
+        {
+          "digest": "sha256:680ea87f46cac3b57cf6e73b68d20126cf1e7cff20e0e741d60285df177e56ae",
+          "name": "typescript",
+          "version": "5.9.3"
+        }
+      ],
+      "digest": "sha256:8b115ebadeab4e2426dbfcde257fba4f95f6157c9f755f006d0102e2e0d32ef5",
+      "format": "distribution",
+      "name": "@roryscot/metamap",
+      "runtime": {
+        "icu": "77.1",
+        "locale": "en-US",
+        "node": "22.16.0"
+      },
+      "version": "0.7.0"
+    }
+  },
+  "expansionGate": {
+    "reason": "The original pilot gate is unchanged. Improved dependency links over the previous report do not establish superiority to equivalent direct checks or reduced human effort.",
+    "satisfied": false
+  },
+  "mechanismAccepted": true,
+  "outputsPreserved": 13,
+  "protocol": {
+    "cases": [
+      {
+        "expectedAdmission": false,
+        "goldRule": "Selected semantic routes requiring the removed runtime context",
+        "id": "known-root-context-removal",
+        "mapping": "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:topology-container:web-app%3A.%3Alayout"
+        ],
+        "requiredContext": "urn:seeder:web:context:runtime",
+        "split": "known-regression"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-1",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-2",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-3",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-4",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-5",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-6",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-7",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-8",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-9",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": false,
+        "expectedIssueSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+        ],
+        "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+        "id": "provider-context-removal-10",
+        "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+        "operation": "remove",
+        "producerSubjects": [
+          "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+        ],
+        "split": "new-consumer-mutation"
+      },
+      {
+        "expectedAdmission": true,
+        "expectedIssueSubjects": [],
+        "id": "graph-metadata-control",
+        "operation": "metadata",
+        "split": "valid-control"
+      },
+      {
+        "expectedAdmission": true,
+        "expectedIssueSubjects": [],
+        "id": "equivalent-provider-control",
+        "mapping": "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+        "operation": "replace",
+        "split": "valid-control"
+      }
+    ],
+    "evaluationTime": "2026-09-18T00:00:00.000Z",
+    "expansionGate": "Preserve the original pilot gate and failed scores. A repair over the previous report is a mechanism improvement, not superiority to equivalent direct checks. A tie with direct checks does not open broader scope.",
+    "frozenBeforeImplementation": true,
+    "gold": "Set admission and issue-subject requirements from the pinned consumer contracts and mutation targets, never observed evaluator output. The root-layout case selects the 21 semantic route IDs from the web graph that explicitly require the removed runtime context.",
+    "inputManifest": "seeder-inputs.json",
+    "linkRule": "Every required error subject must have a before or after declared impact path whose first record is the actual changed mapping ID and whose last record is the error subject. The mapping record identifies its producer; the producer must have the same changed-mapping origin. One-node failure paths do not satisfy this rule. Metadata controls and equivalent replacement must introduce no errors.",
+    "methods": {
+      "current": "Current reproduced counterfactual report",
+      "direct": "Same compiler, gates, packs and explicit inputs, stable-ID diff and compileMetamap impact separately seeded with each actual changed graph record. Direct checks have equivalent dependency-path information.",
+      "previous": "Unmodified 0.7.0 distribution from priorCommit, with the same installed runtime dependencies"
+    },
+    "metrics": [
+      "admission matches predeclared outcome",
+      "required issue-subject coverage",
+      "changed-mapping-to-producer and changed-mapping-to-failure path coverage",
+      "no introduced faults on valid controls",
+      "identical original compilation/projection outputs across prior and current executors"
+    ],
+    "notMeasured": [
+      "human review effort",
+      "physical causation",
+      "minimal affected set",
+      "population error rates",
+      "independent kernel advantage"
+    ],
+    "priorCommit": "51a63c97719b5e307fd69de4afaae6c3aa0c3fdf",
+    "scope": "Mechanism test of declared change-to-failure paths. Known first-pilot cases remain known regressions. New consumer mutations use familiar fault classes, not blind unseen classes.",
+    "version": "1.0.0"
+  },
+  "protocolDigest": "sha256:18672be672f0221dc220a66b3c892743ff30648111fb0f215ab3bd3eaa3a6847",
+  "results": [
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:web:route:admin-chat",
+        "urn:seeder:web:route:admin-coordination",
+        "urn:seeder:web:route:admin-dashboard",
+        "urn:seeder:web:route:admin-feedback",
+        "urn:seeder:web:route:admin-initiatives",
+        "urn:seeder:web:route:admin-users",
+        "urn:seeder:web:route:creative-preflight",
+        "urn:seeder:web:route:demo-dashboard",
+        "urn:seeder:web:route:development-agentic-flow",
+        "urn:seeder:web:route:development-ai-insights",
+        "urn:seeder:web:route:development-meta-m-theory",
+        "urn:seeder:web:route:development-monitoring",
+        "urn:seeder:web:route:development-root",
+        "urn:seeder:web:route:example-protected",
+        "urn:seeder:web:route:home",
+        "urn:seeder:web:route:login",
+        "urn:seeder:web:route:register",
+        "urn:seeder:web:route:superadmin-flags",
+        "urn:seeder:web:route:superadmin-plans",
+        "urn:seeder:web:route:superadmin-root",
+        "urn:seeder:web:route:superadmin-tenants"
+      ],
+      "id": "known-root-context-removal",
+      "mapping": "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:web:route:admin-chat",
+            "urn:seeder:web:route:admin-coordination",
+            "urn:seeder:web:route:admin-dashboard",
+            "urn:seeder:web:route:admin-feedback",
+            "urn:seeder:web:route:admin-initiatives",
+            "urn:seeder:web:route:admin-users",
+            "urn:seeder:web:route:creative-preflight",
+            "urn:seeder:web:route:demo-dashboard",
+            "urn:seeder:web:route:development-agentic-flow",
+            "urn:seeder:web:route:development-ai-insights",
+            "urn:seeder:web:route:development-meta-m-theory",
+            "urn:seeder:web:route:development-monitoring",
+            "urn:seeder:web:route:development-root",
+            "urn:seeder:web:route:example-protected",
+            "urn:seeder:web:route:home",
+            "urn:seeder:web:route:login",
+            "urn:seeder:web:route:register",
+            "urn:seeder:web:route:superadmin-flags",
+            "urn:seeder:web:route:superadmin-plans",
+            "urn:seeder:web:route:superadmin-root",
+            "urn:seeder:web:route:superadmin-tenants"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-chat%3Aruntime-context",
+                "urn:seeder:web:route:admin-chat"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-chat"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-coordination%3Aruntime-context",
+                "urn:seeder:web:route:admin-coordination"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-coordination"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-dashboard%3Aruntime-context",
+                "urn:seeder:web:route:admin-dashboard"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-dashboard"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-feedback%3Aruntime-context",
+                "urn:seeder:web:route:admin-feedback"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-feedback"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-initiatives%3Aruntime-context",
+                "urn:seeder:web:route:admin-initiatives"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-initiatives"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-users%3Aruntime-context",
+                "urn:seeder:web:route:admin-users"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-users"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Acreative-preflight%3Acontainer",
+                "urn:seeder:web:route:creative-preflight"
+              ],
+              "subjectId": "urn:seeder:web:route:creative-preflight"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Ademo-dashboard%3Aruntime-context",
+                "urn:seeder:web:route:demo-dashboard"
+              ],
+              "subjectId": "urn:seeder:web:route:demo-dashboard"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-agentic-flow%3Aruntime-context",
+                "urn:seeder:web:route:development-agentic-flow"
+              ],
+              "subjectId": "urn:seeder:web:route:development-agentic-flow"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-ai-insights%3Aruntime-context",
+                "urn:seeder:web:route:development-ai-insights"
+              ],
+              "subjectId": "urn:seeder:web:route:development-ai-insights"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-meta-m-theory%3Aruntime-context",
+                "urn:seeder:web:route:development-meta-m-theory"
+              ],
+              "subjectId": "urn:seeder:web:route:development-meta-m-theory"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-monitoring%3Aruntime-context",
+                "urn:seeder:web:route:development-monitoring"
+              ],
+              "subjectId": "urn:seeder:web:route:development-monitoring"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-root%3Aruntime-context",
+                "urn:seeder:web:route:development-root"
+              ],
+              "subjectId": "urn:seeder:web:route:development-root"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Aexample-protected%3Acontainer",
+                "urn:seeder:web:route:example-protected"
+              ],
+              "subjectId": "urn:seeder:web:route:example-protected"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Ahome%3Acontainer",
+                "urn:seeder:web:route:home"
+              ],
+              "subjectId": "urn:seeder:web:route:home"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Alogin%3Acontainer",
+                "urn:seeder:web:route:login"
+              ],
+              "subjectId": "urn:seeder:web:route:login"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Aregister%3Acontainer",
+                "urn:seeder:web:route:register"
+              ],
+              "subjectId": "urn:seeder:web:route:register"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-flags%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-flags"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-flags"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-plans%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-plans"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-plans"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-root%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-root"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-root"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-tenants%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-tenants"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-tenants"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout"
+              ],
+              "subjectId": "urn:seeder:topology-container:web-app%3A.%3Alayout"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:web:route:admin-chat",
+            "urn:seeder:web:route:admin-coordination",
+            "urn:seeder:web:route:admin-dashboard",
+            "urn:seeder:web:route:admin-feedback",
+            "urn:seeder:web:route:admin-initiatives",
+            "urn:seeder:web:route:admin-users",
+            "urn:seeder:web:route:creative-preflight",
+            "urn:seeder:web:route:demo-dashboard",
+            "urn:seeder:web:route:development-agentic-flow",
+            "urn:seeder:web:route:development-ai-insights",
+            "urn:seeder:web:route:development-meta-m-theory",
+            "urn:seeder:web:route:development-monitoring",
+            "urn:seeder:web:route:development-root",
+            "urn:seeder:web:route:example-protected",
+            "urn:seeder:web:route:home",
+            "urn:seeder:web:route:login",
+            "urn:seeder:web:route:register",
+            "urn:seeder:web:route:superadmin-flags",
+            "urn:seeder:web:route:superadmin-plans",
+            "urn:seeder:web:route:superadmin-root",
+            "urn:seeder:web:route:superadmin-tenants"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-chat%3Aruntime-context",
+                "urn:seeder:web:route:admin-chat"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-chat"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-coordination%3Aruntime-context",
+                "urn:seeder:web:route:admin-coordination"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-coordination"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-dashboard%3Aruntime-context",
+                "urn:seeder:web:route:admin-dashboard"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-dashboard"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-feedback%3Aruntime-context",
+                "urn:seeder:web:route:admin-feedback"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-feedback"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-initiatives%3Aruntime-context",
+                "urn:seeder:web:route:admin-initiatives"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-initiatives"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Aadmin-users%3Aruntime-context",
+                "urn:seeder:web:route:admin-users"
+              ],
+              "subjectId": "urn:seeder:web:route:admin-users"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Acreative-preflight%3Acontainer",
+                "urn:seeder:web:route:creative-preflight"
+              ],
+              "subjectId": "urn:seeder:web:route:creative-preflight"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Ademo-dashboard%3Aruntime-context",
+                "urn:seeder:web:route:demo-dashboard"
+              ],
+              "subjectId": "urn:seeder:web:route:demo-dashboard"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-agentic-flow%3Aruntime-context",
+                "urn:seeder:web:route:development-agentic-flow"
+              ],
+              "subjectId": "urn:seeder:web:route:development-agentic-flow"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-ai-insights%3Aruntime-context",
+                "urn:seeder:web:route:development-ai-insights"
+              ],
+              "subjectId": "urn:seeder:web:route:development-ai-insights"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-meta-m-theory%3Aruntime-context",
+                "urn:seeder:web:route:development-meta-m-theory"
+              ],
+              "subjectId": "urn:seeder:web:route:development-meta-m-theory"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-monitoring%3Aruntime-context",
+                "urn:seeder:web:route:development-monitoring"
+              ],
+              "subjectId": "urn:seeder:web:route:development-monitoring"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Adevelopment-root%3Aruntime-context",
+                "urn:seeder:web:route:development-root"
+              ],
+              "subjectId": "urn:seeder:web:route:development-root"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Aexample-protected%3Acontainer",
+                "urn:seeder:web:route:example-protected"
+              ],
+              "subjectId": "urn:seeder:web:route:example-protected"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Ahome%3Acontainer",
+                "urn:seeder:web:route:home"
+              ],
+              "subjectId": "urn:seeder:web:route:home"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Alogin%3Acontainer",
+                "urn:seeder:web:route:login"
+              ],
+              "subjectId": "urn:seeder:web:route:login"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout",
+                "urn:seeder:mapping:application-topology%3Aregister%3Acontainer",
+                "urn:seeder:web:route:register"
+              ],
+              "subjectId": "urn:seeder:web:route:register"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-flags%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-flags"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-flags"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-plans%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-plans"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-plans"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-root%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-root"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-root"
+            },
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:web:context:runtime",
+                "urn:seeder:mapping:application-topology%3Asuperadmin-tenants%3Aruntime-context",
+                "urn:seeder:web:route:superadmin-tenants"
+              ],
+              "subjectId": "urn:seeder:web:route:superadmin-tenants"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout"
+              ],
+              "subjectId": "urn:seeder:topology-container:web-app%3A.%3Alayout"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:web:route:admin-chat",
+            "urn:seeder:web:route:admin-coordination",
+            "urn:seeder:web:route:admin-dashboard",
+            "urn:seeder:web:route:admin-feedback",
+            "urn:seeder:web:route:admin-initiatives",
+            "urn:seeder:web:route:admin-users",
+            "urn:seeder:web:route:creative-preflight",
+            "urn:seeder:web:route:demo-dashboard",
+            "urn:seeder:web:route:development-agentic-flow",
+            "urn:seeder:web:route:development-ai-insights",
+            "urn:seeder:web:route:development-meta-m-theory",
+            "urn:seeder:web:route:development-monitoring",
+            "urn:seeder:web:route:development-root",
+            "urn:seeder:web:route:example-protected",
+            "urn:seeder:web:route:home",
+            "urn:seeder:web:route:login",
+            "urn:seeder:web:route:register",
+            "urn:seeder:web:route:superadmin-flags",
+            "urn:seeder:web:route:superadmin-plans",
+            "urn:seeder:web:route:superadmin-root",
+            "urn:seeder:web:route:superadmin-tenants"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:admin-chat"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:admin-coordination"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:admin-dashboard"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:admin-feedback"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:admin-initiatives"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:admin-users"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:creative-preflight"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:demo-dashboard"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:development-agentic-flow"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:development-ai-insights"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:development-meta-m-theory"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:development-monitoring"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:development-root"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:example-protected"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:home"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:login"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:register"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:superadmin-flags"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:superadmin-plans"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:superadmin-root"
+            },
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:web:route:superadmin-tenants"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+                "urn:seeder:topology-container:web-app%3A.%3Alayout"
+              ],
+              "subjectId": "urn:seeder:topology-container:web-app%3A.%3Alayout"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "known-regression"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+      ],
+      "id": "provider-context-removal-1",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+      ],
+      "id": "provider-context-removal-2",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+      ],
+      "id": "provider-context-removal-3",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+      ],
+      "id": "provider-context-removal-4",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+      ],
+      "id": "provider-context-removal-5",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+      ],
+      "id": "provider-context-removal-6",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+      ],
+      "id": "provider-context-removal-7",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+      ],
+      "id": "provider-context-removal-8",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+      ],
+      "id": "provider-context-removal-9",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": false,
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+      ],
+      "id": "provider-context-removal-10",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": true,
+              "path": [
+                "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+                "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+              ],
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": false,
+          "errorSubjects": [
+            "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+          ],
+          "failureLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+            }
+          ],
+          "producerLinks": [
+            {
+              "connected": false,
+              "path": null,
+              "subjectId": "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+            }
+          ],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": null
+        }
+      },
+      "outputsPreserved": true,
+      "split": "new-consumer-mutation"
+    },
+    {
+      "expectedAdmission": true,
+      "expectedIssueSubjects": [],
+      "id": "graph-metadata-control",
+      "mapping": null,
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": true,
+          "errorSubjects": [],
+          "failureLinks": [],
+          "producerLinks": [],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": true
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": true,
+          "errorSubjects": [],
+          "failureLinks": [],
+          "producerLinks": [],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": true
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": true,
+          "errorSubjects": [],
+          "failureLinks": [],
+          "producerLinks": [],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": true
+        }
+      },
+      "outputsPreserved": true,
+      "split": "valid-control"
+    },
+    {
+      "expectedAdmission": true,
+      "expectedIssueSubjects": [],
+      "id": "equivalent-provider-control",
+      "mapping": "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+      "methods": {
+        "current": {
+          "admissionCorrect": true,
+          "admitted": true,
+          "errorSubjects": [],
+          "failureLinks": [],
+          "producerLinks": [],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": true
+        },
+        "direct": {
+          "admissionCorrect": true,
+          "admitted": true,
+          "errorSubjects": [],
+          "failureLinks": [],
+          "producerLinks": [],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": true
+        },
+        "previous": {
+          "admissionCorrect": true,
+          "admitted": true,
+          "errorSubjects": [],
+          "failureLinks": [],
+          "producerLinks": [],
+          "requiredIssueSubjectsPresent": true,
+          "validControlHasNoFaults": true
+        }
+      },
+      "outputsPreserved": true,
+      "split": "valid-control"
+    }
+  ],
+  "runDate": "2026-10-09",
+  "scriptDigest": "sha256:4d738e50405ded431c9e69cce512dc3dc33fdfb0beabc9048cc2bf15a9818fba",
+  "source": {
+    "inputs": [
+      {
+        "digest": "sha256:661a77fd9e6a821685a31c568c77ee1364ba7feab7e6412e0525bc1c9ba4b3cc",
+        "path": "web-routes.graph.json"
+      },
+      {
+        "digest": "sha256:a50cd2d90b8f173d68f7a56e488b32b5e68bcb84f75a9abc197030eea557943f",
+        "path": "web-routes.viability.json"
+      },
+      {
+        "digest": "sha256:32db802f85bba4acf1020f91bca3f5a69498afa813571b92e8b09dd3b5820fe8",
+        "path": "web-routes.projection.json"
+      },
+      {
+        "digest": "sha256:124952823f74981737d04039ea929e08e31d5420f475493640b3a99dcfff9aac",
+        "path": "generated/application-topology.graph.json"
+      },
+      {
+        "digest": "sha256:4f172a477e7cff0c9963ba571ec5f6e170e79465453231adc75df330c7b2274d",
+        "path": "generated/application-topology.viability.json"
+      },
+      {
+        "digest": "sha256:0969f82bbb9a83f2a6c0179f674287b4bf790df36327d91bdfe098c115a3b33c",
+        "path": "application-topology.projection.json"
+      },
+      {
+        "digest": "sha256:d65da0b80e395c4db2b40d8267d37fe38d444870948a4088aac3282f40f468f4",
+        "path": "scripts/generate-application-topology.mjs"
+      }
+    ],
+    "pinMeaning": "File digests pin the actual inputs; the commit supplies context and is not a claim that these files are unchanged from that commit.",
+    "source": "Seeder packages/metamaps",
+    "sourceContextCommit": "8ce88adf817c3817326dfe298a573066eae15be6",
+    "version": "1.0.0"
+  },
+  "summary": {
+    "current": {
+      "admissionCorrect": 13,
+      "cases": 13,
+      "casesWithRequiredIssueSubjects": 13,
+      "connectedFailureSubjects": 31,
+      "connectedProducerSubjects": 11,
+      "controlsWithoutFaults": 2,
+      "failureSubjects": 31,
+      "producerSubjects": 11,
+      "validControls": 2
+    },
+    "direct": {
+      "admissionCorrect": 13,
+      "cases": 13,
+      "casesWithRequiredIssueSubjects": 13,
+      "connectedFailureSubjects": 31,
+      "connectedProducerSubjects": 11,
+      "controlsWithoutFaults": 2,
+      "failureSubjects": 31,
+      "producerSubjects": 11,
+      "validControls": 2
+    },
+    "previous": {
+      "admissionCorrect": 13,
+      "cases": 13,
+      "casesWithRequiredIssueSubjects": 13,
+      "connectedFailureSubjects": 0,
+      "connectedProducerSubjects": 1,
+      "controlsWithoutFaults": 2,
+      "failureSubjects": 31,
+      "producerSubjects": 11,
+      "validControls": 2
+    }
+  },
+  "version": "1.0.0"
+}

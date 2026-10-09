@@ -297,6 +297,60 @@ describe("read-only counterfactual comparison", () => {
     );
   });
 
+  it("keeps a removed context mapping as the origin of its failed consumers", () => {
+    const input = routing("application-topology");
+    input.registry.registerPack(
+      fixture<RelationPack>("relation-packs/application-topology.json"),
+    );
+    const before = input.capture();
+    const provider = input.graph.mappings.find(
+      (entry) => entry.relation === "topology:provides_context",
+    )!;
+    input.graph.mappings = input.graph.mappings.filter(
+      (entry) => entry.id !== provider.id,
+    );
+    const after = input.capture();
+    const report = compare(before, after);
+    expect(report.before.admitted).toBe(true);
+    expect(report.after.admitted).toBe(false);
+    expect(report.impact.before.changedSubjects).toEqual([provider.id]);
+    const failedSubject = "urn:example:route:account";
+    const path = report.impact.before.paths.find(
+      (entry) => entry.subjectId === failedSubject,
+    )!.path;
+    expect(path[0]).toBe(provider.id);
+    expect(path).toContain(provider.sources[0]);
+    expect(path.at(-1)).toBe(failedSubject);
+    expect(report.issues.introduced[0].issue).toEqual(
+      after.expected.compilation.issues[0],
+    );
+    expect(report.issues.introduced[0].issue.subjectId).toBe(failedSubject);
+  });
+
+  it("does not turn unchanged failures into change origins for administrative metadata", () => {
+    const input = routing("application-topology");
+    input.registry.registerPack(
+      fixture<RelationPack>("relation-packs/application-topology.json"),
+    );
+    input.graph.mappings = input.graph.mappings.filter(
+      (entry) => entry.relation !== "topology:provides_context",
+    );
+    const before = input.capture();
+    input.graph.metadata = {
+      administrativeNote: "inspected unchanged failure",
+    };
+    const report = compare(before, input.capture());
+    expect(report.before.admitted).toBe(false);
+    expect(report.after.admitted).toBe(false);
+    expect(report.issues).toEqual({ introduced: [], resolved: [] });
+    expect(report.impact.before).toEqual({
+      changedSubjects: [],
+      affectedSubjects: [],
+      paths: [],
+    });
+    expect(report.impact.after).toEqual(report.impact.before);
+  });
+
   it("retains explicitly changed diagnostic seeds without claiming runtime changes", () => {
     const input = routing();
     const before = input.capture();

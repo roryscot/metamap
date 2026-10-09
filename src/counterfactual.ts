@@ -393,12 +393,8 @@ function changeSeeds(
     ])
       seeds.add(mapping.id);
   }
-  if (!valuesEqual(before.inputs, after.inputs)) {
-    for (const outputs of [left, right]) {
-      for (const entry of issuesFor(outputs))
-        if (entry.issue.subjectId) seeds.add(entry.issue.subjectId);
-    }
-  }
+  // A failed subject is an effect, not an input change. Seeding it would assign
+  // a one-node path before traversal and hide the path from a changed producer.
   if (!valuesEqual(before.inputs.projections, after.inputs.projections)) {
     for (const outputs of [left, right]) {
       for (const output of outputs.projections) {
