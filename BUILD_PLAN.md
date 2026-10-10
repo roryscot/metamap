@@ -37,11 +37,14 @@ shared explanations are implemented and verified at `5008938`. P13's local
 debugger has passed the complete local gate and actual browser acceptance;
 the first exact-head Linux run failed on reporting timeouts, and the corrected
 run at `f82797e` passed all 517 tests / 48 files without unhandled errors. M6 is
-implemented and verified. M7/P14-P15 is pushed and locally verified. Linux CI at
-`d5dadab` passed599tests/52files, actual UID separation and all five SIGKILL cases,
-then exceeded the15-minute job limit during the examples. Full workflow
-acceptance remains pending. M8's lifecycle/package work and separate Seeder
-adoption remain in progress; the full goal is active.
+implemented and verified. M7/P14-P15 and M8/P16 are implemented, verified and
+documented at engine revision `399747a`. Full Linux CI passed 600 tests in 53 files,
+with one off-profile skip and no unhandled errors, actual independent-UID
+permissions, all five SIGKILL recovery phases, every example and installed-package
+acceptance. P17's separate legacy consumer upgrade is pushed and verified with
+repository-native route/topology checks, 426 application tests and the required
+commit/push quality hooks. Scoped M0–M8/P01–P17 build acceptance is complete.
+Human review, a release and production activation remain separate decisions.
 
 ## 1. Product outcome and controlling sources
 
@@ -776,38 +779,27 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The current executable job is P16: lifecycle/package/migration acceptance,
-followed by the separate P17 consumer upgrade. Every added
-semantic input must extend capture and comparison in the same increment.
-Governance or scientific work
-must resolve its actual trusted keys, owner grants, source/license, and consumer
-environment before crossing its activation or ingestion boundary.
+The scoped implementation and acceptance work is complete. All new semantic
+inputs are captured and compared through the selected contracts. The milestone
+records below retain the results and limitations at each increment; the final
+acceptance record governs the current build state.
 
-### Active implementation goal
+### Implementation goal
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P16's lifecycle/package/migration acceptance and separate P17
-  adoption, with full exact-head Linux workflow acceptance still required.
-  P08–P13 are pushed and verified; protected activation
-  is verified for the first root-owned Linux profile.
-- Identity instruction supersession: the user's 2026-10-09 replacement
-  instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
-- Locally implemented and verified: M0–M2 and M3/P06-P07 typed execution,
-  including P03/P04 law admission and the M2/M3 portions of P05 downstream
-  bindings. P05 continues as later semantic
-  inputs land. Human acceptance, release and production activation are not
-  inferred. P08 is locally implemented and verified. M4/P09-P10 also verifies
-  exact authenticated invalidation at the protected write boundary and actual
-  independent proposer/consumer permissions. M5/P11 is implemented and verified
-  for the finite supplied-edit profile. M6/P12-P13 is implemented and verified
-  at corrected exact-head Linux CI `f82797e`. M7's599-test Linux suite passed at
-  `d5dadab`, but the complete job timed out and is not accepted. M8 remains
-  outstanding.
-- Functional acceptance, compatibility, and authorization checks govern progress;
-  deferred review-time metrics do not block implementation.
-- Goal completion requires the full scoped build and verification, not merely
-  finishing the first consumer slice. Production activation is reported separately.
+- Build state: implemented, verified and documented. Engine acceptance is bound
+  to `399747a`; the separate downstream change pins that published immutable
+  revision. Documentation-only progress edits preserve the verified executor,
+  schemas, packs, examples and runtime contracts.
+- Identity: the user's replacement instructions supersede the stored goal's
+  earlier AveLyra wording. MetaMap and this private downstream adoption use Rory;
+  destination, authenticated identity and every new commit's metadata were checked.
+- Review/release/activation: draft reviews remain open. Tests establish the
+  selected functional and protected-host profiles; they do not constitute human
+  acceptance, an engine release, production trust configuration or deployment.
+- Metrics: deferred review-time studies remain outside build acceptance. Original
+  protocols, scorers, negative pilot results and legacy inputs remain immutable.
 
 ### M0/M1 implementation increment, 2026-10-09
 
@@ -1373,43 +1365,64 @@ environment before crossing its activation or ingestion boundary.
   Metamap consumer is onv0.5.0. No human acceptance, release, production activation
   or scientific/benefit claim is inferred; the complete build goal stays active.
 
-### P16 lifecycle and package acceptance in progress, 2026-10-10
+### M7/M8 and P16/P17 final build acceptance, 2026-10-10
 
-- `example:lifecycle` uses public APIs, two owned source shards, the existing
-  checked dependency derivation and cost5 policy. It prepares exact native bytes,
-  verifies external synthetic owner approval, changes a locator while preserving
-  semantic IDs, executes the new binding, and freshly approves rollback against
-  the current baseline. All three generated modules are typechecked and executed.
-- Missing/ambiguous bindings, unsupported inference, insufficient budget,
-  strict unknown evidence, viable agent-proposed authority expansion, stale
-  baselines/approval and tampered bytes leave the prior active state intact.
-  Keys stay in memory. The portable walkthrough uses the synthetic memory
-  profile; protected Linux permissions are covered by the actual native suite.
-- `LIFECYCLE.md` connects the walkthrough to existing repair/debugging/scientific
-  examples and documents version selection, historical executor mismatch,
-  consumer-owned trust/keys, failure reconciliation and freshly approved rollback.
-  Package verification installs the actual archive in an external disposable
-  consumer, imports every public module/JSON export and runs the packaged native
-  walkthrough. No published schema/pack interpretation changes.
-- The cancelled `d5dadab` job annotation explicitly reports a15-minute execution
-  limit. All599tests/52files passed with1off-profile skip and no unhandled error;
-  actual24denied independent-UID operations and all five SIGKILL phases passed.
-  Subsequent examples and packing were incomplete. The full-job allowance is
-  now30minutes so all unchanged assertions plus installed-package acceptance
-  can finish. Production deadlines and permission checks are unchanged.
-- Local31-command gate passed584tests/53files/17Linux-profile skips with no
-  unhandled errors. All examples/native command cases passed. The actual packed
-  458-file archive installed outside the checkout;43public modules and49JSON
-  exports imported, and the packaged lifecycle typechecked/executed all three
-  bindings. All51published schema/pack files,17source outputs and original
-  evaluation/legacy fixtures remained byte-identical. Exact-head full Linux
-  workflow acceptance remains pending.
-- P17 is isolated from the active downstream checkout at baseline`8ce88ad`;
-  its existing0.5.0 baseline passed route/topology,426webtests/82files, separate
-  lint/type checks and the web build. Next.js rewrote its generated environment
-  type reference during the build; that unrelated side effect was restored.
-  An immutable upstream pin and corresponding post-upgrade checks remain.
-  No human acceptance, release or production activation is inferred.
+- The public `example:lifecycle` reuses two owned source shards, a checked
+  dependency derivation and a cost-5 consumer policy. It prepares exact native
+  bytes, verifies synthetic external-owner approval, moves a locator while
+  preserving semantic IDs, executes the changed binding and freshly approves
+  rollback against the current baseline. All three generated modules are
+  typechecked and executed. The physical handler-move case remains covered by
+  `example:bindings`.
+- Missing or ambiguous bindings, unsupported inference, insufficient budget,
+  strict unknown evidence, stale baselines/approval and tampered bytes preserve
+  active state. A viable agent-proposed authority expansion requires owner
+  approval. Synthetic keys stay in memory. The portable walkthrough uses the
+  memory profile; the actual Linux acceptance suite establishes the selected
+  protected write boundary.
+- `LIFECYCLE.md` connects existing repair, debugger and scientific examples and
+  documents contract/version selection, executor mismatch, consumer-owned trust,
+  failure reconciliation and freshly approved rollback. The actual 458-file
+  archive installs outside the checkout, imports all 43 public modules and 49
+  JSON exports, and executes the packaged native lifecycle.
+- The complete local 31-command gate passed 584 tests in 53 files, with 17 Linux
+  profile skips and no unhandled errors. All examples and native command cases
+  passed. All 51 published schema/pack files, 17 source outputs and original
+  evaluation/legacy fixtures remain byte-identical.
+- The scientific run at `d5dadab` passed 599 tests, the actual 24 independent-UID
+  denied operations and all five SIGKILL phases, then hit the 15-minute job limit.
+  That cancelled attempt remains recorded. The job allowance became 30 minutes
+  so the full existing suite and package check could complete; assertions and
+  production deadlines were unchanged. OAuth publication lacked workflow scope;
+  the configured SSH identity authenticated as Rory and published the authorized
+  change without modifying credential permissions.
+- Full Linux CI at `399747a` succeeded: [run 38064357994](https://github.com/roryscot/metamap/actions/runs/38064357994).
+  It passed 600 tests in 53 files, one off-profile skip, no unhandled errors,
+  the actual independent-UID/protected native consumer checks, all five SIGKILL
+  recovery phases, every remaining example, generated-output preservation and
+  installed-package acceptance. This verifies the first root-owned Linux
+  profile; it does not establish power-loss or other-host guarantees.
+- P17's separate downstream change installs and pins the immutable `399747a`
+  archive and matching config schema. Cached and uncached generation match.
+  Generated route/topology native modules remain byte-identical. Identity order
+  and semantic values are preserved; exact config provenance/content digests
+  refresh after the schema URL change. The initial raw-object comparison was
+  correctly unequal; a separate full-value comparison verified only the exact
+  expected digest replacements. No generic provenance stripping was used.
+- Downstream checks passed before and after adoption: graph/drift/route/topology,
+  focused route tests, the complete configured 426-test application suite in 82
+  files, standalone lint/type checks and build. The full required commit and
+  push hooks also passed. Their initial Python cache failure was resolved with
+  an isolated pinned environment; no hook bypass or unrelated source edits.
+  The original checkout remains intact. Hosted downstream workflows are filtered
+  to their main/develop bases and are not claimed as run for this isolated draft.
+- All scoped build milestones and acceptance profiles are implemented, verified
+  and documented. Draft review, release and production activation remain distinct.
+  Scientific validation establishes this bounded format/consumer profile;
+  confidence is not calibrated probability, the inverse proof remains inactive
+  under the existing irreversible-premise guard, and biological truth or
+  practical-benefit superiority is not inferred. Deferred metrics do not block
+  the completed capability build.
 
 ## 19. Historical first release and localization cycle
 
