@@ -2,6 +2,12 @@
 
 ## Unreleased capability work
 
+- Add a local static inspection view over the same verified explanation report,
+  including binding, source, owner, proof, risk, change and alternative navigation.
+- Add the read-only `inspect` command and public HTML renderer, literal escaped
+  input, hash-bound fixed styles, keyboard disclosures and scrollable tables.
+  Accept saved explanation results without adding authority or activation.
+
 - Add shared read-only explanations over complete source-bound replay: stable
   operation/mapping selection, captured owner/source/rule/evidence links, actual
   slot/risk checks, original issue subjects and observed before/current changes.

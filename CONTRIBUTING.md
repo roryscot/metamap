@@ -18,6 +18,11 @@ npm run example:routing
 npm run example:bindings
 npm run example:relations
 npm run example:uncertainty
+npm run example:provenance
+npm run example:governance
+npm run example:repair
+npm run example:explain
+npm run example:debugger
 npm run example:path-tree
 npm run example:topology
 npm run example:replay
@@ -107,5 +112,10 @@ origin, verified supplied alternatives and source/existing-file preservation.
 Explanation changes must test rejected/unknown/ambiguous captures, exact pack
 bindings, original issue subjects, independent input changes, whole-projection
 risk, unavailable current authorization and rehashed report tampering. Run build
-before distribution-backed tests. HTML/browser acceptance remains the separate
-P13 increment; structured command output alone does not satisfy it.
+before distribution-backed tests. Use `npm run example:debugger` for the verified
+static renderer and actual inspection command. Renderer changes also require
+actual browser checks of navigation, keyboard focus/disclosures/table scrolling,
+desktop and narrow layout, escaped input, unwanted requests, and rejected,
+unknown, ambiguous, empty and truncated states. Inspect the screenshots before
+accepting layout; structured command output alone does not satisfy browser
+acceptance. Restore temporary viewport/tracing state afterward.

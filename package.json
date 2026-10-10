@@ -56,7 +56,8 @@
     "example:provenance": "npm run build && node examples/provenance/build.mjs && prettier --write examples/provenance/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/provenance/generated/network-bindings.ts examples/provenance/generated/network-tree.ts",
     "example:governance": "npm run build && node examples/governance/run.mjs",
     "example:repair": "npm run build && node examples/repair/run.mjs",
-    "example:explain": "npm run build && node examples/explanation/run.mjs"
+    "example:explain": "npm run build && node examples/explanation/run.mjs",
+    "example:debugger": "npm run build && node examples/debugger/run.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -261,7 +262,11 @@
     },
     "./schemas/metamap-explanation.schema.json": "./schemas/metamap-explanation.schema.json",
     "./schemas/metamap-explanation-request.schema.json": "./schemas/metamap-explanation-request.schema.json",
-    "./schemas/metamap-explanation-result.schema.json": "./schemas/metamap-explanation-result.schema.json"
+    "./schemas/metamap-explanation-result.schema.json": "./schemas/metamap-explanation-result.schema.json",
+    "./debugger": {
+      "import": "./dist/debugger.js",
+      "types": "./dist/debugger.d.ts"
+    }
   },
   "repository": {
     "type": "git",

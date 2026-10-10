@@ -32,9 +32,11 @@ timers and blocked fixture RPC handling. Corrections and root-owned consumer
 storage hardening pass both the local gate and exact-head Linux acceptance at
 3ffb4cd. M4 is implemented and verified for the first root-owned Linux profile;
 production deployment and consumer acceptance are separate. P11/M5 bounded repair
-is implemented and verified at26ec924, including exact-head Linux CI. P12 begins
-M6 shared explanations. M6–M8 and separate Seeder adoption remain outstanding;
-the full goal is active.
+is implemented and verified at `26ec924`, including exact-head Linux CI. P12's
+shared explanations are implemented and verified at `5008938`. P13's local
+debugger has passed the complete local gate and actual browser acceptance;
+exact-head Linux acceptance is in progress. M6–M8 and
+separate Seeder adoption remain outstanding; the full goal is active.
 
 ## 1. Product outcome and controlling sources
 
@@ -769,9 +771,9 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The current executable job is P12: shared read-only explanations using complete
-source-bound replay, existing compiler/comparison reports and verified supplied
-repairs. P13 follows with a local HTML view of those same reports. Every added
+The current executable job is P13: finish exact-head Linux acceptance for the
+locally verified HTML view of P12's shared explanations. P14/P15 follow with the
+pinned licensed scientific integration. Every added
 semantic input must extend capture and comparison in the same increment.
 Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
@@ -781,9 +783,9 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P12 shared explanation API and command, after M5's exact-head
-  Linux acceptance at `26ec924`. P08/P09/P10/P11 are pushed and verified; protected
-  activation is verified for the first root-owned Linux profile.
+- Current work: P13 local debugger verification, after P12's exact-head Linux
+  acceptance at `5008938`. P08–P12 are pushed and verified; protected activation
+  is verified for the first root-owned Linux profile.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
 - Locally implemented and verified: M0–M2 and M3/P06-P07 typed execution,
@@ -1206,7 +1208,7 @@ environment before crossing its activation or ingestion boundary.
   profile. M6–M8 and separate Seeder adoption remain outstanding; the full goal
   stays active. No human acceptance, release or production activation is inferred.
 
-### P12 — shared explanation API and command, verification in progress
+### P12 — shared explanation API and command, implemented and verified
 
 - New request/report 1.0 contracts bind complete source-bound captures, a stable
   consumer/operation or mapping selection, optional matched before capture and
@@ -1239,10 +1241,50 @@ environment before crossing its activation or ingestion boundary.
   cases, ten repair and ten explanation command cases, and native workflows
   pass. All 42 published schema/pack files, prior examples and original evaluation
   records are preserved; 17 source outputs are byte-stable. The public package
-  contains 414 files and excludes private tests/work/cache. Exact-head Linux CI
-  remains pending. The HTML view and actual browser acceptance remain P13;
-  M6 is not yet marked verified. No human acceptance, release or production
-  activation is inferred.
+  contains 414 files and excludes private tests/work/cache.
+- Exact-head [Linux CI at 5008938](https://github.com/roryscot/metamap/actions/runs/38035906204)
+  succeeded: 510 tests / 46 files, one off-profile skip and no unhandled errors.
+  The 28 explanation API tests and distribution-backed workflow passed alongside
+  the actual 24-operation proposer UID denial probe and all five SIGKILL recovery
+  phases. All 45 published schema/pack files are now immutable. P12 is implemented
+  and verified. M6 requires P13's complete gate; no human acceptance, release or
+  production activation is inferred.
+
+### P13 — local semantic debugger, verification in progress
+
+- The public static renderer reproduces explanation report1 before displaying
+  the same bindings, captured inputs/owners/sources, exact rules and premises,
+  uncertainty/risk, original issues, input changes and supplied alternatives.
+  The new `inspect` command accepts a bare report or the closed saved `explain`
+  result, preserves existing files and creates only explicitly named new output.
+  No new schema, dependency, framework or reasoning engine is introduced.
+- All input text is escaped. URLs remain literal text; generated links are
+  internal. A fixed stylesheet is hash-bound in a restrictive content security
+  policy. Native links/disclosures and named keyboard-scrollable table regions
+  expose the records without scripts, fetching, approval or activation.
+- Focused type/build checks and seven tests in two files passed. The public
+  example checks twelve scenarios and eleven actual command cases, preserving
+  source/input/existing output bytes. An initial result-unwrapping type error was
+  corrected before these checks; strict JSON and report verification remain.
+- Actual Codex in-app browser acceptance passed 39 checks: twelve states in
+  default desktop and 375×812 narrow views; section navigation; skip-link focus;
+  keyboard proof disclosure and table scrolling; independent changed origins;
+  legal, blocked and rejected alternatives; and visible conflicting evidence.
+  Screenshots were inspected. The initial long-label heading overflow was fixed;
+  cramped narrow tables were changed to local horizontal scrolling. All profiles
+  were rerun. No input external HTTP request or executable input node occurred;
+  the browser tool's own local extension injection was recorded separately.
+  Temporary viewport/tracing state was restored and the loopback server stopped.
+- The full local 27-command gate passed: 501 tests / 48 files with 17 Linux
+  cases skipped on this Mac, sixteen examples, 45 previous command cases, ten
+  repair, ten explanation and eleven inspection command cases, plus native
+  workflows. Format/type/build, package inspection (420 public files), all 45
+  published schema/pack pins, 17 source outputs and original evaluation/example
+  preservation passed. Exact-head Linux CI remains pending.
+- Browser success is acceptance of this synthetic local profile, not
+  human review, authenticated current approval, unique causation, scientific
+  truth, benefit superiority or production activation. M7/M8 and separate tested
+  Seeder adoption remain outstanding; the full goal stays active.
 
 ## 19. Historical first release and localization cycle
 

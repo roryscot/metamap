@@ -6,8 +6,9 @@ and check results. It uses the same compiler, replay, comparison and repair
 evaluators as admission. It does not load a provider or execute code named in
 an input.
 
-P12 supplies the structured report and command. The local HTML inspection view
-and browser acceptance are the next P13 increment.
+The structured report, command and local HTML view share one verified report.
+The HTML uses ordinary links, disclosure controls and scrollable tables; it
+does not require JavaScript or a hosted application.
 
 ## Create and inspect an explanation
 
@@ -66,6 +67,50 @@ preserved. There are no apply, trust, signing, clock or provider-loading options
 The synthetic example checks public API/subpath agreement, the actual command,
 the removed provider origin and unchanged original source bytes. An optional
 example argument names a new file for the structured report.
+
+## Open the local inspection view
+
+```text
+metamap explain explanation-request.json new-report.json
+metamap inspect new-report.json new-view.html
+npm run example:debugger
+```
+
+Open `new-view.html` locally. `inspect` accepts either the bare verified report
+or the exact closed `{ status: "explained", report }` result saved by `explain`.
+It reproduces the report before rendering; a rehashed forged report is rejected.
+Without an output path it writes HTML to standard output. Input size, strict
+UTF-8/JSON handling, exclusive output creation and exit codes match `explain`.
+Unknown options, including approval or application options, fail.
+
+The public renderer accepts a bare report:
+
+```typescript
+import { renderMetamapExplanationHtml } from "@roryscot/metamap/debugger";
+
+if (result.status === "explained") {
+  const html = renderMetamapExplanationHtml(result.report);
+}
+```
+
+Start at the selected operation, then follow Bindings, Inputs, Owners, Sources,
+Rules, Risk, Changes and Alternatives. Rule premises link back to their recorded
+mappings. Before/current origins and original issue subjects remain separate.
+The evidence disclosures contain the complete report and exact executor identity.
+Missing, ambiguous, rejected, empty and truncated states remain visible.
+
+Use Tab and Enter for links and disclosures. Wide tables have a named focusable
+region; arrow keys scroll their columns within the page on narrow screens.
+Locators, labels and evidence are escaped literal text. No supplied URL becomes
+a link, image, script or other resource. A content security policy permits only
+the renderer's fixed, hash-bound stylesheet. This is passive inspection: no
+source fetching, provider execution, owner message, approval or activation.
+
+The debugger example checks twelve public scenarios and eleven actual command
+cases, including direct consumption of saved explanation results. An optional
+argument names a **new directory** for HTML and bare JSON reports; its default
+temporary directory is removed. The example performs API/command checks only;
+the build plan records separate actual browser acceptance.
 
 ## Read the report
 

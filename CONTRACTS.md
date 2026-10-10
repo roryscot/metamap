@@ -287,3 +287,10 @@ Input changes remain separate from issue subjects; the existing single-path
 impact limits and unestablished unique cause are retained. Declared owners and
 captured inputs do not authenticate current grants or active state. See
 [DEBUGGER.md](DEBUGGER.md).
+
+The local static debugger is a view of that same verified report, not a new wire
+contract or evaluator. `inspect` accepts a bare report or the exact closed
+explained result saved by `explain`; the public renderer takes the bare report.
+It recomputes before displaying, escapes all supplied text, emits only internal
+links and fixed hash-bound styles, and creates only explicitly named new output.
+The view cannot fetch a source, approve a change or establish active state.

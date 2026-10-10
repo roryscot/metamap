@@ -32,6 +32,7 @@ import { captureReplayBundle, replayMetamap } from "./replay.js";
 import { compareMetamapBundles } from "./counterfactual.js";
 import { searchMetamapRepairs } from "./repair.js";
 import { explainMetamap } from "./explanation.js";
+import { renderMetamapExplanationHtml } from "./debugger.js";
 import { parseSourceReplayBundle } from "./semantic-replay.js";
 import {
   captureWorkspaceSources,
@@ -77,6 +78,7 @@ function usage(): string {
   metamap compare <before.replay.json> <after.replay.json> [report.json]
   metamap repair <repair-request.json> [new-report.json]
   metamap explain <explanation-request.json> [new-report.json]
+  metamap inspect <explanation-report.json> [new-view.html]
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -254,6 +256,44 @@ async function main(args: string[]): Promise<number> {
     const serialized = `${canonicalJson(result)}\n`;
     if (outputPath) await writeFile(resolve(outputPath), serialized, "utf8");
     else process.stdout.write(serialized);
+    return 0;
+  }
+  if (command === "inspect") {
+    const parsed = parseArguments(rest, new Set());
+    const [reportPath, outputPath] = parsed.positionals;
+    if (!reportPath || parsed.positionals.length > 2) {
+      console.error(usage());
+      return 2;
+    }
+    const bytes = await readFile(resolve(reportPath));
+    if (bytes.byteLength > 64 * 1024 * 1024)
+      throw new Error("Explanation report exceeds 64 MiB");
+    const input = parseStrictJson(
+      new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+    );
+    let report: unknown = input;
+    if (
+      typeof input === "object" &&
+      input !== null &&
+      !Array.isArray(input) &&
+      "status" in input
+    ) {
+      if (
+        input.status !== "explained" ||
+        Object.keys(input).sort().join(",") !== "report,status"
+      )
+        throw new Error(
+          "Inspection requires a report or the closed explained result from the explain command",
+        );
+      report = (input as { report: unknown }).report;
+    }
+    const html = renderMetamapExplanationHtml(report);
+    if (outputPath)
+      await writeFile(resolve(outputPath), html, {
+        encoding: "utf8",
+        flag: "wx",
+      });
+    else process.stdout.write(html);
     return 0;
   }
   if (command === "explain") {

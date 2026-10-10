@@ -51,4 +51,5 @@ export * from "./adapters/registry.js";
 export * from "./adapters/source-of-truth.js";
 export * from "./explanation-model.js";
 export * from "./explanation.js";
+export * from "./debugger.js";
 //# sourceMappingURL=index.d.ts.map
