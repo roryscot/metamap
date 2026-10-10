@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { setImmediate } from "node:timers/promises";
+import { beforeEach, describe, expect, it } from "vitest";
 import { MetamapActivator } from "../viability.js";
 import { RelationRegistry } from "../relations.js";
 import { ConstraintRegistry } from "../constraints.js";
@@ -21,6 +22,10 @@ import {
   governanceNow,
   rehashGovernance,
 } from "./helpers/governance-fixture.js";
+
+// These synchronous replay cases must yield between tests so the worker can
+// receive reporting acknowledgements on slower hosts.
+beforeEach(() => setImmediate());
 
 function setup() {
   const f = governanceFixture();
@@ -124,6 +129,7 @@ describe("governed activation through the existing in-memory interface", () => {
       expect(activator.activate(bad).status).toBe("rejected");
       expect(activator.governedCurrent).toBe(before);
     },
+    15000,
   );
   it("reads fresh trust and refuses revoked approval without retiring active state", () => {
     const { activator, request, f } = setup();

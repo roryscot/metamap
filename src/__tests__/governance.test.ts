@@ -1,5 +1,6 @@
 import { generateKeyPairSync, sign, webcrypto } from "node:crypto";
-import { describe, expect, it } from "vitest";
+import { setImmediate } from "node:timers/promises";
+import { beforeEach, describe, expect, it } from "vitest";
 import { canonicalDigest, canonicalJson } from "../canonical.js";
 import {
   attachGovernedApprovalSignature,
@@ -35,6 +36,10 @@ import { captureReplayBundle } from "../replay.js";
 import { composeCorrespondences } from "../derivation.js";
 import { coreRelationPack, RelationRegistry } from "../relations.js";
 import { relationPackDigest } from "../relation-pack.js";
+
+// Allow runner acknowledgements between synchronous replay/crypto cases. A
+// microtask-only file can otherwise starve the worker's 60-second RPC deadline.
+beforeEach(() => setImmediate());
 
 function rejection(result: GovernanceVerificationResult, code: string) {
   expect(result).toMatchObject({ status: "rejected", issues: [{ code }] });

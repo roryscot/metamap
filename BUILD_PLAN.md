@@ -35,7 +35,8 @@ production deployment and consumer acceptance are separate. P11/M5 bounded repai
 is implemented and verified at `26ec924`, including exact-head Linux CI. P12's
 shared explanations are implemented and verified at `5008938`. P13's local
 debugger has passed the complete local gate and actual browser acceptance;
-exact-head Linux acceptance is in progress. M6–M8 and
+the first exact-head Linux run failed on reporting timeouts and a correction
+is being verified. M6–M8 and
 separate Seeder adoption remain outstanding; the full goal is active.
 
 ## 1. Product outcome and controlling sources
@@ -771,8 +772,9 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The current executable job is P13: finish exact-head Linux acceptance for the
-locally verified HTML view of P12's shared explanations. P14/P15 follow with the
+The current executable job is P13: correct Linux reporting starvation and finish
+exact-head acceptance for the locally verified HTML view of P12's shared
+explanations. P14/P15 follow with the
 pinned licensed scientific integration. Every added
 semantic input must extend capture and comparison in the same increment.
 Governance or scientific work
@@ -783,7 +785,7 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P13 local debugger verification, after P12's exact-head Linux
+- Current work: P13 Linux reporting correction and acceptance, after P12's exact-head Linux
   acceptance at `5008938`. P08–P12 are pushed and verified; protected activation
   is verified for the first root-owned Linux profile.
 - Identity instruction supersession: the user's 2026-10-09 replacement
@@ -1280,7 +1282,24 @@ environment before crossing its activation or ingestion boundary.
   repair, ten explanation and eleven inspection command cases, plus native
   workflows. Format/type/build, package inspection (420 public files), all 45
   published schema/pack pins, 17 source outputs and original evaluation/example
-  preservation passed. Exact-head Linux CI remains pending.
+  preservation passed.
+- The first exact-head [Linux CI at 569b08d](https://github.com/roryscot/metamap/actions/runs/38053474917)
+  failed: all 517 assertions / 48 files passed with one off-profile skip, but two
+  unhandled `onTaskUpdate` RPC timeouts made the gate fail. Actual independent-UID
+  denial/native consumer and all five SIGKILL recovery markers passed; later
+  workflow steps did not run. Two synchronous governance files exceeded the
+  worker's 60-second reporting deadline. An isolated 64-second file reproduced
+  the same reporting failure. The correction yields between governance tests;
+  assertions, production APIs and protected boundaries stay unchanged. The
+  isolated yielded file passes all 32 segments without unhandled errors, and
+  the focused 84-test gate passes. The first corrected full local run has no
+  reporting errors, but one exact-byte mutation case exceeds its default
+  five-second harness budget (5.524 seconds). These six cases now use the same
+  explicit 15-second budget as their neighboring in-memory activation cases;
+  no production limit or outcome is relaxed. The corrected full local run
+  passes all 501 tests / 48 files (17 Linux skips) without unhandled errors;
+  format, type and preservation checks also pass. Corrected exact-head Linux
+  acceptance is pending.
 - Browser success is acceptance of this synthetic local profile, not
   human review, authenticated current approval, unique causation, scientific
   truth, benefit superiority or production activation. M7/M8 and separate tested
