@@ -23,6 +23,8 @@ npm run example:governance
 npm run example:repair
 npm run example:explain
 npm run example:debugger
+npm run example:scientific-source
+npm run example:scientific
 npm run example:path-tree
 npm run example:topology
 npm run example:replay

@@ -803,6 +803,11 @@ async function discoverPermittedWorkspace(
           ];
     for (const path of paths)
       await checkLocalPath(resolve(loaded.repositoryRoot, path), roots, true);
+    if (source.adapter === "sssom-tsv" && source.metadataPath !== undefined)
+      await checkLocalPath(
+        resolve(loaded.repositoryRoot, source.metadataPath as string),
+        roots,
+      );
   }
   for (const path of loaded.config.relationPacks ?? [])
     await checkLocalPath(resolve(loaded.repositoryRoot, path), roots);

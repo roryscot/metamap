@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-sssom-document.schema.json",
+  "title": "MetaMap SSSOM entity TSV document 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profile", "metadata", "columns", "rows"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "profile": { "const": "sssom-1.0-entity-tsv" },
+    "metadata": { "type": "object" },
+    "columns": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1024 }
+    },
+    "rows": {
+      "type": "array",
+      "maxItems": 50000,
+      "items": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 256,
+        "items": { "type": "string" }
+      }
+    }
+  },
+  "$comment": "Raw metadata and decoded TSV cell strings are retained. The SDK additionally enforces exact widths, the pinned SSSOM MappingSet/Mapping models, CURIE expansion, propagation and explicit unsupported-profile rejection. Serialized input is bounded to 64 MiB."
+}

@@ -384,6 +384,9 @@ Use [REPAIR.md](REPAIR.md) for bounded read-only proposals, exact candidate patc
 honest search coverage and the separate approval required for a viable repair.
 Use [DEBUGGER.md](DEBUGGER.md) for shared captured explanations, original issue
 subjects, input change origins and read-only inspection of supplied alternatives.
+Use [SCIENTIFIC_MAPPING.md](SCIENTIFIC_MAPPING.md) for the bounded local SSSOM1.0
+profile, distinct scientific assertions, explicit exploratory consumer budgets,
+native lookup and source-bound RO-Crate1.2 export.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 

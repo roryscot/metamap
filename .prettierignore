@@ -3,3 +3,7 @@ node_modules/
 examples/workspace/generated/
 LICENSE
 NOTICE
+standards/sssom-1.0.0/sssom_schema.yaml
+standards/sssom-1.0.0/LICENSE
+schemas/sssom-1.0.0.schema.json
+examples/scientific-mapping/fixtures/mgi-subset.sssom.tsv

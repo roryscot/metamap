@@ -1,0 +1,1 @@
+{"version":3,"file":"scientific-relations.d.ts","sourceRoot":"","sources":["../src/scientific-relations.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,sBAAsB,EAAE,MAAM,YAAY,CAAC;AAEzD,eAAO,MAAM,uBAAuB,8CACS,CAAC;AAC9C,eAAO,MAAM,4BAA4B,UAAU,CAAC;AACpD,eAAO,MAAM,0BAA0B,EAAE,QAAQ,CAAC,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CASpE,CAAC;AAEL,uFAAuF;AACvF,wBAAgB,0BAA0B,IAAI,sBAAsB,CAkBnE"}

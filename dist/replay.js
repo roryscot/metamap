@@ -97,6 +97,9 @@ export function replayCompilerIdentity() {
             format === "source" ? ".ts" : ".js",
         ]),
         schemas: fileIdentities(join(packageDirectory, "schemas"), [".json"]),
+        relationPacks: fileIdentities(join(packageDirectory, "relation-packs"), [
+            ".json",
+        ]),
     };
     return {
         name: pkg.name,

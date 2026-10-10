@@ -1,0 +1,379 @@
+{
+  "version": "1.0.0",
+  "sourceCommit": "658de421c21a686f1213ff41879c9245ac0b4925",
+  "sourceDigest": "sha256:dde9bd0aa706715859999685d58634cf26893f499523326f7e28fb3e11252ae1",
+  "mapping": {
+    "subject_id": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": false
+    },
+    "subject_label": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "subject_category": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "predicate_id": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": false
+    },
+    "predicate_label": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "predicate_modifier": {
+      "range": "predicate_modifier_enum",
+      "multivalued": false,
+      "propagated": false
+    },
+    "object_id": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": false
+    },
+    "object_label": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "object_category": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "mapping_justification": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": false
+    },
+    "author_id": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": false
+    },
+    "author_label": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "reviewer_id": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": false
+    },
+    "reviewer_label": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "creator_id": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": false
+    },
+    "creator_label": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "license": {
+      "range": "uri",
+      "multivalued": false,
+      "propagated": false
+    },
+    "subject_type": {
+      "range": "entity_type_enum",
+      "multivalued": false,
+      "propagated": true
+    },
+    "subject_source": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": true
+    },
+    "subject_source_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "object_type": {
+      "range": "entity_type_enum",
+      "multivalued": false,
+      "propagated": true
+    },
+    "object_source": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": true
+    },
+    "object_source_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_provider": {
+      "range": "uri",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_source": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": false
+    },
+    "mapping_cardinality": {
+      "range": "mapping_cardinality_enum",
+      "multivalued": false,
+      "propagated": false
+    },
+    "mapping_tool": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_tool_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_date": {
+      "range": "date",
+      "multivalued": false,
+      "propagated": true
+    },
+    "publication_date": {
+      "range": "date",
+      "multivalued": false,
+      "propagated": false
+    },
+    "confidence": {
+      "range": "double",
+      "multivalued": false,
+      "propagated": false
+    },
+    "curation_rule": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": false
+    },
+    "curation_rule_text": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "subject_match_field": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "object_match_field": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "match_string": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "subject_preprocessing": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "object_preprocessing": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "similarity_score": {
+      "range": "double",
+      "multivalued": false,
+      "propagated": false
+    },
+    "similarity_measure": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "see_also": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "issue_tracker_item": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": false
+    },
+    "other": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "comment": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    }
+  },
+  "mappingSet": {
+    "curie_map": {
+      "range": "prefix",
+      "multivalued": true,
+      "propagated": false
+    },
+    "mappings": {
+      "range": "mapping",
+      "multivalued": true,
+      "propagated": false
+    },
+    "mapping_set_id": {
+      "range": "uri",
+      "multivalued": false,
+      "propagated": false
+    },
+    "mapping_set_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "mapping_set_source": {
+      "range": "uri",
+      "multivalued": true,
+      "propagated": false
+    },
+    "mapping_set_title": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "mapping_set_description": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "creator_id": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": false
+    },
+    "creator_label": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "license": {
+      "range": "uri",
+      "multivalued": false,
+      "propagated": false
+    },
+    "subject_type": {
+      "range": "entity_type_enum",
+      "multivalued": false,
+      "propagated": true
+    },
+    "subject_source": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": true
+    },
+    "subject_source_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "object_type": {
+      "range": "entity_type_enum",
+      "multivalued": false,
+      "propagated": true
+    },
+    "object_source": {
+      "range": "EntityReference",
+      "multivalued": false,
+      "propagated": true
+    },
+    "object_source_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_provider": {
+      "range": "uri",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_tool": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_tool_version": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": true
+    },
+    "mapping_date": {
+      "range": "date",
+      "multivalued": false,
+      "propagated": true
+    },
+    "publication_date": {
+      "range": "date",
+      "multivalued": false,
+      "propagated": false
+    },
+    "subject_match_field": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "object_match_field": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "subject_preprocessing": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "object_preprocessing": {
+      "range": "EntityReference",
+      "multivalued": true,
+      "propagated": true
+    },
+    "see_also": {
+      "range": "string",
+      "multivalued": true,
+      "propagated": false
+    },
+    "issue_tracker": {
+      "range": "uri",
+      "multivalued": false,
+      "propagated": false
+    },
+    "other": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "comment": {
+      "range": "string",
+      "multivalued": false,
+      "propagated": false
+    },
+    "extension_definitions": {
+      "range": "extension definition",
+      "multivalued": true,
+      "propagated": false
+    }
+  }
+}

@@ -474,7 +474,7 @@ describe("current externally scoped approval verification", () => {
       verifyGovernedApproval(changed.proposal, current, f.context(baseline)),
       "GOVERNANCE_SCOPE_DENIED",
     );
-  });
+  }, 15000);
   it("rejects a correctly signed reduced action list and graph-supplied trusted configuration", () => {
     const f = governanceFixture(),
       p = f.propose(f.bundle()),

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceRepository": "https://github.com/mapping-commons/mh_mapping_initiative",
+  "sourceCommit": "e4fe727428661f0093f6ab9269f4fb80387e39fc",
+  "sourcePath": "mappings/mp_hp_mgi_all.sssom.tsv",
+  "sourceByteDigest": "sha256:6b23131d80d596a8a5d5a5e6c3a3e94a63c83229059bc6b346888d6b9fd7a5de",
+  "sourceByteCount": 328986,
+  "sourceRecordCount": 1564,
+  "subsetByteDigest": "sha256:0eafab5a5673563e0a7fc737f9470f4fb3a53ad29beb4bc8d6138f1b3a610b69",
+  "subsetByteCount": 4620,
+  "subsetRecordCount": 7,
+  "selectionRule": "First occurrence in original file order of each exact/close/broad/narrow/related predicate plus first repeated four-core-field assertion pair with different complementary metadata; union sorted by original record order",
+  "sourceRecordIndices0": [0, 3, 6, 22, 40, 44, 712],
+  "sourceLineRanges1": [
+    [23, 23],
+    [26, 26],
+    [29, 29],
+    [45, 45],
+    [63, 63],
+    [67, 67],
+    [735, 735]
+  ],
+  "changes": [
+    "Extracted seven original records from1564; retained exact original metadata/header/selected-record bytes",
+    "No predicate/identifier/justification/confidence/description alteration"
+  ],
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "formatVersionDeclaredBySource": null,
+  "selectedValidationProfile": "SSSOM1.0 TSV / schema v1.0.0",
+  "formatConformance": "Independent SSSOM-py0.4.17/schema1.0.0 default parse plus fail_on_error=True JsonSchema/PrefixMapCompleteness/StrictCurieFormat validation passed seven source records and both exports; independent TSV/YAML semantic preservation passed. The narrower MetaMap entity profile does not establish scientific truth",
+  "sourceInterpretation": "Original description applies MP/HP matches while ignoring species restriction; recorded confidence is not a probability or proof of biological identity",
+  "checkerStrictParserLimitation": "strict=True incorrectly rejects standard metadata due to inverted validity flag in pinned upstream parser; failure and audit retained, no upstream patch or validation bypass"
+}

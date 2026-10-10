@@ -35,8 +35,10 @@ production deployment and consumer acceptance are separate. P11/M5 bounded repai
 is implemented and verified at `26ec924`, including exact-head Linux CI. P12's
 shared explanations are implemented and verified at `5008938`. P13's local
 debugger has passed the complete local gate and actual browser acceptance;
-the first exact-head Linux run failed on reporting timeouts and a correction
-is being verified. M6–M8 and
+the first exact-head Linux run failed on reporting timeouts, and the corrected
+run at `f82797e` passed all 517 tests / 48 files without unhandled errors. M6 is
+implemented and verified. M7/P14-P15 is locally implemented and verified;
+exact-head Linux acceptance is pending publication. M8 and
 separate Seeder adoption remain outstanding; the full goal is active.
 
 ## 1. Product outcome and controlling sources
@@ -772,10 +774,8 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The current executable job is P13: correct Linux reporting starvation and finish
-exact-head acceptance for the locally verified HTML view of P12's shared
-explanations. P14/P15 follow with the
-pinned licensed scientific integration. Every added
+The current executable job is P14/P15: the pinned licensed scientific
+integration, following P13's corrected exact-head Linux acceptance. Every added
 semantic input must extend capture and comparison in the same increment.
 Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
@@ -785,8 +785,9 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P13 Linux reporting correction and acceptance, after P12's exact-head Linux
-  acceptance at `5008938`. P08–P12 are pushed and verified; protected activation
+- Current work: P14/P15 scientific publication and exact-head Linux acceptance,
+  then P16's lifecycle/package/migration acceptance and separate P17 adoption.
+  P08–P13 are pushed and verified; protected activation
   is verified for the first root-owned Linux profile.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
@@ -797,7 +798,8 @@ environment before crossing its activation or ingestion boundary.
   inferred. P08 is locally implemented and verified. M4/P09-P10 also verifies
   exact authenticated invalidation at the protected write boundary and actual
   independent proposer/consumer permissions. M5/P11 is implemented and verified
-  for the finite supplied-edit profile. M6–M8 remain outstanding.
+  for the finite supplied-edit profile. M6/P12-P13 is implemented and verified
+  at corrected exact-head Linux CI `f82797e`. M7–M8 remain outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -1252,7 +1254,7 @@ environment before crossing its activation or ingestion boundary.
   and verified. M6 requires P13's complete gate; no human acceptance, release or
   production activation is inferred.
 
-### P13 — local semantic debugger, verification in progress
+### P13 — local semantic debugger, implemented and verified
 
 - The public static renderer reproduces explanation report1 before displaying
   the same bindings, captured inputs/owners/sources, exact rules and premises,
@@ -1298,12 +1300,74 @@ environment before crossing its activation or ingestion boundary.
   explicit 15-second budget as their neighboring in-memory activation cases;
   no production limit or outcome is relaxed. The corrected full local run
   passes all 501 tests / 48 files (17 Linux skips) without unhandled errors;
-  format, type and preservation checks also pass. Corrected exact-head Linux
-  acceptance is pending.
+  format, type and preservation checks also pass.
+- Corrected exact-head [Linux CI at f82797e](https://github.com/roryscot/metamap/actions/runs/38055567960)
+  passed 517 tests / 48 files with one off-profile skip and no unhandled errors.
+  Actual 24-operation UID denial/protected native consumption and all five
+  SIGKILL recovery phases passed. Remaining workflow examples, generated-output
+  preservation and package inspection also passed. M6 is implemented and verified
+  for this synthetic read-only profile; the failed attempts remain recorded.
 - Browser success is acceptance of this synthetic local profile, not
   human review, authenticated current approval, unique causation, scientific
   truth, benefit superiority or production activation. M7/M8 and separate tested
   Seeder adoption remain outstanding; the full goal stays active.
+
+### M7/P14-P15 scientific integration, 2026-10-10
+
+- Implemented a bounded, loss-preserving local SSSOM1.0 entity TSV profile,
+  raw/effective field and origin retention, explicit CURIE expansion, unique
+  assertion identities, scalar extensions, metadata propagation/condensation
+  and export preservation. Unsupported literal/unmapped/negated constructs,
+  unknown prefixes, collisions and malformed values reject explicitly.
+  Unknown predicates stay uninterpreted. One exact YAML2.9.1 dependency handles
+  normative YAML1.2; no second graph or authority engine was introduced.
+- Pinned official SSSOMv1.0.0 model bytes and BSD3 license, and a licensed CC BY4
+  seven-of1564 MGI subset with exact original selected bytes, creator IDs,
+  selection indices and species-ignored context. The source does not declare
+  a format version; the selected1.0 profile was independently checked.
+- The read-only adapter uses existing config/registry/shards, receipts,
+  permission checks, replay and CLI. All local TSV/external metadata bytes and
+  declared selection context are bound. Bundled relation-pack bytes participate
+  in the current executor identity. Published legacy contracts are unchanged.
+- Normative SKOS exact/close/broad/narrow/related remain distinct. The exploratory
+  consumer explicitly declares seven separate lossy/irreversible assertions at
+  ordinal cost18; confidence becomes neither typed support nor biological
+  identity. Native TypeScript lookup executes and is typechecked, retaining
+  all assertion IDs/metadata and the two repeated narrow core tuples.
+  Supported-identity requirements and budget17 reject. A valid normative
+  inverse proof remains explicitly inactive: the existing executable reversal
+  guard requires reversible premises and separately rejects lossy+reversible
+  declarations. Enabling reversal rejects; changing a premise invalidates proof.
+  No admission guard was relaxed or source relabeled lossless.
+- A pure single-source RO-Crate1.2 profile reuses checked replay/native artifact
+  preparation. Supplied raw bytes match receipts and the captured document;
+  missing raw inputs/full producer sources remain labeled external references.
+  Closed inventory/hash/native-output recomputation rejects tampering, omitted
+  or extra files and conflicting JSON-LD identifiers. No fetch, signing,
+  approval or activation occurs. SCIENTIFIC_MAPPING.md defines these boundaries.
+- Independent SSSOM-py0.4.17/schema1.0.0 full JsonSchema, prefix-map and strict-CURIE
+  validation passed source/default/condensed exports; independent PythonTSV/YAML
+  parsing preserved metadata/cells. Unknown prefixes reject; the upstream
+  builtin-prefix predicate detects collisions. The pinned strict parser has an
+  inverted metadata flag and rejects valid metadata; its failure remains recorded,
+  no upstream patch or validation suppression, no strict-parser success claim.
+  Independent rdflib7.6.0 JSON-LD expansion passed offline with pinned official
+  context,108triples,12localfiles,allrefs/inventory/hash/source-pin checks.
+- Focused88tests/6files passed. The initial full run passed582 tests but one older
+  grant-combination case exceeded its5-second harness budget at5.605seconds.
+  It now has the same15-second harness allowance as adjacent contract cases;
+  its assertions and production deadlines are unchanged. The isolated case
+  passed in2.009seconds. Both subsequent complete29-command gates passed583tests
+  /52files/17localLinuxskips/no unhandled errors, all existing/new examples,
+  native commands, package456publicfiles, all45published schema/pack pins,
+  17source outputs and original evaluation/legacy example preservation. The
+  second rerun included the JSON-LD identifier collision rejection. Final native
+  checks cover installed-tool resolution and stable selection-manifest wording.
+- M7 is locally implemented and verified. Exact-head Linux acceptance remains
+  pending; M8 and separate tested consumer adoption are still outstanding. The
+  path previously named Seeder now points to roryscot/Avaelus-; its still-named
+  Metamap consumer is onv0.5.0. No human acceptance, release, production activation
+  or scientific/benefit claim is inferred; the complete build goal stays active.
 
 ## 19. Historical first release and localization cycle
 
