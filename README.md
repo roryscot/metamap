@@ -376,6 +376,9 @@ build increment.
 Use [PROVENANCE.md](PROVENANCE.md) for complete source captures, replay/comparison
 3.0 and explicitly permitted local rediscovery. Recorded lineage does not grant
 authentication, approval or activation.
+Use [GOVERNANCE.md](GOVERNANCE.md) for complete unapproved proposals, generated
+artifact byte manifests and exact externally scoped Ed25519 approval verification.
+The protected activation and consumer permission boundary remain P10.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 

@@ -2,6 +2,17 @@
 
 ## Unreleased capability work
 
+- Add exact unapproved consumer proposals, generated output byte manifests and
+  domain-separated Ed25519 approvals over complete source-bound replay 3.0.
+  Verify current external identities, action/fact grants, baseline, environment,
+  trust revision/digest, revocation and complete approval validity intervals.
+- Require an externally registered owner for bootstrap, rollback, authority,
+  policy, budget, waiver and law changes. Agent/service grants cannot bypass
+  this with candidate-declared ownership or ordinary viability waivers.
+- Add the synthetic governance native example and public governance SDK/schema
+  exports. This pure P09 layer performs no activation; P10's protected promoter
+  and consumer permission boundary remain outstanding.
+
 - Bind complete source configurations, adapter outputs, input byte receipts,
   emitted shards and source-composed graphs in source-capture 1.0 and explicit
   replay/comparison 3.0. Preserve admitted and rejected evaluations and report

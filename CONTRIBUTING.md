@@ -60,6 +60,14 @@ Preserve published receipt/snapshot/replay schemas; new complete captures have
 their own schema identities. Test source/config/adapter/shard changes, rehashed
 receipt mismatches, unavailable raw inputs and denied local/symlink locators.
 
+Use `npm run example:governance` for exact external-owner approval and reviewed
+native artifact bytes. Approval changes must test published crypto/JCS vectors,
+independent signing, forgery, complete input/output tampering, scoped grants,
+current time/revocation, self-appointed ownership and stale protected baselines.
+Do not substitute verifier success for P10's consumer permission and activation
+transaction tests. Synthetic signing keys stay in memory; never add private
+credentials or production trust material to examples or test records.
+
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather
 than physical paths as identity.

@@ -200,6 +200,35 @@ A selected budget must belong to the named consumer. `budget: null` rejects
 when that consumer has a declared budget; otherwise it remains not-evaluated,
 with a null total. Unused and inactive mappings are excluded from accounting.
 
+## P09 proposal and approval records
+
+[GOVERNANCE.md](GOVERNANCE.md) defines the implemented pure proposal/approval
+profile and its closed action/fact scope names. Five new schema identities,
+all 1.0, cover shared governance vocabulary, external trusted configuration,
+generated artifact byte manifests, exact unapproved proposals and signed approval
+envelopes. Existing published schema/pack bytes remain unchanged.
+
+Proposal captures include complete admitted source-bound replay 3.0 and the
+exact baseline manifest/replay. Recomputed JSON/native outputs bind their full
+file inventory and byte identities. The signed payload includes the fixed
+domain `urn:metamap:approval:1` and binds complete proposal/artifact identities,
+delta, baseline, consumer/environment, intent, external trust revision/digest,
+principal/key/grants and issuance/expiry. The addressed approval envelope covers
+that payload and the external signature; private keys are outside the library.
+
+Current external state/trust/clock are supplied separately. Graph ownership,
+captured sources and proposed owner/key material cannot establish that trust.
+Policy edits are conservatively classified, including possible tightening;
+protected owner approval is required for authority, policy, waiver, budget, law,
+bootstrap and rollback actions. Trust-root mutations are outside the ordinary
+candidate schema and remain controlled by the external consumer owner.
+
+P09 returns verification results and performs no writes. P10 must enforce the
+consumer's protected configuration/state permissions and transaction; both
+existing activation interfaces continue rejecting v2. Verifier success does
+not establish human acceptance, active state or revocation of an already active
+generation.
+
 ## Migration and fixed acceptance inputs
 
 A v1 graph/policy continues through the existing compiler unchanged. A consumer
