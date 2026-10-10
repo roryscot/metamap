@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection-spec-v2.schema.json",
+  "budget": "urn:provenance:budget",
+  "consumer": "urn:metamap:example:network-consumer",
+  "id": "urn:provenance:projection",
+  "pathTree": { "attribute": "path" },
+  "schemaVersion": "2.0.0",
+  "select": { "ids": ["urn:example:consumer"] },
+  "slots": [
+    {
+      "cardinality": "one-or-more",
+      "direction": "outgoing",
+      "name": "dependencies",
+      "relation": "example:depends",
+      "targetKinds": ["configuration"]
+    }
+  ]
+}

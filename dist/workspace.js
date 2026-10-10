@@ -4,8 +4,8 @@ import { createDefaultAdapterRegistry, } from "./adapters/registry.js";
 import { materializeCorrespondences, } from "./correspondence.js";
 import { diffMetamapDocuments, emptyGraphDiff, } from "./diff.js";
 import { composeMetamapDocuments } from "./composer.js";
-import { loadRelationPack } from "./relation-pack.js";
-import { RelationRegistry } from "./relations.js";
+import { loadRelationPack, relationPackDigest } from "./relation-pack.js";
+import { coreRelationPack, RelationRegistry } from "./relations.js";
 import { renderDriftReport, renderGraphDocumentation } from "./report.js";
 import { stableJson, valueDigest } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -28,7 +28,7 @@ async function readJsonIfPresent(path) {
         throw error;
     }
 }
-async function discoverWithCache(adapter, config, context, cacheDirectory, useCache) {
+async function discoverWithCache(adapter, config, context, cacheDirectory, useCache, writeCache) {
     const inputs = await adapter.fingerprint(config, context);
     const key = valueDigest({
         adapter: adapter.id,
@@ -56,12 +56,14 @@ async function discoverWithCache(adapter, config, context, cacheDirectory, useCa
         key,
         result,
     };
-    await mkdir(cacheDirectory, { recursive: true });
-    await writeFile(cachePath, stableJson(entry, true), "utf8");
+    if (writeCache) {
+        await mkdir(cacheDirectory, { recursive: true });
+        await writeFile(cachePath, stableJson(entry, true), "utf8");
+    }
     return { result, cacheHit: false };
 }
-async function discoverSource(source, context, cacheDirectory, useCache, registry) {
-    return discoverWithCache(registry.require(source.adapter), source, context, cacheDirectory, useCache);
+async function discoverSource(source, context, cacheDirectory, useCache, writeCache, registry) {
+    return discoverWithCache(registry.require(source.adapter), source, context, cacheDirectory, useCache, writeCache);
 }
 async function configureRelationPacks(loaded, registry) {
     const packs = await Promise.all((loaded.config.relationPacks ?? []).map(async (configuredPath) => ({
@@ -72,19 +74,25 @@ async function configureRelationPacks(loaded, registry) {
         registry.registerPack(pack);
     return packs;
 }
-function withConfiguredRelationPacks(document, configured) {
+function withConfiguredRelationPacks(document, configured, portablePackUris) {
     const references = new Map((document.relationPacks ?? []).map((entry) => [entry.id, entry]));
     for (const { configuredPath, pack } of configured) {
         const existing = references.get(pack.id);
         if (existing && existing.version !== pack.version) {
             throw new Error(`Relation pack ${pack.id} is referenced at both ${existing.version} and ${pack.version}`);
         }
+        if (existing &&
+            pack.schemaVersion === "2.0.0" &&
+            existing.digest !== relationPackDigest(pack))
+            throw new Error(`SOURCE_PACK_MISMATCH: Configured executable pack ${pack.id} cannot replace a missing or different shard digest`);
         references.set(pack.id, {
             ...existing,
             id: pack.id,
             version: pack.version,
-            uri: configuredPath,
-            digest: valueDigest(pack),
+            uri: portablePackUris || pack.schemaVersion === "2.0.0"
+                ? `repo:${encodeURIComponent(configuredPath)}`
+                : configuredPath,
+            digest: relationPackDigest(pack),
         });
     }
     return {
@@ -122,7 +130,7 @@ function unconfiguredStructureIssues(config, graph, configured) {
         fact: "coverage",
     }));
 }
-function makeSnapshot(graph, adapters, configDigest) {
+export function makeWorkspaceSnapshot(graph, adapters, configDigest) {
     return {
         schemaVersion: SNAPSHOT_VERSION,
         graphId: graph.id,
@@ -152,12 +160,19 @@ export async function discoverWorkspace(loaded, options = {}) {
         repositoryRoot: loaded.repositoryRoot,
     };
     const cacheDirectory = outputPath(loaded, loaded.config.outputs.cache ?? ".cache/metamap");
-    const discoveredSources = await Promise.all(loaded.config.sources.map((source) => discoverSource(source, context, cacheDirectory, options.useCache ?? true, adapterRegistry)));
+    const discoveredSources = await Promise.all(loaded.config.sources.map((source) => discoverSource(source, context, cacheDirectory, options.useCache ?? true, options.writeCache ?? true, adapterRegistry)));
     const adapters = discoveredSources.map((entry) => entry.result);
     const cacheHits = discoveredSources
         .filter((entry) => entry.cacheHit)
         .map((entry) => entry.result.sourceId);
-    const configDigest = valueDigest(loaded.config);
+    return {
+        ...assembleWorkspace(loaded.config, adapters, configuredRelationPacks, relationRegistry, { portablePackUris: options.portablePackUris }),
+        cacheHits,
+    };
+}
+/** Reconstruct captured adapter outputs without discovery, cache or output I/O. */
+export function assembleWorkspace(config, adapters, configuredRelationPacks, relationRegistry, options = {}) {
+    const configDigest = valueDigest(config);
     const graphRevision = valueDigest({
         configDigest,
         sources: adapters.map((adapter) => ({
@@ -167,30 +182,42 @@ export async function discoverWorkspace(loaded, options = {}) {
         })),
     });
     const discovered = composeMetamapDocuments(adapters.map((adapter) => adapter.document), {
-        id: `${loaded.config.id}:discovered`,
-        namespace: loaded.config.namespace,
+        id: `${config.id}:discovered`,
+        namespace: config.namespace,
         label: "Observed repository structures",
         revision: graphRevision,
     });
-    const declared = materializeCorrespondences(loaded.config.namespace, `${loaded.config.id}:declared`, discovered, loaded.config.correspondences, configDigest);
-    const graph = withConfiguredRelationPacks(composeMetamapDocuments([discovered, declared.document], {
-        id: loaded.config.id,
-        namespace: loaded.config.namespace,
-        label: loaded.config.label ?? "Metamap",
+    const declared = materializeCorrespondences(config.namespace, `${config.id}:declared`, discovered, config.correspondences, configDigest);
+    // Materialized correspondences use the installed core relations. Preserve an
+    // imported exact core reference so composing the generated declaration does
+    // not downgrade it to an unbound reference. Ordinary legacy output is unchanged.
+    const exactCore = discovered.relationPacks?.find((reference) => reference.id === coreRelationPack.id &&
+        reference.version === coreRelationPack.version &&
+        reference.digest === relationPackDigest(coreRelationPack));
+    const declaredDocument = exactCore
+        ? {
+            ...declared.document,
+            relationPacks: declared.document.relationPacks?.map((reference) => reference.id === exactCore.id ? exactCore : reference),
+        }
+        : declared.document;
+    const graph = withConfiguredRelationPacks(composeMetamapDocuments([discovered, declaredDocument], {
+        id: config.id,
+        namespace: config.namespace,
+        label: config.label ?? "Metamap",
         revision: graphRevision,
-    }), configuredRelationPacks);
+    }), configuredRelationPacks, options.portablePackUris ?? false);
     const driftIssues = [
         ...declared.issues,
-        ...unconfiguredStructureIssues(loaded.config, graph, declared.configuredStructureIds),
+        ...unconfiguredStructureIssues(config, graph, declared.configuredStructureIds),
     ];
     const validation = validateMetamapDocument(graph, relationRegistry);
     return {
         graph,
-        adapters,
+        adapters: [...adapters],
         driftIssues,
         validation,
-        snapshot: makeSnapshot(graph, adapters, configDigest),
-        cacheHits,
+        snapshot: makeWorkspaceSnapshot(graph, adapters, configDigest),
+        cacheHits: [],
     };
 }
 export async function checkWorkspace(loaded, options = {}) {

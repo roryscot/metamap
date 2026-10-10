@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-path-tree-v2.schema.json",
+  "attribute": "path",
+  "delimiter": "/",
+  "digest": "sha256:8f1c7a0c84698724d615c9ed134f8b8d4805deeb115ded3d887c5cc30eb8a549",
+  "id": "urn:metamap:path-tree:8f1c7a0c84698724d615c9ed134f8b8d4805deeb115ded3d887c5cc30eb8a549",
+  "params": [":networkId"],
+  "projection": {
+    "digest": "sha256:4a8832eb8c8e01a75f8f81384653ef494802018fb4dcf91f124bd68d29b08d23",
+    "id": "urn:metamap:projection:4a8832eb8c8e01a75f8f81384653ef494802018fb4dcf91f124bd68d29b08d23"
+  },
+  "schemaVersion": "2.0.0",
+  "spec": {
+    "digest": "sha256:6ed7ac0b251ab23736ffe22f921e4650181b1d6525de91952adfaf628fdbd9f1",
+    "id": "urn:provenance:projection"
+  },
+  "tree": {
+    "_": "/",
+    "network": {
+      ":networkId": {
+        "$": {
+          "id": "urn:example:consumer",
+          "kind": "configuration",
+          "label": "consumer",
+          "slots": {
+            "dependencies": [
+              {
+                "id": "urn:example:schema",
+                "kind": "configuration",
+                "label": "schema"
+              },
+              {
+                "id": "urn:example:service",
+                "kind": "configuration",
+                "label": "service"
+              }
+            ]
+          }
+        },
+        "_": "/network/:networkId"
+      },
+      "_": "/network"
+    }
+  }
+}

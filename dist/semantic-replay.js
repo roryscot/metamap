@@ -4,6 +4,7 @@ import addFormatsModule from "ajv-formats";
 import { canonicalDigest, canonicalJson, legacyReferenceValue, parseStrictJson, } from "./canonical.js";
 import { compilePathTree } from "./path-tree.js";
 import { compileProjection } from "./projection.js";
+import { inspectSourceCapture, sourceCaptureLineage, sourceLineageIssues, } from "./provenance.js";
 import { parseRelationPack, relationPackDigest } from "./relation-pack.js";
 import { coreRelationPack, RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
@@ -30,9 +31,14 @@ for (const name of [
     "metamap-source-receipt",
     "metamap-snapshot",
     "metamap-replay-v2",
+    "metamap-config",
+    "metamap-source-capture",
+    "metamap-source-inspection",
+    "metamap-replay-v3",
 ])
     ajv.addSchema(schema(name));
 const validateShape = ajv.getSchema(schema("metamap-replay-v2").$id);
+const validateSourceShape = ajv.getSchema(schema("metamap-replay-v3").$id);
 function freeze(value) {
     if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
         Object.values(value).forEach(freeze);
@@ -46,10 +52,13 @@ export function semanticReplayDigest(bundle) {
 }
 function inputIssues(inputs) {
     const issues = [];
-    if (inputs.sourceSnapshot !== null || inputs.sourceReceipts.length)
+    if ("sourceCapture" in inputs) {
+        issues.push(...sourceLineageIssues(inputs.sourceCapture, inputs));
+    }
+    else if (inputs.sourceSnapshot !== null || inputs.sourceReceipts.length)
         issues.push({
             code: "REPLAY_SOURCE_CAPTURE_NOT_IMPLEMENTED",
-            message: "Source receipt capture is reserved for P08; requested lineage cannot be ignored",
+            message: "Replay 2.0 cannot bind complete source records; source provenance requires an explicit replay 3.0 capture",
         });
     const packs = new Map(inputs.relationPacks.map((pack) => [pack.id, pack]));
     if (packs.size !== inputs.relationPacks.length)
@@ -93,13 +102,14 @@ function inputIssues(inputs) {
     }
     return issues;
 }
-export function validateSemanticReplayBundle(value) {
+function validateBundle(value, source) {
     try {
         canonicalJson(value);
-        if (!validateShape(value))
+        const shape = source ? validateSourceShape : validateShape;
+        if (!shape(value))
             return {
                 valid: false,
-                issues: (validateShape.errors ?? []).map((issue) => ({
+                issues: (shape.errors ?? []).map((issue) => ({
                     code: "INVALID_REPLAY_BUNDLE",
                     message: issue.message ?? "Invalid replay capture",
                     path: issue.instancePath || "$",
@@ -128,6 +138,12 @@ export function validateSemanticReplayBundle(value) {
         };
     }
 }
+export function validateSemanticReplayBundle(value) {
+    return validateBundle(value, false);
+}
+export function validateSourceReplayBundle(value) {
+    return validateBundle(value, true);
+}
 export function parseSemanticReplayBundle(value) {
     const validation = validateSemanticReplayBundle(value);
     if (!validation.valid)
@@ -138,6 +154,17 @@ export function parseSemanticReplayBundle(value) {
 }
 export function parseSemanticReplayJson(text) {
     return parseSemanticReplayBundle(parseStrictJson(text));
+}
+export function parseSourceReplayBundle(value) {
+    const validation = validateSourceReplayBundle(value);
+    if (!validation.valid)
+        throw new Error(validation.issues
+            .map((issue) => `${issue.code}: ${issue.message}`)
+            .join("; "));
+    return value;
+}
+export function parseSourceReplayJson(text) {
+    return parseSourceReplayBundle(parseStrictJson(text));
 }
 function evaluate(inputs) {
     const registry = new RelationRegistry(inputs.relationPacks);
@@ -161,14 +188,32 @@ function evaluate(inputs) {
         }
     // Only trusted evaluator output uses legacy optional issue fields. New inputs
     // were strict JSON and are never sanitized to conceal unsupported members.
-    return legacyReferenceValue({
+    const outputs = legacyReferenceValue({
         compilation,
         projections,
     });
+    return "sourceCapture" in inputs
+        ? {
+            ...outputs,
+            sourceInspection: inspectSourceCapture(inputs.sourceCapture, inputs.graph),
+        }
+        : outputs;
 }
 export function captureSemanticReplayBundle(graph, policy, options, compilerIdentity) {
     if ("constraintRegistry" in options)
-        throw new Error("Replay v2 supports only the installed built-in constraint evaluators");
+        throw new Error("Semantic replay supports only the installed built-in constraint evaluators");
+    const source = "sourceCapture" in options;
+    if (source && ("sourceSnapshot" in options || "sourceReceipts" in options))
+        throw new Error("Replay 3.0 derives lineage from its complete source capture; separate lineage overrides are unsupported");
+    const lineage = source
+        ? {
+            ...sourceCaptureLineage(options.sourceCapture),
+            sourceCapture: options.sourceCapture,
+        }
+        : {
+            sourceSnapshot: options.sourceSnapshot ?? null,
+            sourceReceipts: [...(options.sourceReceipts ?? [])],
+        };
     const inputs = JSON.parse(canonicalJson({
         graph: legacyReferenceValue(graph),
         policy,
@@ -179,15 +224,14 @@ export function captureSemanticReplayBundle(graph, policy, options, compilerIden
         evaluatedAt: options.evaluatedAt,
         changedSubjects: [...new Set(options.changedSubjects ?? [])].sort(),
         projections: [...(options.projections ?? [])].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
-        sourceSnapshot: options.sourceSnapshot ?? null,
-        sourceReceipts: [...(options.sourceReceipts ?? [])],
+        ...lineage,
     }));
     const issues = inputIssues(inputs);
     if (issues.length)
         throw new Error(issues.map((issue) => `${issue.code}: ${issue.message}`).join("; "));
     const content = {
-        $schema: "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay-v2.schema.json",
-        schemaVersion: "2.0.0",
+        $schema: `https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay-v${source ? 3 : 2}.schema.json`,
+        schemaVersion: source ? "3.0.0" : "2.0.0",
         compiler: compilerIdentity(),
         constraintExecutor: "builtin",
         inputs,
@@ -199,12 +243,18 @@ export function captureSemanticReplayBundle(graph, policy, options, compilerIden
         id: `urn:metamap:replay:${digest.slice(7)}`,
         digest,
     };
-    parseSemanticReplayBundle(bundle);
+    if (source)
+        parseSourceReplayBundle(bundle);
+    else
+        parseSemanticReplayBundle(bundle);
     return freeze(bundle);
 }
 /** No source fetches, named-code loading, graph mutation or activation. */
 export function replaySemanticMetamap(value, compilerIdentity) {
-    const validation = validateSemanticReplayBundle(value);
+    const source = typeof value === "object" &&
+        value !== null &&
+        Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "3.0.0";
+    const validation = validateBundle(value, source);
     if (!validation.valid)
         return { status: "rejected", issues: validation.issues };
     const bundle = value;

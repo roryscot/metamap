@@ -17,6 +17,8 @@ import { parseSemanticGeneration, parseSemanticPolicy } from "./semantic.js";
 import { parseSemanticProjectionSpec } from "./semantic-projection.js";
 import { captureReplayBundle, replayMetamap } from "./replay.js";
 import { compareMetamapBundles } from "./counterfactual.js";
+import { parseSourceReplayBundle } from "./semantic-replay.js";
+import { captureWorkspaceSources, inspectCurrentSources, inspectSourceCapture, parseSourceCapture, } from "./provenance.js";
 import { validateMetamapDocument } from "./validator.js";
 import { compileMetamap, parseViabilityPolicy, parseViableGeneration, } from "./viability.js";
 import { compilePathTree, emitTypeScriptPathTree } from "./path-tree.js";
@@ -30,7 +32,9 @@ function usage() {
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
   metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--policy policy.json] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
-  metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
+  metamap sources <metamap.config.json> [capture.json] --allow-root local-root...
+  metamap provenance <source-capture-or-replay.json> [--workspace metamap.config.json --allow-root local-root...]
+  metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--source-capture capture.json] [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
   metamap replay <bundle.json>
   metamap compare <before.replay.json> <after.replay.json> [report.json]
   metamap generate <metamap.config.json> [--no-cache]
@@ -74,12 +78,14 @@ async function readProfileJson(path, strict) {
 async function readVersionedJson(path) {
     const text = await readFile(resolve(path), "utf8");
     const value = JSON.parse(text);
-    return value?.schemaVersion === "2.0.0" ? parseStrictJson(text) : value;
+    return value?.schemaVersion === "2.0.0" || value?.schemaVersion === "3.0.0"
+        ? parseStrictJson(text)
+        : value;
 }
 function isSemanticProfile(value) {
     return (typeof value === "object" &&
         value !== null &&
-        Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "2.0.0");
+        ["2.0.0", "3.0.0"].includes(Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value));
 }
 function serializeProfile(value) {
     return isSemanticProfile(value)
@@ -167,6 +173,58 @@ async function main(args) {
             process.stdout.write(serialized);
         return result.status === "compared" && result.report.after.admitted ? 0 : 1;
     }
+    if (command === "sources") {
+        const parsed = parseArguments(rest, new Set(["--allow-root"]));
+        const [configPath, outputPath] = parsed.positionals;
+        const permittedRoots = parsed.options.get("--allow-root") ?? [];
+        if (!configPath ||
+            parsed.positionals.length > 2 ||
+            !permittedRoots.length) {
+            console.error(usage());
+            return 2;
+        }
+        const capture = await captureWorkspaceSources(configPath, {
+            permittedRoots,
+        });
+        const serialized = `${canonicalJson(capture)}\n`;
+        if (outputPath)
+            await writeFile(resolve(outputPath), serialized, {
+                encoding: "utf8",
+                flag: "wx",
+            });
+        else
+            process.stdout.write(serialized);
+        return 0;
+    }
+    if (command === "provenance") {
+        const parsed = parseArguments(rest, new Set(["--workspace", "--allow-root"]));
+        const workspace = parsed.options.get("--workspace")?.[0];
+        const permittedRoots = parsed.options.get("--allow-root") ?? [];
+        if (parsed.positionals.length !== 1 ||
+            (parsed.options.get("--workspace")?.length ?? 0) > 1 ||
+            !!workspace !== !!permittedRoots.length) {
+            console.error(usage());
+            return 2;
+        }
+        const value = await readProfileJson(parsed.positionals[0], true);
+        const replay = typeof value === "object" &&
+            value !== null &&
+            Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "3.0.0"
+            ? parseSourceReplayBundle(value)
+            : undefined;
+        const capture = replay?.inputs.sourceCapture ?? parseSourceCapture(value);
+        const inspection = workspace
+            ? await inspectCurrentSources(capture, workspace, { permittedRoots }, replay?.inputs.graph)
+            : inspectSourceCapture(capture, replay?.inputs.graph);
+        process.stdout.write(`${canonicalJson(inspection)}\n`);
+        return workspace
+            ? inspection.sourceRediscovery.status === "current"
+                ? 0
+                : inspection.sourceRediscovery.status === "changed"
+                    ? 1
+                    : 2
+            : 0;
+    }
     if (command === "capture") {
         const parsed = parseArguments(rest, new Set([
             "--as-of",
@@ -174,6 +232,7 @@ async function main(args) {
             "--changed",
             "--projection",
             "--relation-pack",
+            "--source-capture",
         ]));
         const [graphPath, policyPath, outputPath] = parsed.positionals;
         const evaluatedAt = parsed.options.get("--as-of")?.[0];
@@ -182,7 +241,8 @@ async function main(args) {
             !evaluatedAt ||
             parsed.positionals.length > 3 ||
             (parsed.options.get("--as-of")?.length ?? 0) !== 1 ||
-            (parsed.options.get("--context")?.length ?? 0) > 1) {
+            (parsed.options.get("--context")?.length ?? 0) > 1 ||
+            (parsed.options.get("--source-capture")?.length ?? 0) > 1) {
             console.error(usage());
             return 2;
         }
@@ -193,6 +253,12 @@ async function main(args) {
         const policy = semantic
             ? parseSemanticPolicy(policyValue)
             : parseViabilityPolicy(policyValue);
+        const sourcePath = parsed.options.get("--source-capture")?.[0];
+        if (sourcePath && !semantic)
+            throw new Error("Source capture requires semantic policy 2.0 and replay 3.0");
+        const sourceCapture = sourcePath
+            ? parseSourceCapture(await readProfileJson(sourcePath, true))
+            : undefined;
         const graph = (await readProfileJson(graphPath, semantic));
         const projectionValues = await Promise.all((parsed.options.get("--projection") ?? []).map((path) => readProfileJson(path, semantic)));
         const options = {
@@ -204,10 +270,16 @@ async function main(args) {
             changedSubjects: parsed.options.get("--changed") ?? [],
         };
         const bundle = policy.schemaVersion === "2.0.0"
-            ? captureReplayBundle(graph, policy, {
-                ...options,
-                projections: projectionValues.map(parseSemanticProjectionSpec),
-            })
+            ? sourceCapture
+                ? captureReplayBundle(graph, policy, {
+                    ...options,
+                    sourceCapture,
+                    projections: projectionValues.map(parseSemanticProjectionSpec),
+                })
+                : captureReplayBundle(graph, policy, {
+                    ...options,
+                    projections: projectionValues.map(parseSemanticProjectionSpec),
+                })
             : captureReplayBundle(graph, policy, {
                 ...options,
                 projections: projectionValues.map(parseProjectionSpec),

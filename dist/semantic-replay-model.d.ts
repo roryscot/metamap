@@ -6,6 +6,7 @@ import type { SemanticPathTreeResult, SemanticProjectionResult, SemanticProjecti
 import type { EvaluationContext } from "./viability-model.js";
 import type { MetamapSnapshot } from "./workspace.js";
 import type { RelationRegistry } from "./relations.js";
+import type { MetamapSourceCapture, SourceInspection } from "./provenance-model.js";
 export interface SourceReceipt {
     $schema?: string;
     schemaVersion: "1.0.0";
@@ -59,9 +60,37 @@ export interface CaptureSemanticReplayOptions {
     changedSubjects?: readonly string[];
     projections?: readonly SemanticProjectionSpec[];
     relationRegistry?: RelationRegistry;
+    /** Reserved v2 fields; complete lineage requires sourceCapture and replay 3.0. */
     sourceSnapshot?: MetamapSnapshot;
     sourceReceipts?: readonly SourceReceipt[];
 }
+export interface SourceReplayInputs extends Omit<SemanticReplayInputs, "sourceSnapshot"> {
+    sourceSnapshot: MetamapSnapshot;
+    sourceCapture: MetamapSourceCapture;
+}
+export interface SourceReplayOutputs extends SemanticReplayOutputs {
+    sourceInspection: SourceInspection;
+}
+export interface SourceReplayBundle extends Omit<SemanticReplayBundle, "schemaVersion" | "inputs" | "expected"> {
+    schemaVersion: "3.0.0";
+    inputs: SourceReplayInputs;
+    expected: SourceReplayOutputs;
+}
+export interface CaptureSourceReplayOptions extends Omit<CaptureSemanticReplayOptions, "sourceSnapshot" | "sourceReceipts"> {
+    sourceCapture: MetamapSourceCapture;
+}
+export type SourceReplayResult = {
+    status: "verified";
+    bundle: string;
+    admitted: boolean;
+    outputs: SourceReplayOutputs;
+} | {
+    status: "rejected";
+    bundle?: string;
+    issues: ReplayIssue[];
+    actual?: SourceReplayOutputs;
+};
+export type SemanticReplayInputName = keyof SemanticReplayInputs | keyof SourceReplayInputs;
 export type SemanticReplayResult = {
     status: "verified";
     bundle: string;

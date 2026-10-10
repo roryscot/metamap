@@ -223,6 +223,10 @@ export function parseReplayBundle(value) {
 export function captureReplayBundle(graph, policy, options) {
     if (policy.schemaVersion === "2.0.0")
         return captureSemanticReplayBundle(graph, policy, options, replayCompilerIdentity);
+    if ("sourceCapture" in options ||
+        "sourceReceipts" in options ||
+        "sourceSnapshot" in options)
+        throw new Error("Source capture requires semantic policy 2.0 and replay 3.0");
     return captureLegacyReplayBundle(graph, policy, options);
 }
 function captureLegacyReplayBundle(graph, policy, options) {
@@ -262,7 +266,7 @@ function captureLegacyReplayBundle(graph, policy, options) {
 export function replayMetamap(value) {
     if (typeof value === "object" &&
         value !== null &&
-        Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "2.0.0")
+        ["2.0.0", "3.0.0"].includes(Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value))
         return replaySemanticMetamap(value, replayCompilerIdentity);
     return replayLegacyMetamap(value);
 }

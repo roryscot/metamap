@@ -66,7 +66,9 @@ operations. No reader substitutes current inputs for pinned missing inputs.
 | Consumer risk budget (policy member)   | policy 2.0.0 | Consumer-owned mapping classifications, nonnegative safe-integer costs, maximum total cost and optional lossy/inferred limits; classification/dependency completeness requirements. Sum over unique used mapping IDs including proof closure; equality at maximum is allowed. Costs are ordinal policy choices, not probabilities.                 |
 | Generation                             | 2.0.0        | Legacy graph/policy/context/evaluation binding plus exact pack values/digests, checked derivations, assessment/requirement results, complete admitted dependency graph and risk policy identity. It records admission, never present-time approval.                                                                                                |
 | Projection spec / result               | 2.0.0        | Existing selection/slots plus named consumer budget. Result binds generation, graph, spec, selected entries, unique used dependency closure, classifications, costs, totals, and uncertainty results. Unused/inactive mappings are excluded.                                                                                                       |
-| Replay / comparison                    | 2.0.0        | Capture every v2 input, resulting admission/projection or rejection, source snapshot/receipts when available, and exact executor/runtime/schema/dependency identity. Compare proof, owner, risk and consumer-artifact changes; approval freshness remains a separate current-time evaluation.                                                      |
+| Replay / comparison                    | 2.0.0        | Capture every v2 input, resulting admission/projection or rejection, and exact executor/runtime/schema/dependency identity. The reserved source snapshot/receipt fields must remain absent/null; complete lineage selects 3.0. Compare proof, owner, risk and consumer-artifact changes; approval freshness remains separate.                      |
+| Complete source capture / inspection   | 1.0.0        | Retain the existing full configuration, ordered adapter records, exact source packs and source-composed graph. Reconstruct using the existing assembler's portable pack-reference profile. Derive receipt 1.0 and snapshot 1.0 bindings. Inspect recorded lineage separately from explicitly authorized current rediscovery and authentication.    |
+| Source-bound replay / comparison       | 3.0.0        | Extend the 2.0 evaluation with mandatory complete source capture, exact derived receipts/snapshot and recomputed source inspection. Compare source/candidate relationships and scoped source-component changes. Retain generation/projection/path-tree 2.0. No source fetch, captured-code import, current substitution, approval or activation.   |
 | Change proposal                        | 1.0.0        | Exact base manifest identity, consumer/environment, requested actions and fact scopes, graph/policy/context/pack/proof/budget bindings, generated artifact byte manifest and change classification. Authority expansion, policy relaxation, new waivers, budget increases and trust changes are explicit actions.                                  |
 | Signed approval                        | 1.0.0        | Exact proposal/artifact manifest digest, action and fact scopes, base, consumer/environment, trusted grant revision, principal/key ID, issuance/expiry, signature profile and signature. Candidate-supplied keys/grants never establish trust.                                                                                                     |
 | Activation manifest                    | 1.0.0        | Exact immutable artifact paths and byte digests, graph/policy/generation/projection/proposal bindings, accepted approval IDs, expected previous manifest, consumer/environment and activation time. One atomic pointer identifies the complete set.                                                                                                |
@@ -74,12 +76,20 @@ operations. No reader substitutes current inputs for pinned missing inputs.
 | Bounded repair request / result        | 1.0.0        | Baseline evaluation identity, exact permitted templates/targets, depth/candidate/time bounds, attempted candidate digests, compiled outcomes, deterministic rank, unexamined/bounded status and required approval actions. No source/active-state writes.                                                                                          |
 
 Source lineage extends `MetamapSnapshot.sources` and `AdapterResult.inputs`;
-there is no second source inventory. A v2 replay receipt binds the existing
+there is no second source inventory. A replay 3.0 receipt binds the existing
 source ID, source revision, adapter ID/version, adapter configuration digest,
 byte inputs, and emitted shard digest. Available local locators are checked
 against the consumer's permitted roots. A byte receipt is not authentication.
 Unavailable raw bytes permit graph replay, with source rediscovery explicitly
 unavailable.
+
+Source-capture 1.0 binds full source configuration and emitted shard values, so
+receipt hashes can be checked against their recorded origins. The source graph
+is separate from the evaluated candidate, with differences reported explicitly.
+The portable reference profile uses `repo:` plus the encoded configured pack
+path; legacy workspace output remains unchanged. All published earlier schemas
+retain their bytes. See `PROVENANCE.md` for input/root restrictions and the
+distinction between recorded bindings and authentication.
 
 Existing v1 value digests continue to use `stableJson`, including its locale
 key ordering and trailing newline. New v2 values and new 1.0 sidecars use

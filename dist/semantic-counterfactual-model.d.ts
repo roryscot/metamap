@@ -1,5 +1,6 @@
 import type { CounterfactualReport, CounterfactualRecordChanges, CounterfactualResult } from "./counterfactual.js";
-import type { SemanticReplayInputs } from "./semantic-replay-model.js";
+import type { SemanticReplayInputs, SemanticReplayInputName } from "./semantic-replay-model.js";
+import type { SourceChange, SourceInspection } from "./provenance-model.js";
 export interface SemanticCounterfactualReport extends Omit<CounterfactualReport, "schemaVersion" | "inputChanges"> {
     $schema?: string;
     schemaVersion: "2.0.0";
@@ -27,6 +28,25 @@ export interface SemanticCounterfactualReport extends Omit<CounterfactualReport,
 export type SemanticCounterfactualResult = {
     status: "compared";
     report: SemanticCounterfactualReport;
+} | Extract<CounterfactualResult, {
+    status: "rejected";
+}>;
+export interface SourceCounterfactualReport extends Omit<SemanticCounterfactualReport, "schemaVersion" | "inputChanges"> {
+    schemaVersion: "3.0.0";
+    inputChanges: Array<{
+        input: SemanticReplayInputName;
+        beforeDigest: string;
+        afterDigest: string;
+    }>;
+    provenance: {
+        before: SourceInspection;
+        after: SourceInspection;
+        changes: SourceChange[];
+    };
+}
+export type SourceCounterfactualResult = {
+    status: "compared";
+    report: SourceCounterfactualReport;
 } | Extract<CounterfactualResult, {
     status: "rejected";
 }>;

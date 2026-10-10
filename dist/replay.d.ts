@@ -3,7 +3,7 @@ import { type PathTreeCompilationResult } from "./path-tree.js";
 import { type MetamapProjectionSpec, type ProjectionCompilationResult } from "./projection.js";
 import { RelationRegistry } from "./relations.js";
 import type { MetamapSemanticPolicy } from "./semantic-model.js";
-import type { CaptureSemanticReplayOptions, SemanticReplayBundle, SemanticReplayResult } from "./semantic-replay-model.js";
+import type { CaptureSemanticReplayOptions, CaptureSourceReplayOptions, SemanticReplayBundle, SemanticReplayResult, SourceReplayBundle, SourceReplayResult } from "./semantic-replay-model.js";
 import type { CompilationResult, EvaluationContext, MetamapViabilityPolicy } from "./viability-model.js";
 export declare const METAMAP_REPLAY_VERSION: "1.0.0";
 export interface ReplayDependencyIdentity {
@@ -86,11 +86,13 @@ export declare function replayCompilerIdentity(): ReplayCompilerIdentity;
 export declare function validateReplayBundle(value: unknown): ReplayValidationResult;
 export declare function parseReplayBundle(value: unknown): MetamapReplayBundle;
 /** Capture compiler evaluation only. Sources, evidence producers, and activation stay outside this operation. */
+export declare function captureReplayBundle(graph: MetamapDocument, policy: MetamapSemanticPolicy, options: CaptureSourceReplayOptions): SourceReplayBundle;
 export declare function captureReplayBundle(graph: MetamapDocument, policy: MetamapSemanticPolicy, options: CaptureSemanticReplayOptions): SemanticReplayBundle;
 export declare function captureReplayBundle(graph: MetamapDocument, policy: MetamapViabilityPolicy, options: CaptureReplayOptions): MetamapReplayBundle;
-export declare function captureReplayBundle(graph: MetamapDocument, policy: MetamapViabilityPolicy | MetamapSemanticPolicy, options: CaptureReplayOptions | CaptureSemanticReplayOptions): MetamapReplayBundle | SemanticReplayBundle;
+export declare function captureReplayBundle(graph: MetamapDocument, policy: MetamapViabilityPolicy | MetamapSemanticPolicy, options: CaptureReplayOptions | CaptureSemanticReplayOptions | CaptureSourceReplayOptions): MetamapReplayBundle | SemanticReplayBundle | SourceReplayBundle;
 /** Recompute with an exact installed executor. A verified rejection is still not admitted. */
+export declare function replayMetamap(value: SourceReplayBundle): SourceReplayResult;
 export declare function replayMetamap(value: SemanticReplayBundle): SemanticReplayResult;
 export declare function replayMetamap(value: MetamapReplayBundle): ReplayResult;
-export declare function replayMetamap(value: unknown): ReplayResult | SemanticReplayResult;
+export declare function replayMetamap(value: unknown): ReplayResult | SemanticReplayResult | SourceReplayResult;
 //# sourceMappingURL=replay.d.ts.map

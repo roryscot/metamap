@@ -99,21 +99,37 @@ Use `parseSemanticReplayBundle` or `parseSemanticReplayJson` for the new contrac
 The JSON reader and CLI reject duplicate decoded keys. New sidecars use
 JCS/SHA-256 and cover `$schema` when present; graph 2.0 references retain their
 legacy digest rule. `sourceSnapshot: null` and `sourceReceipts: []` explicitly
-record absent captured source lineage. Non-null lineage currently rejects with
-`REPLAY_SOURCE_CAPTURE_NOT_IMPLEMENTED`; source receipts and inspection are P08.
+record absent captured source lineage. Partial lineage rejects with
+`REPLAY_SOURCE_CAPTURE_NOT_IMPLEMENTED`; complete source capture uses replay 3.0.
 No raw source fetch or rediscovery is implied by reproducing the captured graph.
 
 Typed assessments, requirements and budgets execute through the same compiler
 and proof engine. Replay supplies its full captured policy/evidence when
 rechecking a typed projection. A required unknown dimension or excess cost
 remains a reproduced rejection, with no invented zero cost or replacement view.
-Both replay profiles require the exact installed built-in executor, preserve
+All replay profiles require the exact installed built-in executor, preserve
 rejected evaluations and perform no activation.
 
 Run `npm run example:relations` for checked derivations through a generated
 native consumer, nested tree, exact replay and a removed-premise comparison.
 Run `npm run example:uncertainty` for evaluated consumer cost, typed evidence,
 the same graph under tolerant/strict policies and a reproduced rejection.
+
+## Complete source profile 3.0
+
+Supply `sourceCapture` to `captureReplayBundle` with policy 2.0, or use the CLI's
+`--source-capture` option, to select replay 3.0 explicitly. The bundle binds a
+complete source-capture 1.0 sidecar, its derived receipt/snapshot records and
+the source/candidate graph relationship. Policy, generation, projection and
+path tree retain version 2.0. Rejected candidates preserve the same provenance.
+
+Use `parseSourceReplayBundle` or `parseSourceReplayJson` for this profile.
+`replayMetamap` dispatches without source reads, named adapter execution or
+current input substitution. `metamap provenance` inspects recorded lineage;
+current rediscovery requires a separately selected workspace and explicit local
+roots. Its freshness, authentication, authorization and active-state fields
+are distinct from successful graph replay. Run `npm run example:provenance` and
+see [PROVENANCE.md](PROVENANCE.md) for complete operations and limitations.
 
 ## Compatibility
 

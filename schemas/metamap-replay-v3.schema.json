@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay-v3.schema.json",
+  "title": "Metamap evaluation replay with complete captured source provenance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "compiler",
+    "constraintExecutor",
+    "inputs",
+    "expected"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "3.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "compiler": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay-v2.schema.json#/$defs/compiler"
+    },
+    "constraintExecutor": {
+      "const": "builtin"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph",
+        "policy",
+        "relationPacks",
+        "context",
+        "evaluatedAt",
+        "changedSubjects",
+        "projections",
+        "sourceSnapshot",
+        "sourceReceipts",
+        "sourceCapture"
+      ],
+      "properties": {
+        "graph": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json"
+        },
+        "policy": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-viability-v2.schema.json"
+        },
+        "relationPacks": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-relation-pack/v1.schema.json"
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/relation-pack-v2.schema.json"
+              }
+            ]
+          }
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "evaluatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "changedSubjects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          },
+          "uniqueItems": true
+        },
+        "projections": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection-spec-v2.schema.json"
+          }
+        },
+        "sourceSnapshot": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-snapshot.schema.json"
+        },
+        "sourceReceipts": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-receipt.schema.json"
+          }
+        },
+        "sourceCapture": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-capture.schema.json"
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compilation", "projections", "sourceInspection"],
+      "properties": {
+        "compilation": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay-v2.schema.json#/$defs/compilation"
+        },
+        "projections": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay-v2.schema.json#/$defs/outputs/properties/projections"
+        },
+        "sourceInspection": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-inspection.schema.json"
+        }
+      }
+    }
+  }
+}

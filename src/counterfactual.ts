@@ -24,13 +24,22 @@ import type {
   SemanticReplayBundle,
   SemanticReplayInputs,
   SemanticReplayOutputs,
+  SemanticReplayInputName,
+  SourceReplayBundle,
+  SourceReplayInputs,
+  SourceReplayOutputs,
 } from "./semantic-replay-model.js";
 import { compareSemanticMetamapBundles } from "./semantic-counterfactual.js";
-import type { SemanticCounterfactualResult } from "./semantic-counterfactual-model.js";
+import type {
+  SemanticCounterfactualResult,
+  SourceCounterfactualResult,
+} from "./semantic-counterfactual-model.js";
 import type { MetamapSemanticPolicy } from "./semantic-model.js";
 import { canonicalDigest } from "./canonical.js";
-type ComparableBundle = MetamapReplayBundle | SemanticReplayBundle;
-type ComparableOutputs = ReplayOutputs | SemanticReplayOutputs;
+type ComparableBundle =
+  MetamapReplayBundle | SemanticReplayBundle | SourceReplayBundle;
+type ComparableOutputs =
+  ReplayOutputs | SemanticReplayOutputs | SourceReplayOutputs;
 
 export const METAMAP_COUNTERFACTUAL_VERSION = "1.0.0" as const;
 
@@ -523,7 +532,7 @@ export function compareReplayEvaluationContent(
   beforeAdmitted: boolean,
   afterAdmitted: boolean,
   equals = valuesEqual,
-  inputDigest: (input: keyof SemanticReplayInputs, value: unknown) => string = (
+  inputDigest: (input: SemanticReplayInputName, value: unknown) => string = (
     _input,
     value,
   ) => valueDigest(value),
@@ -543,28 +552,28 @@ export function compareReplayEvaluationContent(
   const bActive = activeMappings(right);
   const seeds = changeSeeds(before, after, graph, left, right);
   const inputChanges: Array<{
-    input: keyof SemanticReplayInputs;
+    input: SemanticReplayInputName;
     beforeDigest: string;
     afterDigest: string;
   }> = [];
   for (const input of [
     ...new Set([...Object.keys(before.inputs), ...Object.keys(after.inputs)]),
-  ].sort() as Array<keyof SemanticReplayInputs>) {
+  ].sort() as Array<SemanticReplayInputName>) {
     if (
       !equals(
-        (before.inputs as SemanticReplayInputs)[input],
-        (after.inputs as SemanticReplayInputs)[input],
+        (before.inputs as SourceReplayInputs)[input],
+        (after.inputs as SourceReplayInputs)[input],
       )
     )
       inputChanges.push({
         input,
         beforeDigest: inputDigest(
           input,
-          (before.inputs as SemanticReplayInputs)[input],
+          (before.inputs as SourceReplayInputs)[input],
         ),
         afterDigest: inputDigest(
           input,
-          (after.inputs as SemanticReplayInputs)[input],
+          (after.inputs as SourceReplayInputs)[input],
         ),
       });
   }
@@ -617,6 +626,10 @@ export function compareReplayEvaluationContent(
 }
 
 export function compareMetamapBundles(
+  beforeValue: SourceReplayBundle,
+  afterValue: SourceReplayBundle,
+): SourceCounterfactualResult;
+export function compareMetamapBundles(
   beforeValue: SemanticReplayBundle,
   afterValue: SemanticReplayBundle,
 ): SemanticCounterfactualResult;
@@ -627,16 +640,25 @@ export function compareMetamapBundles(
 export function compareMetamapBundles(
   beforeValue: unknown,
   afterValue: unknown,
-): CounterfactualResult | SemanticCounterfactualResult;
+):
+  | CounterfactualResult
+  | SemanticCounterfactualResult
+  | SourceCounterfactualResult;
 export function compareMetamapBundles(
   beforeValue: unknown,
   afterValue: unknown,
-): CounterfactualResult | SemanticCounterfactualResult {
+):
+  | CounterfactualResult
+  | SemanticCounterfactualResult
+  | SourceCounterfactualResult {
   const version = (value: unknown) =>
     typeof value === "object" && value !== null
       ? Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value
       : undefined;
-  if (version(beforeValue) === "2.0.0" || version(afterValue) === "2.0.0")
+  if (
+    ["2.0.0", "3.0.0"].includes(version(beforeValue)) ||
+    ["2.0.0", "3.0.0"].includes(version(afterValue))
+  )
     return compareSemanticMetamapBundles(beforeValue, afterValue);
   return compareLegacyMetamapBundles(beforeValue, afterValue);
 }

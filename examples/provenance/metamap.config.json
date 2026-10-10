@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "urn:provenance:workspace",
+  "namespace": "dependency-example",
+  "repository": "provenance-example",
+  "repositoryRoot": ".",
+  "relationPacks": ["../relations/pack.json"],
+  "sources": [
+    {
+      "id": "network",
+      "adapter": "metamap-shard",
+      "path": "sources/network.json"
+    },
+    {
+      "id": "schema",
+      "adapter": "metamap-shard",
+      "path": "sources/schema.json"
+    }
+  ],
+  "correspondences": [],
+  "outputs": {
+    "graph": "generated/workspace-graph.json",
+    "snapshot": "generated/workspace-snapshot.json",
+    "report": "generated/workspace-report.md",
+    "documentation": "generated/workspace-graph.md",
+    "cache": ".cache/metamap"
+  }
+}

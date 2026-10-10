@@ -373,7 +373,8 @@ export function compareMetamapBundles(beforeValue, afterValue) {
     const version = (value) => typeof value === "object" && value !== null
         ? Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value
         : undefined;
-    if (version(beforeValue) === "2.0.0" || version(afterValue) === "2.0.0")
+    if (["2.0.0", "3.0.0"].includes(version(beforeValue)) ||
+        ["2.0.0", "3.0.0"].includes(version(afterValue)))
         return compareSemanticMetamapBundles(beforeValue, afterValue);
     return compareLegacyMetamapBundles(beforeValue, afterValue);
 }

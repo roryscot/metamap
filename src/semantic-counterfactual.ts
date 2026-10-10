@@ -19,13 +19,22 @@ import {
 import type {
   SemanticCounterfactualReport,
   SemanticCounterfactualResult,
+  SourceCounterfactualReport,
+  SourceCounterfactualResult,
 } from "./semantic-counterfactual-model.js";
 import type {
   SemanticReplayBundle,
   SemanticReplayInputs,
   SemanticReplayOutputs,
+  SemanticReplayInputName,
+  SourceReplayBundle,
+  SourceReplayOutputs,
 } from "./semantic-replay-model.js";
 import { valueDigest } from "./stable.js";
+import {
+  compareSourceCaptures,
+  validateSourceInspection,
+} from "./provenance.js";
 
 const Ajv2020 = Ajv2020Module.default;
 const addFormats = addFormatsModule.default;
@@ -47,10 +56,15 @@ for (const name of [
   "relation-pack",
   "metamap-replay",
   "metamap-counterfactual-v2",
+  "metamap-source-inspection",
+  "metamap-counterfactual-v3",
 ])
   ajv.addSchema(schema(name));
 const validateShape = ajv.getSchema(
   schema("metamap-counterfactual-v2").$id as string,
+)!;
+const validateSourceShape = ajv.getSchema(
+  schema("metamap-counterfactual-v3").$id as string,
 )!;
 
 const equal = (left: unknown, right: unknown): boolean =>
@@ -72,28 +86,37 @@ function records<T extends { id: string }>(
   };
 }
 export function semanticCounterfactualDigest(
-  report: SemanticCounterfactualReport,
+  report: SemanticCounterfactualReport | SourceCounterfactualReport,
 ): string {
   const { id: _id, digest: _digest, ...content } = report;
   return canonicalDigest(content);
 }
-export function validateSemanticCounterfactualReport(
+function validateReport(
   value: unknown,
+  source: boolean,
 ): ReplayValidationResult {
   try {
     canonicalJson(value);
-    if (!validateShape(value))
+    const shape = source ? validateSourceShape : validateShape;
+    if (!shape(value))
       return {
         valid: false,
-        issues: (validateShape.errors ?? []).map((issue) => ({
+        issues: (shape.errors ?? []).map((issue) => ({
           code: "INVALID_SEMANTIC_COUNTERFACTUAL_REPORT",
           message: issue.message ?? "Invalid comparison",
           path: issue.instancePath || "$",
         })),
       };
-    const report = value as SemanticCounterfactualReport;
+    const report = value as
+      SemanticCounterfactualReport | SourceCounterfactualReport;
     const digest = semanticCounterfactualDigest(report);
     const issues: ReplayIssue[] = [];
+    if ("provenance" in report) {
+      issues.push(
+        ...validateSourceInspection(report.provenance.before).issues,
+        ...validateSourceInspection(report.provenance.after).issues,
+      );
+    }
     if (
       digest !== report.digest ||
       report.id !== `urn:metamap:counterfactual:${digest.slice(7)}`
@@ -139,6 +162,16 @@ export function validateSemanticCounterfactualReport(
     };
   }
 }
+export function validateSemanticCounterfactualReport(
+  value: unknown,
+): ReplayValidationResult {
+  return validateReport(value, false);
+}
+export function validateSourceCounterfactualReport(
+  value: unknown,
+): ReplayValidationResult {
+  return validateReport(value, true);
+}
 export function parseSemanticCounterfactualReport(
   value: unknown,
 ): SemanticCounterfactualReport {
@@ -155,6 +188,23 @@ export function parseSemanticCounterfactualJson(
   text: string,
 ): SemanticCounterfactualReport {
   return parseSemanticCounterfactualReport(parseStrictJson(text));
+}
+export function parseSourceCounterfactualReport(
+  value: unknown,
+): SourceCounterfactualReport {
+  const result = validateSourceCounterfactualReport(value);
+  if (!result.valid)
+    throw new Error(
+      result.issues
+        .map((issue) => `${issue.code}: ${issue.message}`)
+        .join("; "),
+    );
+  return value as SourceCounterfactualReport;
+}
+export function parseSourceCounterfactualJson(
+  text: string,
+): SourceCounterfactualReport {
+  return parseSourceCounterfactualReport(parseStrictJson(text));
 }
 function projectionSemantic(outputs: SemanticReplayOutputs, specId: string) {
   const result = outputs.projections.find(
@@ -176,17 +226,22 @@ function freeze<T>(value: T): T {
 export function compareSemanticMetamapBundles(
   beforeValue: unknown,
   afterValue: unknown,
-): SemanticCounterfactualResult {
+): SemanticCounterfactualResult | SourceCounterfactualResult {
   const version = (value: unknown) =>
     typeof value === "object" && value !== null
       ? Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value
       : undefined;
-  if (version(beforeValue) !== "2.0.0" || version(afterValue) !== "2.0.0")
+  const source = version(beforeValue) === "3.0.0";
+  const expectedVersion = source ? "3.0.0" : "2.0.0";
+  if (
+    version(beforeValue) !== expectedVersion ||
+    version(afterValue) !== expectedVersion
+  )
     return {
       status: "rejected",
       issues: [
         {
-          side: version(beforeValue) !== "2.0.0" ? "before" : "after",
+          side: version(beforeValue) !== expectedVersion ? "before" : "after",
           code: "COUNTERFACTUAL_VERSION_MISMATCH",
           message:
             "Comparison requires two captures from the same semantic profile",
@@ -213,8 +268,8 @@ export function compareSemanticMetamapBundles(
           : []),
       ],
     };
-  const before = beforeValue as SemanticReplayBundle,
-    after = afterValue as SemanticReplayBundle;
+  const before = beforeValue as SemanticReplayBundle | SourceReplayBundle,
+    after = afterValue as SemanticReplayBundle | SourceReplayBundle;
   const common = compareReplayEvaluationContent(
     before,
     after,
@@ -223,7 +278,7 @@ export function compareSemanticMetamapBundles(
     beforeReplay.admitted,
     afterReplay.admitted,
     equal,
-    (input: keyof SemanticReplayInputs, value: unknown) =>
+    (input: SemanticReplayInputName, value: unknown) =>
       input === "graph" || input === "sourceSnapshot"
         ? valueDigest(value)
         : canonicalDigest(value),
@@ -243,9 +298,8 @@ export function compareSemanticMetamapBundles(
     };
   });
   const content = {
-    $schema:
-      "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-counterfactual-v2.schema.json",
-    schemaVersion: "2.0.0" as const,
+    $schema: `https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-counterfactual-v${source ? 3 : 2}.schema.json`,
+    schemaVersion: source ? ("3.0.0" as const) : ("2.0.0" as const),
     ...common,
     semantic: {
       derivations: records(
@@ -270,6 +324,20 @@ export function compareSemanticMetamapBundles(
       ),
       projections,
     },
+    ...(source
+      ? {
+          provenance: {
+            before: (beforeReplay.outputs as SourceReplayOutputs)
+              .sourceInspection,
+            after: (afterReplay.outputs as SourceReplayOutputs)
+              .sourceInspection,
+            changes: compareSourceCaptures(
+              (before as SourceReplayBundle).inputs.sourceCapture,
+              (after as SourceReplayBundle).inputs.sourceCapture,
+            ),
+          },
+        }
+      : {}),
   };
   const digest = canonicalDigest(content);
   const report = JSON.parse(
@@ -278,7 +346,14 @@ export function compareSemanticMetamapBundles(
       id: `urn:metamap:counterfactual:${digest.slice(7)}`,
       digest,
     }),
-  ) as SemanticCounterfactualReport;
-  parseSemanticCounterfactualReport(report);
-  return { status: "compared", report: freeze(report) };
+  ) as SemanticCounterfactualReport | SourceCounterfactualReport;
+  if (source)
+    return {
+      status: "compared",
+      report: freeze(parseSourceCounterfactualReport(report)),
+    };
+  return {
+    status: "compared",
+    report: freeze(parseSemanticCounterfactualReport(report)),
+  };
 }

@@ -127,6 +127,9 @@ static runtime views.
   paths and atomic last-known-good activation.
 - Exact compiler replay bundles that preserve inputs, executor identity, and
   successful or rejected results without granting approval or activation.
+- Complete source captures and receipts that bind independent configurations,
+  input byte digests and emitted shards, with separate read-only current-source
+  inspection and explicit candidate/source differences.
 - Read-only counterfactual reports for explicit before/after evaluations,
   including evidence, admission, dependency paths, and runtime-slot changes.
 - Cardinality-checked static projections that turn active semantic mappings
@@ -370,6 +373,9 @@ path trees, replay and comparison. Its current integration boundaries are
 documented there. Use [UNCERTAINTY.md](UNCERTAINTY.md) for typed assessment
 propagation and consumer cost budgets. Protected promotion remains a later
 build increment.
+Use [PROVENANCE.md](PROVENANCE.md) for complete source captures, replay/comparison
+3.0 and explicitly permitted local rediscovery. Recorded lineage does not grant
+authentication, approval or activation.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 

@@ -99,8 +99,24 @@ reproducing captures, authentication, approval and activation.
 Assessment/evidence, requirement and budget changes affect the bound generation,
 proofs and projections. Known risk summaries are compared directly; a rejected
 candidate retains an unknown delta rather than an assumed cost reduction.
-Source lineage capture and inspection remain P08. Comparison
-does not search for or apply repairs; bounded proposal search remains M5.
+Complete source lineage selects profile 3.0. Comparison does not search for or
+apply repairs; bounded proposal search remains M5.
+
+## Source profile 3.0
+
+Two reproduced replay 3.0 captures produce a comparison 3.0 report. The same
+semantic comparison engine adds `sourceCapture` input changes, before/after
+source inspections and scoped source-component differences. Source receipts
+retain content-addressed identities; the additional comparison identifies
+changes by stable source ID, including configuration, adapter, revision, input,
+shard and pack changes. See [PROVENANCE.md](PROVENANCE.md).
+
+Use `validateSourceCounterfactualReport`, `parseSourceCounterfactualReport` or
+`parseSourceCounterfactualJson`. Mixed 2.0/3.0 captures reject. A source-only
+change can leave the explicitly supplied candidate and its projection unchanged;
+the provenance report still exposes that source/candidate difference. It does
+not substitute fresh facts, claim approval validity or establish current
+authorization. Unknown rejected projection deltas remain `null`.
 
 ## Contract and evaluation
 

@@ -12,6 +12,8 @@ export * from "./semantic-projection.js";
 export * from "./semantic-path-tree.js";
 export * from "./semantic-replay-model.js";
 export * from "./semantic-replay.js";
+export * from "./provenance-model.js";
+export * from "./provenance.js";
 export * from "./semantic-counterfactual-model.js";
 export * from "./semantic-counterfactual.js";
 export * from "./validator.js";

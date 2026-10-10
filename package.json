@@ -28,7 +28,8 @@
     "VIABILITY.md",
     "CHANGELOG.md",
     "RELATIONS.md",
-    "UNCERTAINTY.md"
+    "UNCERTAINTY.md",
+    "PROVENANCE.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -47,7 +48,8 @@
     "example:topology": "npm run build && node dist/cli.js compile examples/application-topology/graph.json examples/application-topology/viability-policy.json examples/application-topology/generated/generation.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json --as-of 2026-09-08T00:00:00.000Z && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.ts --format typescript --export applicationTopology --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && prettier --write examples/application-topology/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/application-topology/generated/application-topology.ts",
     "prepare": "npm run build",
     "example:relations": "npm run build && node examples/relations/build.mjs && prettier --write examples/relations/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/relations/generated/dependency-bindings.ts examples/relations/generated/dependency-tree.ts",
-    "example:uncertainty": "npm run build && node examples/uncertainty/build.mjs && prettier --write examples/uncertainty/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/uncertainty/generated/network-bindings.ts examples/uncertainty/generated/network-tree.ts"
+    "example:uncertainty": "npm run build && node examples/uncertainty/build.mjs && prettier --write examples/uncertainty/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/uncertainty/generated/network-bindings.ts examples/uncertainty/generated/network-tree.ts",
+    "example:provenance": "npm run build && node examples/provenance/build.mjs && prettier --write examples/provenance/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/provenance/generated/network-bindings.ts examples/provenance/generated/network-tree.ts"
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -198,7 +200,19 @@
     "./schemas/metamap-replay-v2.schema.json": "./schemas/metamap-replay-v2.schema.json",
     "./schemas/metamap-counterfactual-v2.schema.json": "./schemas/metamap-counterfactual-v2.schema.json",
     "./schemas/metamap-source-receipt.schema.json": "./schemas/metamap-source-receipt.schema.json",
-    "./schemas/metamap-snapshot.schema.json": "./schemas/metamap-snapshot.schema.json"
+    "./schemas/metamap-snapshot.schema.json": "./schemas/metamap-snapshot.schema.json",
+    "./provenance": {
+      "import": "./dist/provenance.js",
+      "types": "./dist/provenance.d.ts"
+    },
+    "./provenance-model": {
+      "import": "./dist/provenance-model.js",
+      "types": "./dist/provenance-model.d.ts"
+    },
+    "./schemas/metamap-source-capture.schema.json": "./schemas/metamap-source-capture.schema.json",
+    "./schemas/metamap-source-inspection.schema.json": "./schemas/metamap-source-inspection.schema.json",
+    "./schemas/metamap-replay-v3.schema.json": "./schemas/metamap-replay-v3.schema.json",
+    "./schemas/metamap-counterfactual-v3.schema.json": "./schemas/metamap-counterfactual-v3.schema.json"
   },
   "repository": {
     "type": "git",

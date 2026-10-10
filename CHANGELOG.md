@@ -2,6 +2,15 @@
 
 ## Unreleased capability work
 
+- Bind complete source configurations, adapter outputs, input byte receipts,
+  emitted shards and source-composed graphs in source-capture 1.0 and explicit
+  replay/comparison 3.0. Preserve admitted and rejected evaluations and report
+  candidate/source differences without assigning source attribution to edits.
+- Add `sources`, `provenance` and `capture --source-capture`. Explicit current
+  inspection requires permitted local roots, detects source/component changes
+  and performs no cache/output/activation writes. Offline inspection reports
+  raw rediscovery and authentication/authorization as separate states.
+
 - Execute typed uncertainty across six independent dimensions using scoped,
   revision-bound assessments and complete recorded evidence values. Preserve
   unknown/conflicting premises, reject incompatible named models as unknown,

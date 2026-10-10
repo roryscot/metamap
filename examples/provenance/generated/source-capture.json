@@ -1,0 +1,304 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-capture.schema.json",
+  "adapters": [
+    {
+      "adapter": "metamap-shard",
+      "adapterVersion": "1.0.0",
+      "diagnostics": [],
+      "document": {
+        "authorities": [],
+        "entities": [
+          {
+            "attributes": { "path": "/network/:networkId" },
+            "id": "urn:example:consumer",
+            "kind": "configuration",
+            "label": "consumer"
+          },
+          {
+            "id": "urn:example:service",
+            "kind": "configuration",
+            "label": "service"
+          }
+        ],
+        "id": "urn:provenance:source:network",
+        "mappings": [
+          {
+            "cardinality": "one-to-one",
+            "id": "urn:example:consumer-service",
+            "lossiness": "lossless",
+            "provenance": {
+              "assertedBy": "consumer-owner",
+              "status": "declared"
+            },
+            "relation": "example:depends",
+            "sources": ["urn:example:consumer"],
+            "targets": ["urn:example:service"]
+          }
+        ],
+        "namespace": "dependency-example",
+        "revision": "network-r1",
+        "schemaVersion": "2.0.0"
+      },
+      "inputs": [
+        {
+          "digest": "sha256:0d2faae0ddc896ccd6f4630d3ccb1b9f590a56d0fa40934fd0e91f8473d582ce",
+          "path": "sources/network.json"
+        }
+      ],
+      "sourceId": "network"
+    },
+    {
+      "adapter": "metamap-shard",
+      "adapterVersion": "1.0.0",
+      "diagnostics": [],
+      "document": {
+        "authorities": [],
+        "entities": [
+          {
+            "id": "urn:example:schema",
+            "kind": "configuration",
+            "label": "schema"
+          }
+        ],
+        "id": "urn:provenance:source:schema",
+        "mappings": [
+          {
+            "cardinality": "one-to-one",
+            "id": "urn:example:service-schema",
+            "lossiness": "lossless",
+            "provenance": {
+              "assertedBy": "service-owner",
+              "status": "declared"
+            },
+            "relation": "example:depends",
+            "sources": ["urn:example:service"],
+            "targets": ["urn:example:schema"]
+          }
+        ],
+        "namespace": "dependency-example",
+        "revision": "schema-r1",
+        "schemaVersion": "2.0.0"
+      },
+      "inputs": [
+        {
+          "digest": "sha256:1e7ebccb787e6f7273e1a9da22e69072f3ad3abccc5706a36c22c09025cc5233",
+          "path": "sources/schema.json"
+        }
+      ],
+      "sourceId": "schema"
+    }
+  ],
+  "config": {
+    "correspondences": [],
+    "id": "urn:provenance:workspace",
+    "namespace": "dependency-example",
+    "outputs": {
+      "cache": ".cache/metamap",
+      "documentation": "generated/workspace-graph.md",
+      "graph": "generated/workspace-graph.json",
+      "report": "generated/workspace-report.md",
+      "snapshot": "generated/workspace-snapshot.json"
+    },
+    "relationPacks": ["../relations/pack.json"],
+    "repository": "provenance-example",
+    "repositoryRoot": ".",
+    "schemaVersion": "1.0.0",
+    "sources": [
+      {
+        "adapter": "metamap-shard",
+        "id": "network",
+        "path": "sources/network.json"
+      },
+      {
+        "adapter": "metamap-shard",
+        "id": "schema",
+        "path": "sources/schema.json"
+      }
+    ]
+  },
+  "digest": "sha256:bb0227b7d9be174b8ad84644db3ae5e49d03e8fadc74f74932b49e364c7ac455",
+  "graph": {
+    "$schema": "./schemas/metamap-graph.schema.json",
+    "authorities": [],
+    "entities": [
+      {
+        "attributes": { "path": "/network/:networkId" },
+        "id": "urn:example:consumer",
+        "kind": "configuration",
+        "label": "consumer"
+      },
+      {
+        "id": "urn:example:service",
+        "kind": "configuration",
+        "label": "service"
+      },
+      { "id": "urn:example:schema", "kind": "configuration", "label": "schema" }
+    ],
+    "id": "urn:provenance:workspace",
+    "label": "Metamap",
+    "mappings": [
+      {
+        "cardinality": "one-to-one",
+        "id": "urn:example:consumer-service",
+        "lossiness": "lossless",
+        "provenance": { "assertedBy": "consumer-owner", "status": "declared" },
+        "relation": "example:depends",
+        "sources": ["urn:example:consumer"],
+        "targets": ["urn:example:service"]
+      },
+      {
+        "cardinality": "one-to-one",
+        "id": "urn:example:service-schema",
+        "lossiness": "lossless",
+        "provenance": { "assertedBy": "service-owner", "status": "declared" },
+        "relation": "example:depends",
+        "sources": ["urn:example:service"],
+        "targets": ["urn:example:schema"]
+      }
+    ],
+    "metadata": {
+      "composedFrom": [
+        "urn:provenance:workspace:discovered",
+        "urn:dependency-example:metamap-shard:urn%3Aprovenance%3Aworkspace%3Adeclared"
+      ]
+    },
+    "namespace": "dependency-example",
+    "relationPacks": [
+      {
+        "digest": "sha256:62b9ea2ead7915d9ff855230080cc4c0b0cc02552b4b287c50be12afdf0063d3",
+        "id": "urn:metamap:example:relation-pack:dependencies",
+        "uri": "repo:..%2Frelations%2Fpack.json",
+        "version": "1.0.0"
+      },
+      { "id": "urn:metamap:relation-pack:core", "version": "1.0.0" }
+    ],
+    "revision": "sha256:afad89c885db91eb4100d8f2f8edfae0f641c194eaf53161f6049d09aab5d66b",
+    "schemaVersion": "2.0.0"
+  },
+  "id": "urn:metamap:source-capture:bb0227b7d9be174b8ad84644db3ae5e49d03e8fadc74f74932b49e364c7ac455",
+  "relationPacks": [
+    {
+      "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/relation-pack-v2.schema.json",
+      "description": "Explicit directional dependency chaining; no identity or authority inference.",
+      "id": "urn:metamap:example:relation-pack:dependencies",
+      "laws": [
+        {
+          "handling": {
+            "authority": "none",
+            "lossiness": "conservative",
+            "uncertainty": "conservative"
+          },
+          "id": "urn:metamap:example:law:dependency-chain",
+          "operands": ["example:depends", "example:depends"],
+          "operation": "chain",
+          "resultRelation": "example:depends"
+        }
+      ],
+      "relations": [
+        {
+          "cyclePolicy": "forbid",
+          "id": "example:depends",
+          "impactDirection": "target-to-source",
+          "transitive": true
+        }
+      ],
+      "schemaVersion": "2.0.0",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Minimal structural relations shared by language and domain adapters.",
+      "id": "urn:metamap:relation-pack:core",
+      "relations": [
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:contains",
+          "impactDirection": "both",
+          "transitive": true
+        },
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:implements",
+          "impactDirection": "source-to-target"
+        },
+        {
+          "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:conforms_to",
+          "impactDirection": "target-to-source"
+        },
+        {
+          "cardinalities": [
+            "one-to-one",
+            "one-to-many",
+            "many-to-one",
+            "many-to-many"
+          ],
+          "cyclePolicy": "forbid",
+          "id": "core:derives_from",
+          "impactDirection": "target-to-source",
+          "transitive": true
+        },
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:generates",
+          "impactDirection": "source-to-target"
+        },
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:depends_on",
+          "impactDirection": "target-to-source",
+          "transitive": true
+        },
+        {
+          "cardinalities": ["one-to-one", "many-to-many"],
+          "cyclePolicy": "allow",
+          "id": "core:mirrors",
+          "impactDirection": "both",
+          "symmetric": true
+        },
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "allow",
+          "id": "core:documents",
+          "impactDirection": "target-to-source"
+        },
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "allow",
+          "id": "core:tests",
+          "impactDirection": "target-to-source"
+        },
+        {
+          "cardinalities": ["one-to-one", "one-to-many", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:exposes",
+          "impactDirection": "both"
+        },
+        {
+          "cardinalities": [
+            "one-to-one",
+            "one-to-many",
+            "many-to-one",
+            "many-to-many"
+          ],
+          "cyclePolicy": "allow",
+          "id": "core:references",
+          "impactDirection": "target-to-source"
+        },
+        {
+          "cardinalities": ["one-to-one", "many-to-one", "many-to-many"],
+          "cyclePolicy": "forbid",
+          "id": "core:specified_by",
+          "impactDirection": "target-to-source"
+        }
+      ],
+      "schemaVersion": "1.0.0",
+      "version": "1.0.0"
+    }
+  ],
+  "schemaVersion": "1.0.0"
+}

@@ -54,6 +54,11 @@ mixed-version rejection and unknown result states. Projection and path-tree
 changes also require native checks of their generated TypeScript. Use
 `npm run example:relations` for the opt-in proof-carrying workflow.
 Use `npm run example:uncertainty` for typed evidence and consumer cost limits.
+Use `npm run example:provenance` for complete source receipt bindings, accepted
+and rejected replay 3.0, explicit read-only inspection and native outputs.
+Preserve published receipt/snapshot/replay schemas; new complete captures have
+their own schema identities. Test source/config/adapter/shard changes, rehashed
+receipt mismatches, unavailable raw inputs and denied local/symlink locators.
 
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather

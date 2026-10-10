@@ -25,8 +25,11 @@ import {
 import type { MetamapSemanticPolicy } from "./semantic-model.js";
 import type {
   CaptureSemanticReplayOptions,
+  CaptureSourceReplayOptions,
   SemanticReplayBundle,
   SemanticReplayResult,
+  SourceReplayBundle,
+  SourceReplayResult,
 } from "./semantic-replay-model.js";
 import type {
   CompilationResult,
@@ -379,6 +382,11 @@ export function parseReplayBundle(value: unknown): MetamapReplayBundle {
 export function captureReplayBundle(
   graph: MetamapDocument,
   policy: MetamapSemanticPolicy,
+  options: CaptureSourceReplayOptions,
+): SourceReplayBundle;
+export function captureReplayBundle(
+  graph: MetamapDocument,
+  policy: MetamapSemanticPolicy,
   options: CaptureSemanticReplayOptions,
 ): SemanticReplayBundle;
 export function captureReplayBundle(
@@ -389,19 +397,33 @@ export function captureReplayBundle(
 export function captureReplayBundle(
   graph: MetamapDocument,
   policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
-  options: CaptureReplayOptions | CaptureSemanticReplayOptions,
-): MetamapReplayBundle | SemanticReplayBundle;
+  options:
+    | CaptureReplayOptions
+    | CaptureSemanticReplayOptions
+    | CaptureSourceReplayOptions,
+): MetamapReplayBundle | SemanticReplayBundle | SourceReplayBundle;
 export function captureReplayBundle(
   graph: MetamapDocument,
   policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
-  options: CaptureReplayOptions | CaptureSemanticReplayOptions,
-): MetamapReplayBundle | SemanticReplayBundle {
+  options:
+    | CaptureReplayOptions
+    | CaptureSemanticReplayOptions
+    | CaptureSourceReplayOptions,
+): MetamapReplayBundle | SemanticReplayBundle | SourceReplayBundle {
   if (policy.schemaVersion === "2.0.0")
     return captureSemanticReplayBundle(
       graph,
       policy,
-      options as CaptureSemanticReplayOptions,
+      options as CaptureSemanticReplayOptions | CaptureSourceReplayOptions,
       replayCompilerIdentity,
+    );
+  if (
+    "sourceCapture" in options ||
+    "sourceReceipts" in options ||
+    "sourceSnapshot" in options
+  )
+    throw new Error(
+      "Source capture requires semantic policy 2.0 and replay 3.0",
     );
   return captureLegacyReplayBundle(
     graph,
@@ -455,20 +477,23 @@ function captureLegacyReplayBundle(
 }
 
 /** Recompute with an exact installed executor. A verified rejection is still not admitted. */
+export function replayMetamap(value: SourceReplayBundle): SourceReplayResult;
 export function replayMetamap(
   value: SemanticReplayBundle,
 ): SemanticReplayResult;
 export function replayMetamap(value: MetamapReplayBundle): ReplayResult;
 export function replayMetamap(
   value: unknown,
-): ReplayResult | SemanticReplayResult;
+): ReplayResult | SemanticReplayResult | SourceReplayResult;
 export function replayMetamap(
   value: unknown,
-): ReplayResult | SemanticReplayResult {
+): ReplayResult | SemanticReplayResult | SourceReplayResult {
   if (
     typeof value === "object" &&
     value !== null &&
-    Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value === "2.0.0"
+    ["2.0.0", "3.0.0"].includes(
+      Object.getOwnPropertyDescriptor(value, "schemaVersion")?.value,
+    )
   )
     return replaySemanticMetamap(value, replayCompilerIdentity);
   return replayLegacyMetamap(value);

@@ -1,6 +1,6 @@
 # Metamap build plan
 
-Updated 2026-10-09. This is the current capability build plan for the seven
+Updated 2026-10-10. This is the current capability build plan for the seven
 vision elements requested by the user. It supersedes the earlier sequencing
 that made measured reviewer benefit a prerequisite for further capability work.
 Review-time and comparative-benefit studies are deferred. Their existing
@@ -20,8 +20,10 @@ digest decisions are recorded in [CONTRACTS.md](CONTRACTS.md). M0–M2 are local
 implemented and verified, including checked derivations through projection,
 path-tree, replay and comparison. M3's P06/P07 typed execution and budget checks
 are locally implemented and verified; authenticated invalidation of an old
-approval remains a cross-milestone M4 acceptance check. Source capture/P08 and
-M4–M8, including separate Seeder adoption, remain outstanding. The full goal
+approval remains a cross-milestone M4 acceptance check. Source capture/P08 is
+locally implemented and verified, including exact source-bound replay,
+read-only inspection and native consumer execution. M4–M8, including separate
+Seeder adoption, remain outstanding. The full goal
 is active.
 
 ## 1. Product outcome and controlling sources
@@ -757,10 +759,10 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The next executable job is P06: implement typed uncertainty assessments and
-conservative propagation, followed by P07 consumer risk budgets. Every added
-semantic input must extend the existing P05 capture and comparison contracts in
-the same increment. Governance or scientific work
+The next executable job is P09/P10: authenticated governance and protected
+activation using the complete P08 provenance bindings. Every
+added semantic input must extend capture and comparison in the same increment.
+Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
 environment before crossing its activation or ingestion boundary.
 
@@ -768,14 +770,16 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: M3/P06 typed uncertainty assessments and propagation, followed
-  by P07 per-consumer risk accounting and budget checks.
+- Current work: P09/P10 authenticated approval and protected activation,
+  following verified P08 complete source capture and provenance inspection.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
-- Locally implemented and verified: M0–M2, including P03/P04 law admission and
-  the M2 portion of P05 downstream bindings. P05 continues as later semantic
+- Locally implemented and verified: M0–M2 and M3/P06-P07 typed execution,
+  including P03/P04 law admission and the M2/M3 portions of P05 downstream
+  bindings. P05 continues as later semantic
   inputs land. Human acceptance, release and production activation are not
-  inferred. M3–M8 remain outstanding.
+  inferred. P08 is locally implemented and verified. Authenticated invalidation
+  of old approvals remains M4; M4–M8 remain outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -961,6 +965,66 @@ environment before crossing its activation or ingestion boundary.
   outstanding. No release, merge or production activation has occurred.
 
 ---
+
+### P08 complete source provenance, 2026-10-10
+
+- Added [PROVENANCE.md](PROVENANCE.md), source-capture/inspection 1.0 and explicit
+  replay/comparison 3.0. Policy, generation, projection and path tree remain 2.0;
+  all 27 previously published schema/pack byte identities remain unchanged.
+  Replay 2.0 still rejects partial source lineage rather than ignoring it.
+- Captures reuse full configuration and ordered `AdapterResult` records, exact
+  source pack values and the source-composed graph. The existing workspace
+  assembler/materializer reconstructs the graph offline. Derived snapshot and
+  receipt bindings cover source identity/revision, adapter, source configuration,
+  input byte digests and emitted shard values. Rehashed wrong receipts or old
+  snapshot bindings cannot match those complete captured records.
+- Source/candidate graph bindings are separate. Explicit candidate overlays are
+  reported without receiving source attribution. Accepted and rejected
+  evaluations preserve provenance, exact executor/runtime/dependencies, checked
+  proofs, typed requirements, budgets and consumer outcomes. Rejection retains
+  unknown expression/risk deltas. Source-component comparison records workspace
+  or source scope and exact before/after digests.
+- Added `sources`, `provenance` and `capture --source-capture`. Offline inspection
+  performs no source reads or named-code execution. Explicit current inspection
+  selects its own local config and permitted roots; checks lexical/resolved
+  paths and symlink escapes; runs installed built-in adapters without cache
+  reads/writes; checks raw input byte hashes; and reports changed/unavailable
+  sources. Captured custom outputs can be inspected offline but cannot install
+  or execute code named by a capture.
+- Added an explicit portable pack-reference profile in the shared workspace
+  assembly. Legacy default output retains its bytes; capture uses `repo:` plus
+  the encoded configured pack path. Executable configured packs cannot replace
+  a conflicting/missing explicit shard digest. An exact imported core reference
+  is preserved through generated correspondence declarations. Legacy shards
+  with non-portable relative pack URIs need an explicit migration before complete
+  capture. Current directory inspection is conservative and does not lock another
+  filesystem writer.
+- [The two-source example](examples/provenance/README.md) emits complete source
+  records and checked native consumer bindings. It reproduces accepted/rejected
+  replay, strict-policy failure, rehashed receipt rejection, separate current
+  inspection and native hydrated paths. Original source files/caches remain
+  unchanged. Executor-specific replay bundles are disposable rather than
+  committed as false stable fixtures.
+- Local verification passed all 23 commands: `npm run format:check`,
+  `npm run typecheck`, `npm test`, `npm run build`, `validate:example`, all twelve
+  existing/new example commands, the three existing CLI drivers, package dry-run
+  inspection, diff whitespace and preserved-file checks. **348 tests / 38 files**
+  include **71 new behavioral tests**, ten real packaged-command scenarios,
+  generated TypeScript type-check/runtime execution in normal CI, committed
+  source-capture reproduction and a legacy research-workspace portable capture.
+  All 45 prior CLI cases and three native helpers passed. The new example's 17
+  generated files regenerate byte-for-byte. The package contains 358 files,
+  includes all new public surfaces/examples and excludes private caches, work
+  files and evaluation records. Prior examples and original evaluation files
+  remain unchanged.
+- Evidence is local implementation/verification, not human acceptance, release,
+  authentication or production activation. The inspection reports recorded
+  bindings, unavailable offline raw rediscovery, and authentication/current
+  authorization/active state as not evaluated. Whole-record replacement can
+  produce a different internally consistent capture; P09/P10 must bind it to
+  external trusted grants and signed approval. Both legacy promoters still
+  block v2. M4–M8 and the separate Seeder adoption remain outstanding; the full
+  goal is active. Deferred comparative-benefit measurements remain deferred.
 
 ## 19. Historical first release and localization cycle
 
