@@ -74,6 +74,7 @@ operations. No reader substitutes current inputs for pinned missing inputs.
 | Activation manifest                    | 1.0.0        | Exact immutable artifact paths and byte digests, graph/policy/generation/projection/proposal bindings, accepted approval IDs, expected previous manifest, consumer/environment and activation time. One atomic pointer identifies the complete set.                                                                                                |
 | Trusted consumer configuration         | 1.0.0        | External principals/keys, scoped grants, revocation revision, mode, consumer/environment and permitted promoter locations. It is never accepted from proposals, graphs, replay or discovery.                                                                                                                                                       |
 | Bounded repair request / result        | 1.0.0        | Baseline evaluation identity, exact permitted templates/targets, depth/candidate/time bounds, attempted candidate digests, compiled outcomes, deterministic rank, unexamined/bounded status and required approval actions. No source/active-state writes.                                                                                          |
+| Shared explanation request / report    | 1.0.0        | Verified source-bound captures and stable consumer/subject selection; exact optional before/repair links, original issues and independent changes, declared ownership, checked/recorded proof and risk, unavailable current authority and visible focus/causal limits.                                                                             |
 
 Source lineage extends `MetamapSnapshot.sources` and `AdapterResult.inputs`;
 there is no second source inventory. A replay 3.0 receipt binds the existing
@@ -276,3 +277,13 @@ new version and explicit migration, not updating the pins to get a pass.
 Normative signing reference: [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785.html).
 Scientific relation profiles will cite their normative source and never import
 pragmatic toolkit chaining as an unstated SKOS law.
+
+Shared explanation request/report 1.0 uses three new schema identities. It binds
+source-bound replay3 captures, stable consumer selection, optional same-graph
+before capture and exactly matched verified repair report. Report parsing
+reproduces all derived fields through existing evaluators. Missing/ambiguous
+records, recorded-versus-checked proof status and focus truncation are explicit.
+Input changes remain separate from issue subjects; the existing single-path
+impact limits and unestablished unique cause are retained. Declared owners and
+captured inputs do not authenticate current grants or active state. See
+[DEBUGGER.md](DEBUGGER.md).

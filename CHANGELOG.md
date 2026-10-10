@@ -2,6 +2,16 @@
 
 ## Unreleased capability work
 
+- Add shared read-only explanations over complete source-bound replay: stable
+  operation/mapping selection, captured owner/source/rule/evidence links, actual
+  slot/risk checks, original issue subjects and observed before/current changes.
+- Preserve recorded-versus-checked proofs, duplicate/missing states and focus
+  limits. Disclose existing impact limitations without inferring a unique cause,
+  authenticated current authority or active state. Verify supplied alternatives
+  through bounded repair and recompute the complete explanation when parsed.
+- Add the strict `explain` command, portable contracts and public API/command
+  example with source and existing-output preservation.
+
 - Add bounded read-only repair requests/results over complete source-bound
   replay, with four explicit edit kinds, protected proposal facts, current
   compiler/projection/counterfactual results and required approval actions.

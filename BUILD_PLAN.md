@@ -31,9 +31,10 @@ Linux run exposed a native fixture module-context error, undersized new-case
 timers and blocked fixture RPC handling. Corrections and root-owned consumer
 storage hardening pass both the local gate and exact-head Linux acceptance at
 3ffb4cd. M4 is implemented and verified for the first root-owned Linux profile;
-production deployment and consumer acceptance are separate. M5–M8, including separate
-Seeder adoption, remain outstanding. The full goal
-is active.
+production deployment and consumer acceptance are separate. P11/M5 bounded repair
+is implemented and verified at26ec924, including exact-head Linux CI. P12 begins
+M6 shared explanations. M6–M8 and separate Seeder adoption remain outstanding;
+the full goal is active.
 
 ## 1. Product outcome and controlling sources
 
@@ -768,9 +769,10 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The current executable job is P11: bounded read-only repair using the existing
-compiler, complete source-bound replay and exact governance action classification. Every
-added semantic input must extend capture and comparison in the same increment.
+The current executable job is P12: shared read-only explanations using complete
+source-bound replay, existing compiler/comparison reports and verified supplied
+repairs. P13 follows with a local HTML view of those same reports. Every added
+semantic input must extend capture and comparison in the same increment.
 Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
 environment before crossing its activation or ingestion boundary.
@@ -779,9 +781,9 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P11 bounded repair after M4's exact-head Linux acceptance at
-  `3ffb4cd`. P08/P09 are pushed and verified; protected activation is verified
-  for the first root-owned Linux profile.
+- Current work: P12 shared explanation API and command, after M5's exact-head
+  Linux acceptance at `26ec924`. P08/P09/P10/P11 are pushed and verified; protected
+  activation is verified for the first root-owned Linux profile.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
 - Locally implemented and verified: M0–M2 and M3/P06-P07 typed execution,
@@ -790,7 +792,8 @@ environment before crossing its activation or ingestion boundary.
   inputs land. Human acceptance, release and production activation are not
   inferred. P08 is locally implemented and verified. M4/P09-P10 also verifies
   exact authenticated invalidation at the protected write boundary and actual
-  independent proposer/consumer permissions. M5–M8 remain outstanding.
+  independent proposer/consumer permissions. M5/P11 is implemented and verified
+  for the finite supplied-edit profile. M6–M8 remain outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -1162,7 +1165,7 @@ environment before crossing its activation or ingestion boundary.
   M5–M8 and separate Seeder
   adoption remain outstanding; the full goal stays active.
 
-### P11 — bounded read-only repair, verification in progress
+### P11 — bounded read-only repair, verified supplied-edit profile
 
 - New request/result 1.0 contracts bind a verified rejected replay3, required
   consumer projections, four explicit supplied edit kinds, allowed/protected
@@ -1195,8 +1198,51 @@ environment before crossing its activation or ingestion boundary.
   published schema/pack files, prior examples and original evaluation records
   remain unchanged; the 17 source outputs are byte-stable. The 401-file public
   package contains the new SDK/contracts/example and excludes private test/work
-  storage. Exact-head Linux CI remains pending; M5 is not marked verified. M6–M8 and separate
-  Seeder adoption remain outstanding; the full goal stays active.
+  storage. Exact-head [Linux CI at26ec924](https://github.com/roryscot/metamap/actions/runs/38034024320)
+  passed: 481 tests / 44 files, one unsupported-platform skip and zero unhandled
+  errors. The 35 repair API checks and new command/native workflow passed, as did
+  the independent UID boundary (24 denied operations) and all five actual SIGKILL
+  recovery phases. M5 is implemented and verified for this finite supplied-edit
+  profile. M6–M8 and separate Seeder adoption remain outstanding; the full goal
+  stays active. No human acceptance, release or production activation is inferred.
+
+### P12 — shared explanation API and command, verification in progress
+
+- New request/report 1.0 contracts bind complete source-bound captures, a stable
+  consumer/operation or mapping selection, optional matched before capture and
+  verified supplied repair report. The report uses existing replay, compiler,
+  comparison and governance classifiers; no additional reasoner is introduced.
+- Focused navigation retains incident bindings and recorded proof premises,
+  literal locators, captured shard/receipt links, fact-scoped owner/delegation
+  declarations, actual slots and path-tree results, uncertainty/evidence/models,
+  whole-projection risk charges and original issue subjects. Focus truncation,
+  missing/duplicate records and unavailable checks remain explicit.
+- Checked proof status requires the exact verified viable generation; recorded
+  proofs in rejected captures remain recorded. Exact pack digest is required for
+  a rule match. Before/current input changes remain separate from assigned issue
+  subjects and declared dependency paths. Duplicate identities prevent an
+  ambiguous comparison, and the existing one-path/conservative-seeding limit
+  and unestablished unique cause are disclosed.
+- Ownership and captures do not establish authenticated current grants or active
+  state. Existing classification supplies approval requirements, while supplied
+  alternatives retain blocked/rejected outcomes, coverage and finite minimum
+  limits. No source write, approval, activation or owner message occurs.
+- The first focused run caught an unavailable uncertainty schema that still
+  required six checked dimensions, frozen proof fixture mutation and an unchanged
+  zero-cost tampering fixture. The new contract and fixtures were corrected.
+  A test assumption about the missing premise's issue subject was replaced with
+  exact original-issue preservation plus a separate real downstream slot failure.
+  All 28 API tests and the distribution-backed workflow pass, including ten
+  actual command cases; type/build checks pass.
+- The full local 26-command gate passed: 494 tests / 46 files, with 17 Linux
+  permission cases skipped on this Mac. Fifteen examples, 45 previous command
+  cases, ten repair and ten explanation command cases, and native workflows
+  pass. All 42 published schema/pack files, prior examples and original evaluation
+  records are preserved; 17 source outputs are byte-stable. The public package
+  contains 414 files and excludes private tests/work/cache. Exact-head Linux CI
+  remains pending. The HTML view and actual browser acceptance remain P13;
+  M6 is not yet marked verified. No human acceptance, release or production
+  activation is inferred.
 
 ## 19. Historical first release and localization cycle
 

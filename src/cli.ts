@@ -31,6 +31,7 @@ import { parseSemanticProjectionSpec } from "./semantic-projection.js";
 import { captureReplayBundle, replayMetamap } from "./replay.js";
 import { compareMetamapBundles } from "./counterfactual.js";
 import { searchMetamapRepairs } from "./repair.js";
+import { explainMetamap } from "./explanation.js";
 import { parseSourceReplayBundle } from "./semantic-replay.js";
 import {
   captureWorkspaceSources,
@@ -75,6 +76,7 @@ function usage(): string {
   metamap replay <bundle.json>
   metamap compare <before.replay.json> <after.replay.json> [report.json]
   metamap repair <repair-request.json> [new-report.json]
+  metamap explain <explanation-request.json> [new-report.json]
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -253,6 +255,28 @@ async function main(args: string[]): Promise<number> {
     if (outputPath) await writeFile(resolve(outputPath), serialized, "utf8");
     else process.stdout.write(serialized);
     return 0;
+  }
+  if (command === "explain") {
+    const parsed = parseArguments(rest, new Set());
+    const [requestPath, outputPath] = parsed.positionals;
+    if (!requestPath || parsed.positionals.length > 2) {
+      console.error(usage());
+      return 2;
+    }
+    const bytes = await readFile(resolve(requestPath));
+    if (bytes.byteLength > 64 * 1024 * 1024)
+      throw new Error("Explanation request exceeds 64 MiB");
+    const result = explainMetamap(
+      parseStrictJson(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
+    );
+    const serialized = canonicalJson(result) + "\n";
+    if (outputPath && result.status === "explained")
+      await writeFile(resolve(outputPath), serialized, {
+        encoding: "utf8",
+        flag: "wx",
+      });
+    else process.stdout.write(serialized);
+    return result.status === "explained" ? 0 : 1;
   }
   if (command === "repair") {
     const parsed = parseArguments(rest, new Set());

@@ -101,3 +101,11 @@ Keep changes focused, explain the structural invariant being changed, and add a
 regression test for behavior changes. Do not silently convert unresolved
 candidate authority into canonical authority or infer semantic equivalence from
 names.
+
+Use `npm run example:explain` for the shared API/command report, missing provider
+origin, verified supplied alternatives and source/existing-file preservation.
+Explanation changes must test rejected/unknown/ambiguous captures, exact pack
+bindings, original issue subjects, independent input changes, whole-projection
+risk, unavailable current authorization and rehashed report tampering. Run build
+before distribution-backed tests. HTML/browser acceptance remains the separate
+P13 increment; structured command output alone does not satisfy it.

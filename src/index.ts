@@ -49,3 +49,5 @@ export * from "./adapters/metamap-shard.js";
 export * from "./adapters/nextjs-app-router.js";
 export * from "./adapters/registry.js";
 export * from "./adapters/source-of-truth.js";
+export * from "./explanation-model.js";
+export * from "./explanation.js";

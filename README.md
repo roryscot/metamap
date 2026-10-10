@@ -382,6 +382,8 @@ interfaces, exact immutable state, protected consumer reads, and the first Linux
 dedicated promoter/permission profile. The plan records the verification status.
 Use [REPAIR.md](REPAIR.md) for bounded read-only proposals, exact candidate patches,
 honest search coverage and the separate approval required for a viable repair.
+Use [DEBUGGER.md](DEBUGGER.md) for shared captured explanations, original issue
+subjects, input change origins and read-only inspection of supplied alternatives.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 
