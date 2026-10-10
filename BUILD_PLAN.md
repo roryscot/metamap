@@ -26,9 +26,10 @@ locally implemented and verified, including exact source-bound replay,
 read-only inspection and native consumer execution. P09's pure proposal and
 authenticated approval layer is locally implemented and verified, including
 the full package/regression gate. P10's governed interfaces and first Linux
-protected promoter are implemented. The 24-command local gate passes with
-429 tests / 42 files and 16 Linux cases explicitly skipped on the Mac.
-Actual Linux permission/transaction CI acceptance remains pending.
+protected promoter are implemented. Both local gates passed; the first
+Linux run exposed a native fixture module-context error, undersized new-case
+timers and blocked fixture RPC handling. Corrections and root-owned consumer
+storage hardening pass the local gate. Actual Linux acceptance remains pending.
 M4–M8, including separate
 Seeder adoption, remain outstanding. The full goal
 is active.
@@ -1104,7 +1105,7 @@ environment before crossing its activation or ingestion boundary.
   cannot supply either. A governed memory instance rejects the legacy overload.
   Legacy APIs still reject v2. Complete immutable manifests bind candidate,
   approved bytes, historical external trust, baseline and trusted decision time.
-- The first persistent profile uses an owner-controlled Linux promoter with
+- The first persistent profile uses a root-controlled Linux promoter with
   disjoint protected paths, regular no-follow files without hard links, private
   kernel locking, immutable directories/manifests, byte/inventory rechecks,
   current pre-commit authorization, and one atomic pointer. A fixed stdin wrapper
@@ -1120,7 +1121,7 @@ environment before crossing its activation or ingestion boundary.
   They remain unverified on this Mac until Linux CI passes. Initial new fixture
   locator and per-test timeout failures were corrected without relaxing semantic
   validation or acceptance assertions. Type/build checks pass.
-- The full local 24-command regression gate passed: 429 tests / 42 files with
+- The initial full local 24-command regression gate passed: 429 tests / 42 files with
   16 Linux cases skipped, 13 example commands, 45 previous command cases and three
   native helpers, format/type/build, package and preservation checks. The package
   contains 388 public files and excludes test/work/private fixture storage.
@@ -1128,8 +1129,30 @@ environment before crossing its activation or ingestion boundary.
   evaluation files remain unchanged; the 17 source example outputs are byte-stable.
   The additional Linux fixture privilege probe is covered by format/JavaScript
   checks and awaits actual CI execution along with the transaction cases.
-- Exact-head Linux CI remains pending; M4 is not yet marked accepted. M5–M8 and
-  separate Seeder adoption remain outstanding; the full goal stays active.
+- First Linux CI at b5215f7 failed: 435 tests passed, nine failed, one skipped,
+  with three fixture RPC errors. All five real SIGKILL phases passed, but the
+  native consumer failed because its trusted application module context was
+  absent. Four memory and four remaining Linux failures were timer overruns;
+  synchronous fixture subprocess calls also blocked the test worker's RPC.
+  This run does not establish M4 acceptance or the unexecuted permission probe.
+- The test host now supplies the trusted ESM application metadata and uses
+  asynchronous subprocess transport. Only the new large scenario timers are
+  sized for observed CI work; authorization/byte/permission assertions and
+  approval validity windows remain unchanged. A temporary timer-edit syntax
+  error was caught and corrected before publication.
+- Consumer ownership review found that a reading UID may also be the proposer
+  UID. The first filesystem profile now requires root-owned trust/state and
+  descendants; reading UID ownership cannot become a trust root. A new separate
+  account case rejects a proposer-owned pointer even with unchanged valid bytes.
+  Other service-owner profiles require separate design/acceptance.
+- The corrected full local 24-command gate passed: 429 tests / 42 files,
+  including the 19 memory and three transport/platform tests. Seventeen Linux
+  cases remain skipped locally. All 39 now-published schema/pack files and
+  prior examples/evaluation records are preserved; the 17 source outputs are
+  byte-stable. Thirteen examples, 45 command cases, three native helpers and
+  the 388-file package inspection also pass. Exact-head Linux acceptance
+  remains pending; M4 is not accepted. M5–M8 and separate Seeder
+  adoption remain outstanding; the full goal stays active.
 
 ## 19. Historical first release and localization cycle
 

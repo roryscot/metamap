@@ -36,6 +36,10 @@ const stdin = async () => {
 };
 if (action === "install") {
   await mkdir(root, { mode: 0o755 });
+  // Native NodeNext compilation uses the trusted application's module context.
+  await writeFile(join(root, "package.json"), '{"type":"module"}\n', {
+    mode: 0o644,
+  });
   await mkdir(installation, { mode: 0o755 });
   for (const path of [
     "dist",
@@ -280,7 +284,11 @@ if (action === "install") {
     );
     assert.equal(result.status, 0, result.stderr + result.stdout);
     output(JSON.parse(result.stdout));
-  } else if (action === "cli" || action === "wrapper") {
+  } else if (
+    action === "cli" ||
+    action === "wrapper" ||
+    action === "consumer-cli"
+  ) {
     const text = await stdin();
     const args =
       action === "wrapper"
@@ -291,12 +299,18 @@ if (action === "install") {
             trustPath,
             ...(behavior ? [behavior] : []),
           ];
-    const result = spawnSync(process.execPath, args, {
-      input: text,
-      encoding: "utf8",
-      timeout: 30000,
-      maxBuffer: 8 * 1024 * 1024,
-    });
+    const result = spawnSync(
+      action === "consumer-cli" ? "/usr/sbin/runuser" : process.execPath,
+      action === "consumer-cli"
+        ? ["-u", "nobody", "--", process.execPath, ...args]
+        : args,
+      {
+        input: text,
+        encoding: "utf8",
+        timeout: 30000,
+        maxBuffer: 8 * 1024 * 1024,
+      },
+    );
     output({
       code: result.status,
       stdout: result.stdout,
@@ -309,6 +323,8 @@ if (action === "install") {
       await chmod(join(root, "state"), data.mode);
     else if (phase === "trust-content")
       await writeFile(trustPath, JSON.stringify(data) + "\n");
+    else if (phase === "current-owner")
+      await chown(join(root, "state/current.json"), data.uid, data.uid);
     else if (phase === "trust-hardlink") {
       if (data.enabled) await link(trustPath, join(root, "trust-linked.json"));
       else await unlink(join(root, "trust-linked.json"));

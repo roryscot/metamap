@@ -38,24 +38,27 @@ The persistent deployment below supplies the actual separate filesystem boundary
 The governed overload of promoteMetamapGeneration takes a request and host
 options containing mode "governed" and an absolute, externally fixed trustPath.
 No output path, provider code or credentials are taken from the candidate. The
-first profile requires Linux, installed util-linux flock, and a local filesystem
+first profile requires Linux, root-owned trust/state storage, installed util-linux
+flock, and a local filesystem
 supporting kernel locks, same-filesystem atomic rename, and file/directory fsync.
 Other operating systems fail closed. Network and unusual filesystems have no
 acceptance evidence in this profile.
 
 Install the promoter, interpreter, dependencies and service wrapper under the
-consumer owner's control, outside agent-writable workspaces. The proposer must
+consumer owner's root-controlled installation, outside agent-writable workspaces.
+The privileged promoter writes that storage. The proposer must
 run under a different unprivileged UID without access to the promoter UID, its
 credentials, privileged command selection or ptrace of the promoter. The service
 fixes code, argv, environment and trust location; only request data crosses the
 boundary. The generic CLI alone does not configure that service boundary.
 
-Provision the trust file and its ancestors without group/world write permission.
-Provision the state directory with protected owner permissions before promotion;
+Provision the root-owned trust file and its ancestors without group/world write
+permission. Provision the root-owned state directory with protected owner
+permissions before promotion;
 the library does not create it inside a proposal workspace. Paths are normalized,
 absolute, disjoint from configured proposal roots and checked against resolved
-roots. Trusted ancestors must be root/promoter-owned and protected; a sticky shared
-ancestor such as /tmp is allowed for owner-owned entries. Final trusted files must
+roots. Trusted ancestors must be root-owned and protected; a sticky shared
+ancestor such as /tmp is allowed for root-owned entries. Final trusted files must
 be regular, non-symlink files without hard links. Immutable files must have no
 write bits. The transaction lock is private to the promoter. Reads use no-follow
 descriptors, file metadata checks and fatal UTF-8 decoding.
@@ -118,10 +121,13 @@ addressed manifest and its historical approval, and verifies every exact immutab
 file. The returned frozen state contains the files from that single generation.
 It does not scan for or choose unreferenced candidate directories.
 
-The first file ownership profile permits root-owned state or state owned by the
-reading service UID. The independent consumer test reads root-owned state from
-an unprivileged UID. Deployments with another shared service owner need a separately
-defined and tested ownership profile.
+The first file ownership profile requires root-owned configuration, state and
+descendants. It rejects files owned by the reading UID: a read-only consumer may
+share the proposer UID, so that UID cannot become a filesystem trust root.
+The independent consumer test reads root-owned state from an unprivileged UID
+and rejects a proposer-owned pointer even with unchanged signed bytes.
+Deployments with another service owner need a separately defined and tested
+ownership profile.
 
 Revocation prevents a new activation or retry. It does not silently retire an
 already accepted generation: retirement is a separate consumer policy/action.

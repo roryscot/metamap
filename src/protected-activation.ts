@@ -49,7 +49,8 @@ function missing(error: unknown): boolean {
   return error instanceof Error && "code" in error && error.code === "ENOENT";
 }
 function protectedOwner(stat: Stats): boolean {
-  return stat.uid === 0 || stat.uid === process.geteuid!();
+  // Read-only consumers may share the proposer UID. Their UID is never a trust root.
+  return stat.uid === 0;
 }
 function protectedDirectory(stat: Stats, path: string, ancestor = false): void {
   const sticky = ancestor && (stat.mode & 0o1000) !== 0;

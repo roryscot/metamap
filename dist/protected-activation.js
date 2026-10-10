@@ -16,7 +16,8 @@ function missing(error) {
     return error instanceof Error && "code" in error && error.code === "ENOENT";
 }
 function protectedOwner(stat) {
-    return stat.uid === 0 || stat.uid === process.geteuid();
+    // Read-only consumers may share the proposer UID. Their UID is never a trust root.
+    return stat.uid === 0;
 }
 function protectedDirectory(stat, path, ancestor = false) {
     const sticky = ancestor && (stat.mode & 0o1000) !== 0;

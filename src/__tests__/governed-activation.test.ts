@@ -81,7 +81,7 @@ describe("governed activation through the existing in-memory interface", () => {
     expect(governedActivationBaseline(current)?.manifestDigest).toBe(
       current.manifest.digest,
     );
-  });
+  }, 15000);
   it("requires the host to opt in; a request cannot select its trust root", () => {
     const { request } = setup();
     rejected(
@@ -103,7 +103,7 @@ describe("governed activation through the existing in-memory interface", () => {
     time("2026-10-10T02:00:00.000Z");
     rejected(activator.activate(request), "GOVERNANCE_APPROVAL_NOT_CURRENT");
     expect(activator.governedCurrent).toBe(before);
-  });
+  }, 15000);
   it.each(["files", "proposal", "signature", "extra", "ownTrust", "ownTime"])(
     "rejects altered %s without changing current state",
     (change) => {
@@ -135,7 +135,7 @@ describe("governed activation through the existing in-memory interface", () => {
     expect(parseGovernedActivationManifest(before!.manifest)).toEqual(
       before!.manifest,
     );
-  });
+  }, 15000);
   it("rejects agent self-approval and a legacy fallback even with a viable v1 graph", () => {
     const { activator, request, f } = setup();
     rejected(
@@ -217,7 +217,7 @@ describe("governed activation through the existing in-memory interface", () => {
     expect(activator.governedCurrent!.manifest.digest).not.toBe(
       first.manifest.digest,
     );
-  }, 20000);
+  }, 45000);
   it("reports an unavailable trusted host without changing current state", () => {
     const { activator, request, host } = setup();
     activator.activate(request);
