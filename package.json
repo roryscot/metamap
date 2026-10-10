@@ -35,7 +35,8 @@
     "REPAIR.md",
     "DEBUGGER.md",
     "standards",
-    "SCIENTIFIC_MAPPING.md"
+    "SCIENTIFIC_MAPPING.md",
+    "LIFECYCLE.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -61,7 +62,9 @@
     "example:explain": "npm run build && node examples/explanation/run.mjs",
     "example:debugger": "npm run build && node examples/debugger/run.mjs",
     "example:scientific-source": "npm run build && node examples/scientific-mapping/source.mjs",
-    "example:scientific": "npm run build && node examples/scientific-mapping/consumer.mjs"
+    "example:scientific": "npm run build && node examples/scientific-mapping/consumer.mjs",
+    "example:lifecycle": "npm run build && node examples/lifecycle/run.mjs",
+    "verify:package": "npm run build && node scripts/verify-package.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",

@@ -37,9 +37,11 @@ shared explanations are implemented and verified at `5008938`. P13's local
 debugger has passed the complete local gate and actual browser acceptance;
 the first exact-head Linux run failed on reporting timeouts, and the corrected
 run at `f82797e` passed all 517 tests / 48 files without unhandled errors. M6 is
-implemented and verified. M7/P14-P15 is locally implemented and verified;
-exact-head Linux acceptance is pending publication. M8 and
-separate Seeder adoption remain outstanding; the full goal is active.
+implemented and verified. M7/P14-P15 is pushed and locally verified. Linux CI at
+`d5dadab` passed599tests/52files, actual UID separation and all five SIGKILL cases,
+then exceeded the15-minute job limit during the examples. Full workflow
+acceptance remains pending. M8's lifecycle/package work and separate Seeder
+adoption remain in progress; the full goal is active.
 
 ## 1. Product outcome and controlling sources
 
@@ -774,8 +776,8 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The current executable job is P14/P15: the pinned licensed scientific
-integration, following P13's corrected exact-head Linux acceptance. Every added
+The current executable job is P16: lifecycle/package/migration acceptance,
+followed by the separate P17 consumer upgrade. Every added
 semantic input must extend capture and comparison in the same increment.
 Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
@@ -785,8 +787,8 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P14/P15 scientific publication and exact-head Linux acceptance,
-  then P16's lifecycle/package/migration acceptance and separate P17 adoption.
+- Current work: P16's lifecycle/package/migration acceptance and separate P17
+  adoption, with full exact-head Linux workflow acceptance still required.
   P08–P13 are pushed and verified; protected activation
   is verified for the first root-owned Linux profile.
 - Identity instruction supersession: the user's 2026-10-09 replacement
@@ -799,7 +801,9 @@ environment before crossing its activation or ingestion boundary.
   exact authenticated invalidation at the protected write boundary and actual
   independent proposer/consumer permissions. M5/P11 is implemented and verified
   for the finite supplied-edit profile. M6/P12-P13 is implemented and verified
-  at corrected exact-head Linux CI `f82797e`. M7–M8 remain outstanding.
+  at corrected exact-head Linux CI `f82797e`. M7's599-test Linux suite passed at
+  `d5dadab`, but the complete job timed out and is not accepted. M8 remains
+  outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -1368,6 +1372,44 @@ environment before crossing its activation or ingestion boundary.
   path previously named Seeder now points to roryscot/Avaelus-; its still-named
   Metamap consumer is onv0.5.0. No human acceptance, release, production activation
   or scientific/benefit claim is inferred; the complete build goal stays active.
+
+### P16 lifecycle and package acceptance in progress, 2026-10-10
+
+- `example:lifecycle` uses public APIs, two owned source shards, the existing
+  checked dependency derivation and cost5 policy. It prepares exact native bytes,
+  verifies external synthetic owner approval, changes a locator while preserving
+  semantic IDs, executes the new binding, and freshly approves rollback against
+  the current baseline. All three generated modules are typechecked and executed.
+- Missing/ambiguous bindings, unsupported inference, insufficient budget,
+  strict unknown evidence, viable agent-proposed authority expansion, stale
+  baselines/approval and tampered bytes leave the prior active state intact.
+  Keys stay in memory. The portable walkthrough uses the synthetic memory
+  profile; protected Linux permissions are covered by the actual native suite.
+- `LIFECYCLE.md` connects the walkthrough to existing repair/debugging/scientific
+  examples and documents version selection, historical executor mismatch,
+  consumer-owned trust/keys, failure reconciliation and freshly approved rollback.
+  Package verification installs the actual archive in an external disposable
+  consumer, imports every public module/JSON export and runs the packaged native
+  walkthrough. No published schema/pack interpretation changes.
+- The cancelled `d5dadab` job annotation explicitly reports a15-minute execution
+  limit. All599tests/52files passed with1off-profile skip and no unhandled error;
+  actual24denied independent-UID operations and all five SIGKILL phases passed.
+  Subsequent examples and packing were incomplete. The full-job allowance is
+  now30minutes so all unchanged assertions plus installed-package acceptance
+  can finish. Production deadlines and permission checks are unchanged.
+- Local31-command gate passed584tests/53files/17Linux-profile skips with no
+  unhandled errors. All examples/native command cases passed. The actual packed
+  458-file archive installed outside the checkout;43public modules and49JSON
+  exports imported, and the packaged lifecycle typechecked/executed all three
+  bindings. All51published schema/pack files,17source outputs and original
+  evaluation/legacy fixtures remained byte-identical. Exact-head full Linux
+  workflow acceptance remains pending.
+- P17 is isolated from the active downstream checkout at baseline`8ce88ad`;
+  its existing0.5.0 baseline passed route/topology,426webtests/82files, separate
+  lint/type checks and the web build. Next.js rewrote its generated environment
+  type reference during the build; that unrelated side effect was restored.
+  An immutable upstream pin and corresponding post-upgrade checks remain.
+  No human acceptance, release or production activation is inferred.
 
 ## 19. Historical first release and localization cycle
 

@@ -25,6 +25,7 @@ npm run example:explain
 npm run example:debugger
 npm run example:scientific-source
 npm run example:scientific
+npm run example:lifecycle
 npm run example:path-tree
 npm run example:topology
 npm run example:replay
@@ -103,6 +104,11 @@ semantic entailment separate from evidential support and include an explicit
 causal `impactDirection` for every relation intended for viable activation.
 
 ## Pull requests
+
+Run `npm run example:lifecycle` and `npm run verify:package` when changing the
+lifecycle or package surface. The package check installs the actual archive in a
+disposable external consumer and imports all public exports before executing
+and typechecking the governed walkthrough.
 
 Keep changes focused, explain the structural invariant being changed, and add a
 regression test for behavior changes. Do not silently convert unresolved

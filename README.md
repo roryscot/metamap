@@ -387,6 +387,8 @@ subjects, input change origins and read-only inspection of supplied alternatives
 Use [SCIENTIFIC_MAPPING.md](SCIENTIFIC_MAPPING.md) for the bounded local SSSOM1.0
 profile, distinct scientific assertions, explicit exploratory consumer budgets,
 native lookup and source-bound RO-Crate1.2 export.
+Use [LIFECYCLE.md](LIFECYCLE.md) for the runnable consumer walkthrough, version migration
+and freshly approved rollback procedure.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 
