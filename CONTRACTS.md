@@ -111,7 +111,7 @@ and tampering tests in M2–M4; they are design decisions here.
 Projection spec 2.0.0 names a consumer and an explicit `budget` ID or `null`.
 Null means that no typed budget was evaluated, not a zero cost. A consumer with
 a declared budget must select a matching budget; opting out cannot bypass that
-consumer's policy. Non-null budgets reject until M3 implements their evaluator.
+consumer's policy. Non-null budgets select the consumer's executable cost rules.
 The result binds the exact generation/spec, unique used mapping dependency
 closure, proof bindings, and a risk summary. Unused and inactive mappings are
 excluded. The existing cardinality/kind selection algorithm remains shared.
@@ -137,6 +137,58 @@ changes are unknown after a rejected generation; errors are effects rather than
 automatically asserted change origins. All new content addresses cover the
 entire JCS value except their own `id` and `digest`, including `$schema` when
 present. No comparison or replay operation authorizes activation.
+
+## M3 uncertainty and budget evaluation decisions
+
+P06/P07 implement the reserved members of policy/generation/projection 2.0;
+published schemas retain their byte identities. Assessments may name a graph
+mapping, entity or authority. Entity assessments constrain incident mappings;
+authority assessments constrain mappings touching the authority's concept.
+Assessment revisions match a declared subject source revision when available,
+otherwise the graph revision when available. These remain declared revision
+bindings, not source authentication or raw-byte rediscovery.
+
+An assessment explicitly binds its dimension to evidence of kind
+`uncertainty:<dimension>`, scoped to the assessed subject. A referenced record's
+full value is bound using JCS; its optional `digest` continues to describe the
+referenced evidence artifact. Unsupported subject/evidence references, duplicate
+record identities and mismatched dimensions/revisions reject. Evidence and
+assessor attribution remain recorded claims; neither is authenticated by M3.
+Evidence explicitly referenced by a valid assessment is evaluated within its
+dimension. Other evidence retains the existing contradiction behavior, and
+explicit legacy constraints still see all evidence. A typed requirement cannot
+be waived through a legacy waiver.
+
+Contradiction dominates unknown; unknown dominates support. A reasoned
+not-applicable assessment can remove that dimension from consideration only
+where the consumer explicitly permits that state. Combining different named
+measurement models yields unknown unless contradiction already applies. No
+confidence scores are averaged, multiplied or converted into dimension states.
+Repeated evidence is counted once and cannot strengthen a summary. A derived
+claim combines its premises and applicable direct assessments conservatively;
+direct support cannot erase an unknown or contradicted premise.
+
+Proof dependency bindings include all contributing assessment and evidence
+values, alongside existing mapping/proof dependencies. Requirements use the
+existing mapping selector semantics, apply to active mappings and fail with a
+dimension-specific explanation. `requireEvidence` checks each contributing
+assessment; an unsupported assertion cannot borrow another path's evidence.
+
+Generation 2.0 binds the original policy and stores assessment/requirement/risk
+inputs and evaluated summaries. It does not embed full evidence records. A
+projection with assessments, requirements or budgets therefore requires
+`semanticPolicy` in its compile
+options (CLI `link --policy`), checks the exact policy binding and recompiles
+with the captured context/time. Replay supplies its captured full policy. Missing
+or stale policy/evidence rejects instead of trusting a recomputed generation hash.
+
+Consumer budgets classify each unique mapping in the concrete projection proof
+closure exactly once. Missing or overlapping classification rejects; even zero
+cost must be explicitly assigned by the consumer. Costs and totals are safe
+nonnegative integers; overflow rejects. Equality at each maximum is allowed.
+A selected budget must belong to the named consumer. `budget: null` rejects
+when that consumer has a declared budget; otherwise it remains not-evaluated,
+with a null total. Unused and inactive mappings are excluded from accounting.
 
 ## Migration and fixed acceptance inputs
 

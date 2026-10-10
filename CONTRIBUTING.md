@@ -17,6 +17,7 @@ npm run example:research
 npm run example:routing
 npm run example:bindings
 npm run example:relations
+npm run example:uncertainty
 npm run example:path-tree
 npm run example:topology
 npm run example:replay
@@ -52,6 +53,7 @@ increment. Test changed, missing and rehashed inputs, rejected candidates,
 mixed-version rejection and unknown result states. Projection and path-tree
 changes also require native checks of their generated TypeScript. Use
 `npm run example:relations` for the opt-in proof-carrying workflow.
+Use `npm run example:uncertainty` for typed evidence and consumer cost limits.
 
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather

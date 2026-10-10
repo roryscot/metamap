@@ -8,6 +8,7 @@ import { relationPackDigest } from "./relation-pack.js";
 import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
+import { emptyUncertaintyInputs, mappingUncertainty, uncertaintyDependencies, validateUncertaintyInputs, } from "./uncertainty.js";
 const DERIVATION_SCHEMA = "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json";
 const Ajv2020 = Ajv2020Module.default;
 const addFormats = addFormatsModule.default;
@@ -35,6 +36,9 @@ export function derivationDigest(value) {
 export function parseCorrespondenceDerivation(value) {
     shape(value, validateProofShape, "Invalid correspondence derivation");
     const proof = value;
+    if (new Set(proof.uncertainty.map((entry) => entry.dimension)).size !==
+        UNCERTAINTY_DIMENSIONS.length)
+        throw new Error("Derivation requires each uncertainty dimension exactly once");
     const digest = derivationDigest(proof);
     if (proof.digest !== digest ||
         proof.id !== `urn:metamap:derivation:${digest.slice(7)}`)
@@ -119,7 +123,8 @@ class DerivationEngine {
     checked = new Map();
     visiting = new Set();
     work = new Set();
-    constructor(graph, registry, context, bounds, proofs) {
+    uncertainty;
+    constructor(graph, registry, context, bounds, proofs, uncertainty = emptyUncertaintyInputs, prospectiveSubject) {
         this.graph = graph;
         this.registry = registry;
         this.context = context;
@@ -143,6 +148,10 @@ class DerivationEngine {
             fail("rejected", "INVALID_DERIVATION_BOUNDS", "Depth must be 0–128 and derivation count 0–10000");
         this.mappings = new Map(graph.mappings.map((mapping) => [mapping.id, mapping]));
         this.kinds = new Map(graph.entities.map((entity) => [entity.id, entity.kind]));
+        const inputIssues = validateUncertaintyInputs(graph, uncertainty, prospectiveSubject, proofs.map((proof) => proof.id));
+        if (inputIssues.length)
+            throw new DerivationFailure("rejected", inputIssues[0]);
+        this.uncertainty = JSON.parse(canonicalJson(uncertainty));
         for (const proof of proofs) {
             parseCorrespondenceDerivation(proof);
             if (this.proofs.has(proof.id))
@@ -235,6 +244,7 @@ class DerivationEngine {
             !resultDefinition.cardinalities.includes("one-to-one"))
             fail("unsupported", "UNSUPPORTED_RESULT_CARDINALITY", "The result relation does not permit a binary result", law.id);
         const premises = [];
+        const premiseUncertainty = [];
         const dependencies = new Map();
         const closure = new Set();
         let depth = 1;
@@ -254,6 +264,10 @@ class DerivationEngine {
                 for (const id of child.closure)
                     closure.add(id);
                 depth = Math.max(depth, child.proof.depth + 1);
+                premiseUncertainty.push(child.proof.uncertainty);
+            }
+            else {
+                premiseUncertainty.push(mappingUncertainty(this.graph, mapping, this.uncertainty));
             }
             premises.push(premise);
         }
@@ -283,6 +297,9 @@ class DerivationEngine {
             provenance: { status: "inferred", assertedBy: law.id },
         };
         const context = JSON.parse(canonicalJson(this.context));
+        const uncertainty = mappingUncertainty(this.graph, result, this.uncertainty, premiseUncertainty);
+        for (const binding of uncertaintyDependencies(uncertainty, this.uncertainty))
+            dependencies.set(binding.id, binding.digest);
         const content = {
             ...(schemaId ? { $schema: schemaId } : {}),
             schemaVersion: "1.0.0",
@@ -303,14 +320,7 @@ class DerivationEngine {
                 .sort((left, right) => left.id < right.id ? -1 : left.id > right.id ? 1 : 0),
             depth,
             derivationCount: closure.size + 1,
-            uncertainty: UNCERTAINTY_DIMENSIONS.map((dimension) => ({
-                dimension,
-                status: "unknown",
-                evidence: [],
-                assessments: [],
-                measurementModels: [],
-                sourceRevisions: [],
-            })),
+            uncertainty,
         };
         const digest = canonicalDigest(content);
         const proof = {
@@ -326,9 +336,7 @@ class DerivationEngine {
 export function composeCorrespondences(graph, request, registry = new RelationRegistry()) {
     try {
         parseCompositionRequest(request);
-        if (request.assessments.length > 0 || request.evidence.length > 0)
-            fail("unsupported", "TYPED_UNCERTAINTY_NOT_IMPLEMENTED", "Assessment propagation is not yet implemented; these inputs cannot be ignored");
-        const engine = new DerivationEngine(graph, registry, request.context, request.bounds, request.derivations);
+        const engine = new DerivationEngine(graph, registry, request.context, request.bounds, request.derivations, { assessments: request.assessments, evidence: request.evidence }, request.resultId);
         const { proof } = engine.build(request.law, request.premises, request.resultId);
         const existing = graph.mappings.find((mapping) => mapping.id === proof.result.id);
         if (existing &&
@@ -347,9 +355,9 @@ export function composeCorrespondences(graph, request, registry = new RelationRe
     }
 }
 /** Check every supplied claim and every graph proof reference, without admission. */
-export function validateCorrespondenceDerivations(graph, derivations, context, bounds, registry = new RelationRegistry()) {
+export function validateCorrespondenceDerivations(graph, derivations, context, bounds, registry = new RelationRegistry(), uncertainty = emptyUncertaintyInputs) {
     try {
-        const engine = new DerivationEngine(graph, registry, context, bounds, derivations);
+        const engine = new DerivationEngine(graph, registry, context, bounds, derivations, uncertainty);
         const checked = new Map();
         const ids = new Set(derivations.map((proof) => proof.id));
         for (const mapping of graph.mappings) {

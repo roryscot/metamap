@@ -367,8 +367,9 @@ Use [COUNTERFACTUAL.md](COUNTERFACTUAL.md) to compare two reproduced candidates.
 Use [RELATIONS.md](RELATIONS.md) for explicit binary relation laws, bounded
 composition proposals, checked v2 admission and proof-carrying projections,
 path trees, replay and comparison. Its current integration boundaries are
-documented there; typed uncertainty/budgets and protected promotion remain
-later build increments.
+documented there. Use [UNCERTAINTY.md](UNCERTAINTY.md) for typed assessment
+propagation and consumer cost budgets. Protected promotion remains a later
+build increment.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 

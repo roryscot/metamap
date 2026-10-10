@@ -170,13 +170,14 @@ export function compileProjection(document, generation, spec, options = {}) {
                 issue("PROJECTION_VERSION_MISMATCH", "Generation and projection specification must use the same supported profile"),
             ],
         };
-    if (options.relationRegistry?.executablePacks().length ||
+    if (options.semanticPolicy ||
+        options.relationRegistry?.executablePacks().length ||
         document.mappings.some((mapping) => mapping.attributes &&
             Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE)))
         return {
             status: "rejected",
             issues: [
-                issue("EXECUTABLE_PROJECTION_REQUIRED", "Executable packs and proof claims require the version 2 projection profile"),
+                issue("EXECUTABLE_PROJECTION_REQUIRED", "Typed policy inputs, executable packs and proof claims require the version 2 projection profile"),
             ],
         };
     return compileLegacyProjection(document, generation, spec, options);

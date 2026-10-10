@@ -11,7 +11,7 @@ export declare function validateSemanticGeneration(value: unknown): ViabilityVal
 export declare function parseSemanticGeneration(value: unknown): SemanticGeneration;
 export declare function legacyPolicyView(policy: MetamapSemanticPolicy): MetamapViabilityPolicy;
 interface LegacyCompiler {
-    compile: (graph: MetamapDocument, policy: MetamapViabilityPolicy, options: CompilationRuntimeOptions) => CompilationResult;
+    compile: (graph: MetamapDocument, policy: MetamapViabilityPolicy, options: CompilationRuntimeOptions, handledEvidence?: ReadonlySet<string>) => CompilationResult;
     declarations: (graph: MetamapDocument, policy: MetamapViabilityPolicy) => Map<string, MappingViabilityDeclaration[]>;
 }
 export declare function derivationAdmissionIssues(proofs: readonly CorrespondenceDerivation[], active: ReadonlySet<string>, declarations: ReadonlyMap<string, readonly MappingViabilityDeclaration[]>, registry: RelationRegistry): ViabilityIssue[];

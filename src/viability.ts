@@ -205,7 +205,7 @@ function knownGraphSubjects(document: MetamapDocument): Set<string> {
   ]);
 }
 
-function selectorMatches(
+export function selectorMatches(
   mapping: StructuralMapping,
   selector: MappingViabilitySelector,
   entityKinds: ReadonlyMap<string, string>,
@@ -562,10 +562,12 @@ function contradictionIssues(
   document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   activeMappings: ReadonlySet<string>,
+  handledEvidence: ReadonlySet<string> = new Set(),
 ): ViabilityIssue[] {
   const mappingIds = new Set(document.mappings.map((entry) => entry.id));
   return policy.evidence.flatMap((entry) => {
-    if (entry.result !== "contradicts") return [];
+    if (entry.result !== "contradicts" || handledEvidence.has(entry.id))
+      return [];
     const activeSubjects = entry.subjects.filter(
       (subject) => !mappingIds.has(subject) || activeMappings.has(subject),
     );
@@ -772,6 +774,7 @@ function compileLegacyMetamap(
   document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   options: CompilationRuntimeOptions = {},
+  handledEvidence: ReadonlySet<string> = new Set(),
 ): CompilationResult {
   const relationRegistry = options.relationRegistry ?? new RelationRegistry();
   const constraintRegistry =
@@ -814,7 +817,7 @@ function compileLegacyMetamap(
   );
   const state = activeMappingState(document, policy, context, resolution);
   issues.push(
-    ...contradictionIssues(document, policy, state.active),
+    ...contradictionIssues(document, policy, state.active, handledEvidence),
     ...evaluateConstraints(
       document,
       policy,

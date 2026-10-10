@@ -18,8 +18,11 @@ consumer activation, authority grants, production signing, and restricted-data
 acquisition retain their separate authorization boundaries. M0's version and
 digest decisions are recorded in [CONTRACTS.md](CONTRACTS.md). M0–M2 are locally
 implemented and verified, including checked derivations through projection,
-path-tree, replay and comparison. Typed uncertainty/budgets and M4–M8 remain
-outstanding; the full goal is active.
+path-tree, replay and comparison. M3's P06/P07 typed execution and budget checks
+are locally implemented and verified; authenticated invalidation of an old
+approval remains a cross-milestone M4 acceptance check. Source capture/P08 and
+M4–M8, including separate Seeder adoption, remain outstanding. The full goal
+is active.
 
 ## 1. Product outcome and controlling sources
 
@@ -900,6 +903,62 @@ environment before crossing its activation or ingestion boundary.
   Both legacy promoters continue to block v2. M3–M8, protected governance and
   separate Seeder adoption remain outstanding. No release, merge or production
   activation has occurred; the full goal remains active.
+
+### M3 P06/P07 typed uncertainty and budgets, 2026-10-09
+
+- [UNCERTAINTY.md](UNCERTAINTY.md) documents executable assessments for identity,
+  context, provenance, completeness, causal relevance and conflicting authority.
+  Mapping/entity/authority scope, declared source revision, evidence dimension
+  and complete evidence-record values are checked. Existing schema bytes remain
+  immutable; the reserved v2 members now execute through the existing compiler.
+- The bounded proof engine conservatively combines applicable assessment and
+  premise summaries, including nested proofs. Contradiction and unknown survive;
+  different named models yield unknown, and scalar confidence is never averaged
+  or redistributed. Every contributing record is bound; repeated paths neither
+  strengthen evidence nor duplicate it. Direct support cannot erase a weaker
+  premise. Lossiness, inference and ownership boundaries are preserved.
+- Consumer requirements use the existing selector implementation, apply to
+  matched active mappings and give dimension-specific rejection. Required
+  evidence must exist on each contributing assessment. Not-applicable reasons
+  require a permitted consumer exemption. Typed evidence is interpreted within
+  its declared dimension; other evidence and explicit constraints retain their
+  existing checks. Typed requirements cannot be waived through legacy waivers.
+- Budgets classify every unique used mapping and transitive checked premise
+  exactly once, including explicit zero cost. Missing/overlapping classification,
+  wrong consumer, null-budget bypass, unsafe totals and exceeded total/lossy/
+  inferred maxima reject. Equality is allowed; shared dependencies count once;
+  unused and inactive mappings are excluded. Unevaluated risk retains null cost.
+- Generation binds original policy values, assessments, requirements, budgets
+  and summaries. Because it does not embed full evidence records, any typed
+  projection requires the exact original policy (`semanticPolicy`, CLI
+  `link --policy`) and a complete recompile at captured context/time. Missing,
+  substituted and hash-consistent forged inputs reject. P05's replay/comparison
+  integration captures and recomputes all new inputs, preserves rejection and
+  reports unknown projection deltas without inventing cost improvement.
+- The [native typed example](examples/uncertainty/build.mjs) executes generated
+  bindings and hydration. The same graph passes its tolerant identity policy
+  and fails a stricter completeness policy. Fixed costs 2 + 3 + explicit 0 fail
+  limit 4 and pass limits 5 and 6; duplicate paths retain total 5. A normal CI
+  test reproduces its committed fixtures and type-checks/executes emitted ESM.
+- Local verification passed the complete 22-command gate: formatting,
+  typecheck, `npm test` (277 tests in 34 files, 59 new behavioral tests), build,
+  all existing examples, `example:uncertainty`, 45 CLI cases (21 new), generated
+  native TypeScript checks/execution, package inspection and diff checks. All
+  27 previously published schema/pack byte identities, prior tracked examples,
+  legacy pins and original evaluation files are unchanged. Regenerated typed
+  example bytes are stable; private caches/work/evaluation files are excluded
+  from the package. No rendered UI was changed; browser acceptance remains M6.
+- Initial checks corrected fixture authority/readonly-law typing, reversible
+  declarations on intentionally lossy fixtures, formatting, a missing legacy
+  graph binding in a new negative test and the local verifier's JSON-lines
+  reporting parser. Acceptance vectors, constraints, schema bytes and original
+  experimental results were not weakened or rewritten.
+- P06/P07's executable capability checks are verified. Changed assessment and
+  budget inputs demonstrably change bound generations/projections/proofs;
+  authenticated rejection of an approval for the previous result still requires
+  M4's verifier and remains outstanding. Both legacy promoters continue to
+  reject v2. P08 source lineage and M4–M8, including Seeder adoption, remain
+  outstanding. No release, merge or production activation has occurred.
 
 ---
 

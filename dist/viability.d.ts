@@ -1,8 +1,8 @@
 import { ConstraintRegistry } from "./constraints.js";
-import type { MetamapDocument } from "./model.js";
+import type { MetamapDocument, StructuralMapping } from "./model.js";
 import { RelationRegistry } from "./relations.js";
 import type { MetamapSemanticPolicy, SemanticCompilationResult } from "./semantic-model.js";
-import { type ActivationResult, type CompilationResult, type CompileOptions, type MetamapViabilityPolicy, type ViabilityValidationResult, type ViableGeneration } from "./viability-model.js";
+import { type ActivationResult, type CompilationResult, type CompileOptions, type MappingViabilitySelector, type MetamapViabilityPolicy, type ViabilityValidationResult, type ViableGeneration } from "./viability-model.js";
 export interface CompilationRuntimeOptions extends CompileOptions {
     relationRegistry?: RelationRegistry;
     constraintRegistry?: ConstraintRegistry;
@@ -11,6 +11,7 @@ export interface CompilationRuntimeOptions extends CompileOptions {
 export declare function validateViabilityPolicy(value: unknown): ViabilityValidationResult;
 /** Validate both the portable generation shape and its content address. */
 export declare function validateViableGeneration(value: unknown): ViabilityValidationResult;
+export declare function selectorMatches(mapping: StructuralMapping, selector: MappingViabilitySelector, entityKinds: ReadonlyMap<string, string>): boolean;
 /**
  * Compile a graph and contextual policy into an immutable viable generation.
  * No generation is returned if any unwaived error remains.

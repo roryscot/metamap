@@ -111,7 +111,7 @@ function knownGraphSubjects(document) {
         ...document.authorities.map((entry) => entry.id),
     ]);
 }
-function selectorMatches(mapping, selector, entityKinds) {
+export function selectorMatches(mapping, selector, entityKinds) {
     if (selector.ids && !selector.ids.includes(mapping.id))
         return false;
     if (selector.relations && !selector.relations.includes(mapping.relation)) {
@@ -305,10 +305,10 @@ function activeMappingState(document, policy, context, resolution) {
     inactive.sort((left, right) => left.id.localeCompare(right.id));
     return { active, inactive };
 }
-function contradictionIssues(document, policy, activeMappings) {
+function contradictionIssues(document, policy, activeMappings, handledEvidence = new Set()) {
     const mappingIds = new Set(document.mappings.map((entry) => entry.id));
     return policy.evidence.flatMap((entry) => {
-        if (entry.result !== "contradicts")
+        if (entry.result !== "contradicts" || handledEvidence.has(entry.id))
             return [];
         const activeSubjects = entry.subjects.filter((subject) => !mappingIds.has(subject) || activeMappings.has(subject));
         return activeSubjects.map((subject) => issue("CONTRADICTING_EVIDENCE", `${entry.id} contradicts active subject ${subject}`, subject));
@@ -428,7 +428,7 @@ export function compileMetamap(document, policy, options = {}) {
     }
     return compileLegacyMetamap(document, policy, options);
 }
-function compileLegacyMetamap(document, policy, options = {}) {
+function compileLegacyMetamap(document, policy, options = {}, handledEvidence = new Set()) {
     const relationRegistry = options.relationRegistry ?? new RelationRegistry();
     const constraintRegistry = options.constraintRegistry ?? new ConstraintRegistry();
     const context = options.context ?? {};
@@ -457,7 +457,7 @@ function compileLegacyMetamap(document, policy, options = {}) {
     const resolution = resolvedDeclarations(document, policy);
     issues.push(...validatePolicyBindings(document, policy, resolution), ...validateDeclaredSemantics(document, policy, relationRegistry, resolution), ...validateApplicabilityContext(document, policy, context, resolution));
     const state = activeMappingState(document, policy, context, resolution);
-    issues.push(...contradictionIssues(document, policy, state.active), ...evaluateConstraints(document, policy, state.active, relationRegistry, constraintRegistry));
+    issues.push(...contradictionIssues(document, policy, state.active, handledEvidence), ...evaluateConstraints(document, policy, state.active, relationRegistry, constraintRegistry));
     const waived = applyWaivers(issues, policy, evaluatedAt);
     issues = waived.issues;
     const failureSeeds = issues

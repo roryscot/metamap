@@ -111,6 +111,25 @@ export function semanticFixture() {
   const rebind = () => {
     policy.graph.digest = valueDigest(graph);
   };
+  const recompose = () => {
+    graph.mappings = graph.mappings.filter(
+      (mapping) => mapping.id !== request.resultId,
+    );
+    const result = composeCorrespondences(
+      graph,
+      {
+        ...request,
+        assessments: policy.assessments,
+        evidence: policy.evidence,
+      },
+      registry,
+    );
+    if (result.status !== "proposed") throw new Error(JSON.stringify(result));
+    graph.mappings.push(result.mapping);
+    policy.derivations = [result.derivation];
+    rebind();
+    return result;
+  };
   return {
     graph,
     pack,
@@ -123,5 +142,6 @@ export function semanticFixture() {
     generation,
     capture,
     rebind,
+    recompose,
   };
 }

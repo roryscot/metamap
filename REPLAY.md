@@ -103,14 +103,17 @@ record absent captured source lineage. Non-null lineage currently rejects with
 `REPLAY_SOURCE_CAPTURE_NOT_IMPLEMENTED`; source receipts and inspection are P08.
 No raw source fetch or rediscovery is implied by reproducing the captured graph.
 
-Typed assessments, requirements and budgets have explicit reserved inputs. A
-requested unsupported evaluator remains a reproduced compilation/projection
-rejection, not an omitted input or a zero-cost result. Their execution is M3.
+Typed assessments, requirements and budgets execute through the same compiler
+and proof engine. Replay supplies its full captured policy/evidence when
+rechecking a typed projection. A required unknown dimension or excess cost
+remains a reproduced rejection, with no invented zero cost or replacement view.
 Both replay profiles require the exact installed built-in executor, preserve
 rejected evaluations and perform no activation.
 
 Run `npm run example:relations` for checked derivations through a generated
 native consumer, nested tree, exact replay and a removed-premise comparison.
+Run `npm run example:uncertainty` for evaluated consumer cost, typed evidence,
+the same graph under tolerant/strict policies and a reproduced rejection.
 
 ## Compatibility
 

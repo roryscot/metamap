@@ -16,7 +16,10 @@ import { validateViableGeneration } from "./viability.js";
 import type { ViableGeneration } from "./viability-model.js";
 import { validateMetamapDocument } from "./validator.js";
 import { compileSemanticProjection } from "./semantic-projection.js";
-import type { SemanticGeneration } from "./semantic-model.js";
+import type {
+  MetamapSemanticPolicy,
+  SemanticGeneration,
+} from "./semantic-model.js";
 import type {
   SemanticProjection,
   SemanticProjectionResult,
@@ -122,6 +125,8 @@ export type ProjectionCompilationResult =
 
 export interface ProjectionCompileOptions {
   relationRegistry?: RelationRegistry;
+  /** Full bound policy is required to recheck typed evidence in a v2 generation. */
+  semanticPolicy?: MetamapSemanticPolicy;
 }
 
 export interface TypeScriptProjectionOptions {
@@ -417,6 +422,7 @@ export function compileProjection(
       ],
     };
   if (
+    options.semanticPolicy ||
     options.relationRegistry?.executablePacks().length ||
     document.mappings.some(
       (mapping) =>
@@ -429,7 +435,7 @@ export function compileProjection(
       issues: [
         issue(
           "EXECUTABLE_PROJECTION_REQUIRED",
-          "Executable packs and proof claims require the version 2 projection profile",
+          "Typed policy inputs, executable packs and proof claims require the version 2 projection profile",
         ),
       ],
     };

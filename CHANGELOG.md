@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased capability work
+
+- Execute typed uncertainty across six independent dimensions using scoped,
+  revision-bound assessments and complete recorded evidence values. Preserve
+  unknown/conflicting premises, reject incompatible named models as unknown,
+  and never calculate a probability from scalar confidence.
+- Evaluate consumer-controlled correspondence costs over each projection's
+  unique checked dependency closure. Require explicit classifications, enforce
+  safe integer totals and lossy/inferred limits, and bind the selected budget.
+- Recheck typed projections against the exact original policy/evidence; add
+  `link --policy`, full typed capture/replay and risk/assessment comparisons.
+  Preserve published schema bytes and legacy outputs. V2 activation remains
+  blocked pending the protected governance boundary.
+
 ## 0.7.1
 
 - Keep comparison impact paths rooted in actual input changes and explicit

@@ -35,7 +35,8 @@ scientific truth, identity, evidence support, authentication, or authority.
 Reversing a relation preserves the named result relation rather than silently
 turning it into equivalence. A chain never transfers ownership. The worst
 premise lossiness survives; scalar confidence is not propagated. All six typed
-uncertainty dimensions currently report unknown.
+uncertainty dimensions propagate recorded assessments conservatively; absent
+assessments report unknown. See [UNCERTAINTY.md](UNCERTAINTY.md).
 
 ## Proof binding and admission
 
@@ -46,7 +47,7 @@ alone is insufficient. A proof records:
 - The rule and exact defining pack and import bindings.
 - The complete context and its digest.
 - The result mapping before its own proof back-reference.
-- Complete nested mapping/proof dependencies, maximum depth, unique proof count,
+- Complete nested mapping/proof/assessment/evidence dependencies, maximum depth, unique proof count,
   and conservative uncertainty summaries.
 
 Proofs use JCS/SHA-256, excluding only their own `id` and `digest`. Their optional
@@ -70,14 +71,14 @@ transitive edge is not itself inconsistent.
 
 ## Current integration boundary
 
-The models and schemas reserve typed assessment, requirement and budget inputs
-for M3. Nonempty requests reject with `TYPED_UNCERTAINTY_NOT_IMPLEMENTED` until
-the evaluator exists; they are never ignored. An empty profile reports
-`riskEvaluation: "not-evaluated"`.
+Typed assessment, requirement and consumer-budget inputs are executable. An
+empty profile reports `riskEvaluation: "not-evaluated"`; declared budgets report
+`available-for-projection` until the concrete consumer closure is evaluated.
 
 V2 admission, projection, path-tree, replay and comparison use explicit version
 dispatch. A projection spec names its consumer and an explicit `budget: null`
-when no typed budget is evaluated. Non-null budgets remain unsupported until M3.
+when no typed budget is evaluated and that consumer has no declared budget.
+Otherwise it must select a budget belonging to its consumer.
 The projection binds the actual generation and spec, the unique used mapping
 closure, exact proof bindings and uncertainty summaries. Shared premises appear
 once; inactive and unused mappings do not enter the closure. A path tree binds
@@ -85,6 +86,8 @@ that actual v2 projection and spec while preserving the existing hydration rules
 
 Projection compilation rechecks captured pack values, proofs, active premises,
 resolved declarations and dependency records against the supplied graph. A
+typed generation additionally requires the full original policy/evidence in
+`semanticPolicy` (CLI `link --policy`) and recompiles its captured evaluation. A
 content digest alone is not admission or authentication. Mixed generation/spec
 versions reject. Use the explicit `parseSemanticProjectionSpec`,
 `parseSemanticProjection` and `parseSemanticPathTree` readers for these artifacts;

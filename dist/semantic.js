@@ -2,11 +2,13 @@ import { readFileSync } from "node:fs";
 import Ajv2020Module from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
 import { canonicalDigest, canonicalJson, legacyReferenceValue, } from "./canonical.js";
-import { DERIVATION_ATTRIBUTE, UNCERTAINTY_DIMENSIONS, } from "./derivation-model.js";
+import { DERIVATION_ATTRIBUTE, } from "./derivation-model.js";
 import { executableRelationConflictIssues, parseCorrespondenceDerivation, validateCorrespondenceDerivations, } from "./derivation.js";
 import { analyzeImpact } from "./impact.js";
 import { relationPackDigest } from "./relation-pack.js";
 import { RelationRegistry } from "./relations.js";
+import { graphUncertainty, uncertaintyRequirementIssues, uncertaintySummaryIssues, validateUncertaintyInputs, } from "./uncertainty.js";
+import { consumerBudgetIssues } from "./risk.js";
 const Ajv2020 = Ajv2020Module.default;
 const addFormats = addFormatsModule.default;
 const ajv = addFormats(new Ajv2020({ allErrors: true, strict: true }));
@@ -57,7 +59,29 @@ function shapeResult(value, validate, code) {
     }
 }
 export function validateSemanticPolicy(value) {
-    return shapeResult(value, policyShape, "INVALID_SEMANTIC_POLICY");
+    const result = shapeResult(value, policyShape, "INVALID_SEMANTIC_POLICY");
+    if (!result.valid)
+        return result;
+    const policy = value;
+    const identities = new Set();
+    for (const id of [
+        policy.id,
+        ...[
+            policy.constraints,
+            policy.evidence,
+            policy.waivers ?? [],
+            policy.derivations,
+            policy.assessments,
+            policy.uncertaintyRequirements,
+            policy.riskBudgets,
+        ].flatMap((records) => records.map((record) => record.id)),
+    ]) {
+        if (identities.has(id))
+            result.issues.push(error("DUPLICATE_SEMANTIC_POLICY_ID", "Policy record identities must be unique", id));
+        identities.add(id);
+    }
+    result.valid = !result.issues.length;
+    return result;
 }
 export function parseSemanticPolicy(value) {
     const result = validateSemanticPolicy(value);
@@ -85,21 +109,27 @@ export function validateSemanticGeneration(value) {
                 error("SEMANTIC_GENERATION_DIGEST_MISMATCH", "Generation content binding does not match its identity", generation.id),
             ],
         };
-    if (generation.semantic.assessments.length ||
-        generation.semantic.uncertaintyRequirements.length ||
-        generation.semantic.riskBudgets.length ||
-        generation.semantic.riskEvaluation !== "not-evaluated" ||
-        generation.semantic.uncertainty.some((entry) => entry.dimensions.some((dimension) => dimension.status !== "unknown" ||
-            dimension.evidence.length ||
-            dimension.assessments.length ||
-            dimension.measurementModels.length ||
-            dimension.sourceRevisions.length)))
-        return {
-            valid: false,
-            issues: [
-                error("TYPED_UNCERTAINTY_NOT_IMPLEMENTED", "The captured generation requests an unimplemented typed evaluator", generation.id),
-            ],
-        };
+    result.issues.push(...uncertaintySummaryIssues(generation.semantic.uncertainty).map((issue) => error(issue.code, issue.message, issue.subjectId)));
+    const assessments = new Map(generation.semantic.assessments.map((entry) => [entry.id, entry]));
+    const declarationIds = new Set(generation.semantic.declarations.map((entry) => entry.mapping));
+    const summaryIds = new Set(generation.semantic.uncertainty.map((entry) => entry.mapping));
+    if (assessments.size !== generation.semantic.assessments.length ||
+        declarationIds.size !== summaryIds.size ||
+        [...declarationIds].some((id) => !summaryIds.has(id)))
+        result.issues.push(error("INCOMPLETE_GENERATION_UNCERTAINTY", "Captured assessments and mapping summaries must be complete and unique", generation.id));
+    for (const summary of generation.semantic.uncertainty)
+        for (const dimension of summary.dimensions) {
+            if (dimension.assessments.some((id) => assessments.get(id)?.dimension !== dimension.dimension) ||
+                dimension.evidence.some((id) => !dimension.assessments.some((assessment) => assessments.get(assessment)?.evidence.includes(id))))
+                result.issues.push(error("UNBOUND_GENERATION_UNCERTAINTY", "Summary references must name captured contributing assessments and their evidence", summary.mapping));
+        }
+    if (generation.semantic.riskEvaluation !==
+        (generation.semantic.riskBudgets.length
+            ? "available-for-projection"
+            : "not-evaluated"))
+        result.issues.push(error("INVALID_GENERATION_RISK_STATE", "Risk availability must match captured budgets", generation.id));
+    if (result.issues.length)
+        return { valid: false, issues: result.issues };
     try {
         for (const proof of generation.semantic.derivations)
             parseCorrespondenceDerivation(proof);
@@ -243,12 +273,14 @@ export function compileSemanticMetamap(graph, policy, options, legacy) {
         ...options,
         context,
         relationRegistry: registry,
-    });
+    }, new Set(policy.assessments.flatMap((assessment) => assessment.evidence)));
     const issues = [...base.issues];
-    if (policy.assessments.length ||
-        policy.uncertaintyRequirements.length ||
-        policy.riskBudgets.length)
-        issues.push(error("TYPED_UNCERTAINTY_NOT_IMPLEMENTED", "Typed assessments and consumer budgets are not yet executable; requested inputs cannot be ignored", policy.id));
+    const uncertaintyInputs = {
+        assessments: policy.assessments,
+        evidence: policy.evidence,
+    };
+    issues.push(...validateUncertaintyInputs(graph, uncertaintyInputs, undefined, policy.derivations.map((proof) => proof.id)).map((issue) => error(issue.code, issue.message, issue.subjectId)));
+    issues.push(...consumerBudgetIssues(graph, policy.riskBudgets).map((issue) => error(issue.code, issue.message, issue.subjectId)));
     for (const reference of graph.relationPacks ?? []) {
         const pack = registry.getPack(reference.id);
         if (pack &&
@@ -265,15 +297,20 @@ export function compileSemanticMetamap(graph, policy, options, legacy) {
             issues.push(error("EXECUTABLE_PACK_IMPORT_MISMATCH", cause instanceof Error ? cause.message : "Imported pack changed", pack.id));
         }
     }
-    const checked = validateCorrespondenceDerivations(graph, policy.derivations, context, policy.derivationLimits, registry);
+    const checked = validateCorrespondenceDerivations(graph, policy.derivations, context, policy.derivationLimits, registry, uncertaintyInputs);
     issues.push(...checked.issues.map((issue) => error(issue.code, issue.message, issue.subjectId)));
     const declarations = base.status === "viable"
         ? legacy.declarations(graph, view)
         : new Map();
+    const uncertainty = checked.status === "valid"
+        ? graphUncertainty(graph, checked.checked, uncertaintyInputs)
+        : [];
     if (base.status === "viable") {
         const active = new Set(base.generation.activeMappings);
         issues.push(...executableRelationConflictIssues(graph, active, registry).map((issue) => error(issue.code, issue.message, issue.subjectId)));
         issues.push(...derivationAdmissionIssues(checked.checked, active, declarations, registry));
+        if (checked.status === "valid")
+            issues.push(...uncertaintyRequirementIssues(graph, active, uncertainty, policy.uncertaintyRequirements, uncertaintyInputs).map((issue) => error(issue.code, issue.message, issue.subjectId)));
     }
     const impact = analyzeImpact(graph, {
         changedSubjects: options.changedSubjects?.length
@@ -326,21 +363,13 @@ export function compileSemanticMetamap(graph, policy, options, legacy) {
                 declaration: JSON.parse(JSON.stringify(entries[0])),
             })),
             dependencies,
-            assessments: [],
-            uncertaintyRequirements: [],
-            uncertainty: graph.mappings.map((mapping) => ({
-                mapping: mapping.id,
-                dimensions: UNCERTAINTY_DIMENSIONS.map((dimension) => ({
-                    dimension,
-                    status: "unknown",
-                    evidence: [],
-                    assessments: [],
-                    measurementModels: [],
-                    sourceRevisions: [],
-                })),
-            })),
-            riskBudgets: [],
-            riskEvaluation: "not-evaluated",
+            assessments: policy.assessments,
+            uncertaintyRequirements: policy.uncertaintyRequirements,
+            uncertainty,
+            riskBudgets: policy.riskBudgets,
+            riskEvaluation: policy.riskBudgets.length
+                ? "available-for-projection"
+                : "not-evaluated",
         },
     };
     const digest = canonicalDigest(content);

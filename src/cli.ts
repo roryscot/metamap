@@ -54,7 +54,7 @@ function usage(): string {
   metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
-  metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
+  metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--policy policy.json] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
   metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
   metamap replay <bundle.json>
   metamap compare <before.replay.json> <after.replay.json> [report.json]
@@ -447,7 +447,7 @@ async function main(args: string[]): Promise<number> {
   if (command === "link") {
     const parsed = parseArguments(
       rest,
-      new Set(["--format", "--export", "--relation-pack"]),
+      new Set(["--format", "--export", "--relation-pack", "--policy"]),
     );
     const [graphPath, generationPath, specPath, outputPath] =
       parsed.positionals;
@@ -482,8 +482,18 @@ async function main(args: string[]): Promise<number> {
     const spec = isSemanticProfile(specValue)
       ? parseSemanticProjectionSpec(specValue)
       : parseProjectionSpec(specValue);
+    const policyPaths = parsed.options.get("--policy") ?? [];
+    if (policyPaths.length > 1)
+      throw new Error("--policy must be provided once");
+    const policyPath = policyPaths[0];
+    if (policyPath && generation.schemaVersion !== "2.0.0")
+      throw new Error("--policy requires a version 2 projection generation");
+    const semanticPolicy = policyPath
+      ? parseSemanticPolicy(await readVersionedJson(policyPath))
+      : undefined;
     const result = compileProjection(graph, generation, spec, {
       relationRegistry,
+      semanticPolicy,
     });
     printProjectionIssues(result.issues);
     if (result.status === "rejected") {

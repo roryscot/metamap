@@ -1,7 +1,7 @@
 import type { JsonObject, Locator, MetamapDocument } from "./model.js";
 import { RelationRegistry } from "./relations.js";
 import type { ViableGeneration } from "./viability-model.js";
-import type { SemanticGeneration } from "./semantic-model.js";
+import type { MetamapSemanticPolicy, SemanticGeneration } from "./semantic-model.js";
 import type { SemanticProjection, SemanticProjectionResult, SemanticProjectionSpec } from "./semantic-projection-model.js";
 export declare const METAMAP_PROJECTION_SPEC_VERSION: "1.0.0";
 export declare const METAMAP_PROJECTION_VERSION: "1.0.0";
@@ -97,6 +97,8 @@ export type ProjectionCompilationResult = {
 };
 export interface ProjectionCompileOptions {
     relationRegistry?: RelationRegistry;
+    /** Full bound policy is required to recheck typed evidence in a v2 generation. */
+    semanticPolicy?: MetamapSemanticPolicy;
 }
 export interface TypeScriptProjectionOptions {
     exportName?: string;

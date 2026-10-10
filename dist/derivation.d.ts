@@ -2,6 +2,7 @@ import { type CorrespondenceCompositionRequest, type CorrespondenceCompositionRe
 import type { MetamapDocument } from "./model.js";
 import { RelationRegistry } from "./relations.js";
 import type { EvaluationContext } from "./viability-model.js";
+import { type UncertaintyInputs } from "./uncertainty.js";
 export declare function derivationDigest(value: CorrespondenceDerivation): string;
 export declare function parseCorrespondenceDerivation(value: unknown): CorrespondenceDerivation;
 export declare function parseCompositionRequest(value: unknown): CorrespondenceCompositionRequest;
@@ -16,7 +17,7 @@ export interface DerivationValidationResult {
     checked: CorrespondenceDerivation[];
 }
 /** Check every supplied claim and every graph proof reference, without admission. */
-export declare function validateCorrespondenceDerivations(graph: MetamapDocument, derivations: readonly CorrespondenceDerivation[], context: EvaluationContext, bounds: DerivationBounds, registry?: RelationRegistry): DerivationValidationResult;
+export declare function validateCorrespondenceDerivations(graph: MetamapDocument, derivations: readonly CorrespondenceDerivation[], context: EvaluationContext, bounds: DerivationBounds, registry?: RelationRegistry, uncertainty?: UncertaintyInputs): DerivationValidationResult;
 /** Profile conflicts apply to active facts, not to the graph's possibilities. */
 export declare function executableRelationConflictIssues(graph: MetamapDocument, active: ReadonlySet<string>, registry: RelationRegistry): DerivationIssue[];
 export {};

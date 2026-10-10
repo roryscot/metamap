@@ -119,7 +119,7 @@ describe("semantic counterfactual comparisons", () => {
       riskChanged: false,
     });
   });
-  it("captures a requested future budget as rejection and reports its actual input change", () => {
+  it("captures incomplete consumer classification as projection rejection and reports its input change", () => {
     const inputs = semanticFixture(),
       before = inputs.capture();
     inputs.policy.riskBudgets = [
@@ -140,7 +140,15 @@ describe("semantic counterfactual comparisons", () => {
       },
     ];
     inputs.spec.budget = inputs.policy.riskBudgets[0].id;
-    const report = compare(before, inputs.capture());
+    const after = inputs.capture();
+    expect(after.expected.compilation.status).toBe("viable");
+    expect(after.expected.projections[0].result).toMatchObject({
+      status: "rejected",
+      issues: [
+        expect.objectContaining({ code: "MISSING_RISK_CLASSIFICATION" }),
+      ],
+    });
+    const report = compare(before, after);
     expect(report.semantic.riskBudgets.added).toEqual(["urn:example:budget"]);
     expect(report.after.admitted).toBe(false);
     expect(report.semantic.projections[0].riskChanged).toBeNull();

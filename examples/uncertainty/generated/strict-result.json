@@ -1,0 +1,90 @@
+{
+  "impact": {
+    "affectedSubjects": [
+      "urn:example:consumer",
+      "urn:example:consumer-schema",
+      "urn:example:consumer-service",
+      "urn:example:schema",
+      "urn:example:service",
+      "urn:example:service-schema",
+      "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+    ],
+    "changedSubjects": ["urn:example:consumer-schema"],
+    "paths": [
+      {
+        "path": ["urn:example:consumer-schema", "urn:example:consumer"],
+        "subjectId": "urn:example:consumer"
+      },
+      {
+        "path": ["urn:example:consumer-schema"],
+        "subjectId": "urn:example:consumer-schema"
+      },
+      {
+        "path": [
+          "urn:example:consumer-schema",
+          "urn:example:schema",
+          "urn:example:service-schema",
+          "urn:example:service",
+          "urn:example:consumer-service"
+        ],
+        "subjectId": "urn:example:consumer-service"
+      },
+      {
+        "path": ["urn:example:consumer-schema", "urn:example:schema"],
+        "subjectId": "urn:example:schema"
+      },
+      {
+        "path": [
+          "urn:example:consumer-schema",
+          "urn:example:schema",
+          "urn:example:service-schema",
+          "urn:example:service"
+        ],
+        "subjectId": "urn:example:service"
+      },
+      {
+        "path": [
+          "urn:example:consumer-schema",
+          "urn:example:schema",
+          "urn:example:service-schema"
+        ],
+        "subjectId": "urn:example:service-schema"
+      },
+      {
+        "path": [
+          "urn:example:consumer-schema",
+          "urn:example:schema",
+          "urn:example:service-schema",
+          "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+        ],
+        "subjectId": "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+      }
+    ]
+  },
+  "issues": [
+    {
+      "causalPath": ["urn:example:consumer-schema"],
+      "code": "UNCERTAINTY_STATE_NOT_ALLOWED",
+      "message": "urn:uncertainty:requirement:completeness requires completeness in [supported]; recorded state is unknown",
+      "severity": "error",
+      "subjectId": "urn:example:consumer-schema"
+    },
+    {
+      "causalPath": ["urn:example:consumer-schema"],
+      "code": "UNCERTAINTY_EVIDENCE_REQUIRED",
+      "message": "urn:uncertainty:requirement:completeness requires evidence for every contributing completeness assessment",
+      "severity": "error",
+      "subjectId": "urn:example:consumer-schema"
+    }
+  ],
+  "quarantinedSubjects": [
+    "urn:example:consumer",
+    "urn:example:consumer-schema",
+    "urn:example:consumer-service",
+    "urn:example:schema",
+    "urn:example:service",
+    "urn:example:service-schema",
+    "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+  ],
+  "status": "rejected"
+}

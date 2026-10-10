@@ -193,7 +193,7 @@ function evaluate(inputs: SemanticReplayInputs): SemanticReplayOutputs {
         inputs.graph,
         compilation.generation,
         spec,
-        { relationRegistry: registry },
+        { relationRegistry: registry, semanticPolicy: inputs.policy },
       );
       projections.push({
         specId: spec.id,

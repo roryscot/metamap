@@ -22,6 +22,7 @@ import {
   type DerivationBounds,
   type DerivationIssue,
   type DerivationPremise,
+  type DerivationUncertainty,
   type PackContentBinding,
 } from "./derivation-model.js";
 import type {
@@ -34,6 +35,13 @@ import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
 import { validateMetamapDocument } from "./validator.js";
 import type { EvaluationContext } from "./viability-model.js";
+import {
+  emptyUncertaintyInputs,
+  mappingUncertainty,
+  uncertaintyDependencies,
+  validateUncertaintyInputs,
+  type UncertaintyInputs,
+} from "./uncertainty.js";
 
 const DERIVATION_SCHEMA =
   "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json";
@@ -80,6 +88,13 @@ export function parseCorrespondenceDerivation(
 ): CorrespondenceDerivation {
   shape(value, validateProofShape, "Invalid correspondence derivation");
   const proof = value as CorrespondenceDerivation;
+  if (
+    new Set(proof.uncertainty.map((entry) => entry.dimension)).size !==
+    UNCERTAINTY_DIMENSIONS.length
+  )
+    throw new Error(
+      "Derivation requires each uncertainty dimension exactly once",
+    );
   const digest = derivationDigest(proof);
   if (
     proof.digest !== digest ||
@@ -189,6 +204,7 @@ class DerivationEngine {
   private readonly checked = new Map<string, CheckedProof>();
   private readonly visiting = new Set<string>();
   private readonly work = new Set<string>();
+  private readonly uncertainty: UncertaintyInputs;
 
   constructor(
     private readonly graph: MetamapDocument,
@@ -196,6 +212,8 @@ class DerivationEngine {
     private readonly context: EvaluationContext,
     private readonly bounds: DerivationBounds,
     proofs: readonly CorrespondenceDerivation[],
+    uncertainty: UncertaintyInputs = emptyUncertaintyInputs,
+    prospectiveSubject?: string,
   ) {
     shape(
       legacyReferenceValue(graph),
@@ -234,6 +252,17 @@ class DerivationEngine {
     this.kinds = new Map(
       graph.entities.map((entity) => [entity.id, entity.kind]),
     );
+    const inputIssues = validateUncertaintyInputs(
+      graph,
+      uncertainty,
+      prospectiveSubject,
+      proofs.map((proof) => proof.id),
+    );
+    if (inputIssues.length)
+      throw new DerivationFailure("rejected", inputIssues[0]);
+    this.uncertainty = JSON.parse(
+      canonicalJson(uncertainty),
+    ) as UncertaintyInputs;
     for (const proof of proofs) {
       parseCorrespondenceDerivation(proof);
       if (this.proofs.has(proof.id))
@@ -445,6 +474,7 @@ class DerivationEngine {
         law.id,
       );
     const premises: DerivationPremise[] = [];
+    const premiseUncertainty: DerivationUncertainty[][] = [];
     const dependencies = new Map<string, string>();
     const closure = new Set<string>();
     let depth = 1;
@@ -468,6 +498,11 @@ class DerivationEngine {
           dependencies.set(dependency.id, dependency.digest);
         for (const id of child.closure) closure.add(id);
         depth = Math.max(depth, child.proof.depth + 1);
+        premiseUncertainty.push(child.proof.uncertainty);
+      } else {
+        premiseUncertainty.push(
+          mappingUncertainty(this.graph, mapping, this.uncertainty),
+        );
       }
       premises.push(premise);
     }
@@ -512,6 +547,17 @@ class DerivationEngine {
     const context = JSON.parse(
       canonicalJson(this.context),
     ) as EvaluationContext;
+    const uncertainty = mappingUncertainty(
+      this.graph,
+      result,
+      this.uncertainty,
+      premiseUncertainty,
+    );
+    for (const binding of uncertaintyDependencies(
+      uncertainty,
+      this.uncertainty,
+    ))
+      dependencies.set(binding.id, binding.digest);
     const content = {
       ...(schemaId ? { $schema: schemaId } : {}),
       schemaVersion: "1.0.0" as const,
@@ -536,14 +582,7 @@ class DerivationEngine {
         ),
       depth,
       derivationCount: closure.size + 1,
-      uncertainty: UNCERTAINTY_DIMENSIONS.map((dimension) => ({
-        dimension,
-        status: "unknown" as const,
-        evidence: [],
-        assessments: [],
-        measurementModels: [],
-        sourceRevisions: [],
-      })),
+      uncertainty,
     };
     const digest = canonicalDigest(content);
     const proof: CorrespondenceDerivation = {
@@ -564,18 +603,14 @@ export function composeCorrespondences(
 ): CorrespondenceCompositionResult {
   try {
     parseCompositionRequest(request);
-    if (request.assessments.length > 0 || request.evidence.length > 0)
-      fail(
-        "unsupported",
-        "TYPED_UNCERTAINTY_NOT_IMPLEMENTED",
-        "Assessment propagation is not yet implemented; these inputs cannot be ignored",
-      );
     const engine = new DerivationEngine(
       graph,
       registry,
       request.context,
       request.bounds,
       request.derivations,
+      { assessments: request.assessments, evidence: request.evidence },
+      request.resultId,
     );
     const { proof } = engine.build(
       request.law,
@@ -620,6 +655,7 @@ export function validateCorrespondenceDerivations(
   context: EvaluationContext,
   bounds: DerivationBounds,
   registry = new RelationRegistry(),
+  uncertainty: UncertaintyInputs = emptyUncertaintyInputs,
 ): DerivationValidationResult {
   try {
     const engine = new DerivationEngine(
@@ -628,6 +664,7 @@ export function validateCorrespondenceDerivations(
       context,
       bounds,
       derivations,
+      uncertainty,
     );
     const checked = new Map<string, CorrespondenceDerivation>();
     const ids = new Set(derivations.map((proof) => proof.id));

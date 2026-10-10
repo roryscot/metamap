@@ -1,0 +1,21 @@
+{
+  "authorization": "not-evaluated",
+  "boundaries": [
+    {
+      "codes": ["CONSUMER_RISK_BUDGET_EXCEEDED"],
+      "limit": 4,
+      "status": "rejected"
+    },
+    { "limit": 5, "status": "projected", "totalCost": 5 },
+    { "limit": 6, "status": "projected", "totalCost": 5 }
+  ],
+  "confidenceImproved": false,
+  "nativeConsumer": "executed",
+  "rejectedCounterfactual": "reproduced-and-compared",
+  "repeatedDependencyCost": 5,
+  "replay": "verified",
+  "sameGraph": "urn:metamap:example:dependency-graph",
+  "strict": "rejected",
+  "strictDimension": "completeness",
+  "tolerant": "projected"
+}

@@ -227,7 +227,7 @@ describe("explicit version 2 proof admission", () => {
     ).toEqual([removed.id, proposal.derivation.id, proposal.mapping.id]);
     expect("generation" in result).toBe(false);
   });
-  it("rejects requested typed requirements until their evaluator is implemented", () => {
+  it("rejects a required unknown dimension with its specific consumer requirement", () => {
     const { graph, policy, options } = fixture();
     policy.uncertaintyRequirements = [
       {
@@ -243,7 +243,9 @@ describe("explicit version 2 proof admission", () => {
     expect(result.status).toBe("rejected");
     expect(
       result.issues.some(
-        (issue) => issue.code === "TYPED_UNCERTAINTY_NOT_IMPLEMENTED",
+        (issue) =>
+          issue.code === "UNCERTAINTY_STATE_NOT_ALLOWED" &&
+          issue.message.includes("identity"),
       ),
     ).toBe(true);
   });

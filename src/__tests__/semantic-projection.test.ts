@@ -215,7 +215,7 @@ describe("proof-carrying static expressions", () => {
       expect(validateSemanticProjection(value).valid).toBe(false);
     }
   });
-  it("requires an explicit budget decision and rejects a requested unimplemented budget", () => {
+  it("requires an explicit budget decision and rejects a requested missing budget", () => {
     const inputs = semanticFixture();
     expect(() =>
       parseSemanticProjectionSpecJson(
@@ -227,7 +227,7 @@ describe("proof-carrying static expressions", () => {
       compileProjection(inputs.graph, inputs.generation(), inputs.spec),
     ).toMatchObject({
       status: "rejected",
-      issues: [{ code: "TYPED_BUDGET_NOT_IMPLEMENTED" }],
+      issues: [{ code: "MISSING_CONSUMER_BUDGET" }],
     });
   });
   it("rejects mixed contract versions instead of interpreting a proof through the legacy profile", () => {

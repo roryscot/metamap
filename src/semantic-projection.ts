@@ -32,6 +32,9 @@ import type {
   ProjectionIssue,
 } from "./projection.js";
 import type { ViableGeneration } from "./viability-model.js";
+import { compileMetamap } from "./viability.js";
+import { graphUncertainty, uncertaintySummaryIssues } from "./uncertainty.js";
+import { evaluateConsumerRisk } from "./risk.js";
 
 const Ajv2020 = Ajv2020Module.default;
 const addFormats = addFormatsModule.default;
@@ -144,19 +147,46 @@ export function validateSemanticProjection(value: unknown): {
       ),
     );
   const semantic = projection.semantic;
+  const risk = semantic.risk;
   if (
-    semantic.risk.status !== "not-evaluated" ||
-    semantic.risk.budget !== null ||
-    semantic.risk.totalCost !== null ||
-    semantic.risk.classifications.length
+    risk.status === "not-evaluated" &&
+    (risk.budget !== null ||
+      risk.totalCost !== null ||
+      risk.classifications.length)
   )
     issues.push(
       problem(
-        "TYPED_BUDGET_NOT_IMPLEMENTED",
-        "Requested typed risk results are not yet executable",
+        "INVALID_PROJECTION_RISK_STATE",
+        "Unevaluated risk must retain null budget/cost and no classifications",
         projection.id,
       ),
     );
+  if (risk.status === "evaluated") {
+    const classified = new Set(
+      risk.classifications.map((entry) => entry.mapping),
+    );
+    const total = risk.classifications.reduce(
+      (sum, entry) => sum + BigInt(entry.cost),
+      0n,
+    );
+    if (
+      risk.budget === null ||
+      risk.totalCost === null ||
+      !Number.isSafeInteger(risk.totalCost) ||
+      classified.size !== risk.classifications.length ||
+      classified.size !== semantic.usedMappings.length ||
+      semantic.usedMappings.some((id) => !classified.has(id)) ||
+      total > BigInt(Number.MAX_SAFE_INTEGER) ||
+      Number(total) !== risk.totalCost
+    )
+      issues.push(
+        problem(
+          "INVALID_PROJECTION_RISK_ACCOUNTING",
+          "Evaluated risk must bind its budget and exactly classify/sum each unique used mapping",
+          projection.id,
+        ),
+      );
+  }
   const dependencies = new Map(
     semantic.dependencies.map((dependency) => [dependency.mapping, dependency]),
   );
@@ -250,25 +280,11 @@ export function validateSemanticProjection(value: unknown): {
         projection.id,
       ),
     );
-  if (
-    [...uncertainty.values()].some((dimensions) =>
-      dimensions.some(
-        (dimension) =>
-          dimension.status !== "unknown" ||
-          dimension.evidence.length ||
-          dimension.assessments.length ||
-          dimension.measurementModels.length ||
-          dimension.sourceRevisions.length,
-      ),
-    )
-  )
-    issues.push(
-      problem(
-        "TYPED_UNCERTAINTY_NOT_IMPLEMENTED",
-        "Requested typed uncertainty results are not yet executable",
-        projection.id,
-      ),
-    );
+  issues.push(
+    ...uncertaintySummaryIssues(risk.uncertainty).map((issue) =>
+      problem(issue.code, issue.message, issue.subjectId),
+    ),
+  );
   for (const ids of [
     semantic.risk.lossyMappings,
     semantic.risk.inferredMappings,
@@ -327,17 +343,6 @@ export function compileSemanticProjection(
           problem(issue.code, issue.message, issue.subjectId),
         ),
       };
-    if (spec.budget !== null)
-      return {
-        status: "rejected",
-        issues: [
-          problem(
-            "TYPED_BUDGET_NOT_IMPLEMENTED",
-            "Requested consumer budgets are not yet executable",
-            spec.id,
-          ),
-        ],
-      };
     graph = legacyReferenceValue(graph) as unknown as MetamapDocument;
     const registry = new RelationRegistry(
       generation.semantic.packs.map((pack) => pack.value),
@@ -366,12 +371,69 @@ export function compileSemanticProjection(
           ],
         };
     }
+    const policy = options.semanticPolicy;
+    if (
+      !policy &&
+      (generation.semantic.assessments.length ||
+        generation.semantic.uncertaintyRequirements.length ||
+        generation.semantic.riskBudgets.length)
+    )
+      return {
+        status: "rejected",
+        issues: [
+          problem(
+            "SEMANTIC_POLICY_REQUIRED",
+            "Typed projection requires the exact original policy and full evidence records",
+            generation.id,
+          ),
+        ],
+      };
+    if (policy) {
+      if (
+        policy.id !== generation.policy.id ||
+        canonicalDigest(policy) !== generation.policy.digest
+      )
+        return {
+          status: "rejected",
+          issues: [
+            problem(
+              "PROJECTION_POLICY_BINDING_MISMATCH",
+              "Supplied policy/evidence differs from the generation binding",
+              generation.id,
+            ),
+          ],
+        };
+      const recomputed = compileMetamap(graph, policy, {
+        context: generation.context,
+        evaluatedAt: generation.evaluatedAt,
+        relationRegistry: registry,
+      });
+      if (
+        recomputed.status !== "viable" ||
+        recomputed.generation.digest !== generation.digest
+      )
+        return {
+          status: "rejected",
+          issues: [
+            problem(
+              "PROJECTION_GENERATION_RECHECK_FAILED",
+              "Generation does not reproduce from its captured graph, policy, evidence, context and time",
+              generation.id,
+            ),
+          ],
+        };
+    }
+    const uncertaintyInputs = {
+      assessments: policy?.assessments ?? [],
+      evidence: policy?.evidence ?? [],
+    };
     const checked = validateCorrespondenceDerivations(
       graph,
       generation.semantic.derivations,
       generation.context,
       generation.semantic.derivationLimits,
       registry,
+      uncertaintyInputs,
     );
     if (checked.status !== "valid")
       return {
@@ -379,6 +441,21 @@ export function compileSemanticProjection(
         issues: checked.issues.map((issue) =>
           problem(issue.code, issue.message, issue.subjectId),
         ),
+      };
+    if (
+      canonicalDigest(
+        graphUncertainty(graph, checked.checked, uncertaintyInputs),
+      ) !== canonicalDigest(generation.semantic.uncertainty)
+    )
+      return {
+        status: "rejected",
+        issues: [
+          problem(
+            "GENERATION_UNCERTAINTY_MISMATCH",
+            "Captured uncertainty does not match checked contributing records",
+            generation.id,
+          ),
+        ],
       };
     const active = new Set(generation.activeMappings);
     const declarationIds = new Set(
@@ -496,22 +573,13 @@ export function compileSemanticProjection(
           all.findIndex((other) => other.id === proof.id) === index,
       )
       .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-    const mappings = new Map(
-      graph.mappings.map((mapping) => [mapping.id, mapping]),
-    );
-    const uncertainty = new Map(
-      generation.semantic.uncertainty.map((entry) => [entry.mapping, entry]),
-    );
-    if (usedMappings.some((id) => !uncertainty.has(id)))
+    const risk = evaluateConsumerRisk(graph, generation, spec, usedMappings);
+    if (risk.issues.length)
       return {
         status: "rejected",
-        issues: [
-          problem(
-            "INCOMPLETE_PROJECTION_UNCERTAINTY",
-            "Selected dependency has no captured uncertainty summary",
-            spec.id,
-          ),
-        ],
+        issues: risk.issues.map((issue) =>
+          problem(issue.code, issue.message, issue.subjectId),
+        ),
       };
     const content = {
       $schema:
@@ -526,19 +594,7 @@ export function compileSemanticProjection(
         usedMappings,
         dependencies: usedDependencies,
         derivations,
-        risk: {
-          status: "not-evaluated" as const,
-          budget: null,
-          classifications: [],
-          totalCost: null,
-          lossyMappings: usedMappings.filter(
-            (id) => mappings.get(id)?.lossiness === "lossy",
-          ),
-          inferredMappings: usedMappings.filter(
-            (id) => mappings.get(id)?.provenance.status === "inferred",
-          ),
-          uncertainty: usedMappings.map((id) => uncertainty.get(id)!),
-        },
+        risk: risk.risk,
       },
     };
     const digest = canonicalDigest(content);

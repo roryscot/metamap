@@ -150,7 +150,7 @@ function evaluate(inputs) {
     const projections = [];
     if (compilation.status === "viable")
         for (const spec of inputs.projections) {
-            const result = compileProjection(inputs.graph, compilation.generation, spec, { relationRegistry: registry });
+            const result = compileProjection(inputs.graph, compilation.generation, spec, { relationRegistry: registry, semanticPolicy: inputs.policy });
             projections.push({
                 specId: spec.id,
                 result,

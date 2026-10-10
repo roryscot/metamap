@@ -96,8 +96,10 @@ reader rejects duplicate decoded keys. A rehashed report cannot claim measured
 projection deltas when a result is unknown. Content validation is separate from
 reproducing captures, authentication, approval and activation.
 
-Reserved assessment/budget inputs remain explicit unsupported requests until M3
-implements them. Source lineage capture and inspection remain P08. Comparison
+Assessment/evidence, requirement and budget changes affect the bound generation,
+proofs and projections. Known risk summaries are compared directly; a rejected
+candidate retains an unknown delta rather than an assumed cost reduction.
+Source lineage capture and inspection remain P08. Comparison
 does not search for or apply repairs; bounded proposal search remains M5.
 
 ## Contract and evaluation
