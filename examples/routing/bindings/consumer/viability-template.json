@@ -1,0 +1,145 @@
+{
+  "templateVersion": "1.0.0",
+  "graphId": "urn:bindings:graph",
+  "policy": {
+    "schemaVersion": "1.0.0",
+    "id": "urn:bindings:policy",
+    "mappings": [
+      {
+        "mapping": "urn:bindings:mapping:handler",
+        "coverage": "total",
+        "determinism": "deterministic",
+        "reversibility": "irreversible"
+      },
+      {
+        "mapping": "urn:bindings:mapping:input",
+        "coverage": "total",
+        "determinism": "deterministic",
+        "reversibility": "irreversible"
+      },
+      {
+        "mapping": "urn:bindings:mapping:endpoint-production",
+        "coverage": "total",
+        "determinism": "deterministic",
+        "reversibility": "irreversible",
+        "applicability": {
+          "when": {
+            "key": "environment",
+            "operator": "equals",
+            "value": "production"
+          }
+        }
+      },
+      {
+        "mapping": "urn:bindings:mapping:endpoint-development",
+        "coverage": "total",
+        "determinism": "deterministic",
+        "reversibility": "irreversible",
+        "applicability": {
+          "when": {
+            "key": "environment",
+            "operator": "equals",
+            "value": "development"
+          }
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "id": "urn:bindings:constraint:handler-required",
+        "kind": "core:requires-mapping",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "relation": "routing:handled_by",
+          "direction": "source"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:handler-unique",
+        "kind": "core:unique-target",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "relation": "routing:handled_by",
+          "direction": "source"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:input-required",
+        "kind": "core:requires-mapping",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "relation": "routing:accepts",
+          "direction": "source"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:input-unique",
+        "kind": "core:unique-target",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "relation": "routing:accepts",
+          "direction": "source"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:endpoint-required",
+        "kind": "core:requires-mapping",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "relation": "routing:exposed_as",
+          "direction": "source"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:endpoint-unique",
+        "kind": "core:unique-target",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "relation": "routing:exposed_as",
+          "direction": "source"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:authority-operation-identity",
+        "kind": "core:requires-authority",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "fact": "operation-identity"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:authority-input",
+        "kind": "core:requires-authority",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "fact": "input"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:authority-implementation",
+        "kind": "core:requires-authority",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "fact": "implementation"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:authority-endpoint",
+        "kind": "core:requires-authority",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "fact": "endpoint"
+        }
+      },
+      {
+        "id": "urn:bindings:constraint:authority-binding",
+        "kind": "core:requires-authority",
+        "subjects": ["urn:bindings:command:create-user"],
+        "parameters": {
+          "fact": "binding"
+        }
+      }
+    ],
+    "evidence": []
+  }
+}

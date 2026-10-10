@@ -1,0 +1,148 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/relation-pack-v2.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:metamap:relation-pack:scientific-skos",
+  "version": "1.0.0",
+  "description": "Bounded binary SKOS mapping profile: symmetric exact/close/related; transitive exact; broad/narrow inverse; exact disjoint with broad/narrow/related; exact is a subproperty of close. Closed explicit laws preserve unknown uncertainty and lossiness, infer no authority or OWL identity, and omit pragmatic non-SKOS chains. Normative source: https://www.w3.org/TR/skos-reference/#mapping",
+  "relations": [
+    {
+      "id": "scientific:exact-match",
+      "sourceKinds": ["scientific:entity"],
+      "targetKinds": ["scientific:entity"],
+      "cardinalities": ["one-to-one"],
+      "cyclePolicy": "allow",
+      "transitive": true,
+      "symmetric": true,
+      "impactDirection": "none",
+      "disjointWith": [
+        "scientific:broad-match",
+        "scientific:narrow-match",
+        "scientific:related-match"
+      ]
+    },
+    {
+      "id": "scientific:close-match",
+      "sourceKinds": ["scientific:entity"],
+      "targetKinds": ["scientific:entity"],
+      "cardinalities": ["one-to-one"],
+      "cyclePolicy": "allow",
+      "transitive": false,
+      "symmetric": true,
+      "impactDirection": "none"
+    },
+    {
+      "id": "scientific:broad-match",
+      "sourceKinds": ["scientific:entity"],
+      "targetKinds": ["scientific:entity"],
+      "cardinalities": ["one-to-one"],
+      "cyclePolicy": "allow",
+      "transitive": false,
+      "symmetric": false,
+      "impactDirection": "none",
+      "inverse": "scientific:narrow-match",
+      "disjointWith": ["scientific:exact-match"]
+    },
+    {
+      "id": "scientific:narrow-match",
+      "sourceKinds": ["scientific:entity"],
+      "targetKinds": ["scientific:entity"],
+      "cardinalities": ["one-to-one"],
+      "cyclePolicy": "allow",
+      "transitive": false,
+      "symmetric": false,
+      "impactDirection": "none",
+      "inverse": "scientific:broad-match",
+      "disjointWith": ["scientific:exact-match"]
+    },
+    {
+      "id": "scientific:related-match",
+      "sourceKinds": ["scientific:entity"],
+      "targetKinds": ["scientific:entity"],
+      "cardinalities": ["one-to-one"],
+      "cyclePolicy": "allow",
+      "transitive": false,
+      "symmetric": true,
+      "impactDirection": "none",
+      "disjointWith": ["scientific:exact-match"]
+    }
+  ],
+  "laws": [
+    {
+      "id": "urn:metamap:scientific:law:reverse-exact",
+      "operation": "reverse",
+      "operands": ["scientific:exact-match"],
+      "resultRelation": "scientific:exact-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    },
+    {
+      "id": "urn:metamap:scientific:law:reverse-close",
+      "operation": "reverse",
+      "operands": ["scientific:close-match"],
+      "resultRelation": "scientific:close-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    },
+    {
+      "id": "urn:metamap:scientific:law:reverse-broad",
+      "operation": "reverse",
+      "operands": ["scientific:broad-match"],
+      "resultRelation": "scientific:narrow-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    },
+    {
+      "id": "urn:metamap:scientific:law:reverse-narrow",
+      "operation": "reverse",
+      "operands": ["scientific:narrow-match"],
+      "resultRelation": "scientific:broad-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    },
+    {
+      "id": "urn:metamap:scientific:law:reverse-related",
+      "operation": "reverse",
+      "operands": ["scientific:related-match"],
+      "resultRelation": "scientific:related-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    },
+    {
+      "id": "urn:metamap:scientific:law:exact-chain",
+      "operation": "chain",
+      "operands": ["scientific:exact-match", "scientific:exact-match"],
+      "resultRelation": "scientific:exact-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    },
+    {
+      "id": "urn:metamap:scientific:law:exact-reverse-close",
+      "operation": "reverse",
+      "operands": ["scientific:exact-match"],
+      "resultRelation": "scientific:close-match",
+      "handling": {
+        "lossiness": "conservative",
+        "uncertainty": "conservative",
+        "authority": "none"
+      }
+    }
+  ]
+}

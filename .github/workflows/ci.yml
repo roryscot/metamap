@@ -11,7 +11,9 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # The complete native/UID/crash suite takes about 14 minutes on a hosted
+    # runner; leave time for the examples and installed-package acceptance too.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,7 +29,11 @@ jobs:
       - run: npm run example:compile
       - run: npm run example:research
       - run: npm run example:routing
+      - run: npm run example:bindings
       - run: npm run example:path-tree
+      - run: npm run example:topology
+      - run: npm run example:replay
       - name: Ensure example outputs are current
-        run: git diff --exit-code examples/workspace/generated examples/research/generated examples/routing/generated examples/path-tree/generated examples/example-generation.json
+        run: git diff --exit-code examples/workspace/generated examples/research/generated examples/routing/generated examples/routing/bindings/generated examples/path-tree/generated examples/application-topology/generated examples/example-generation.json
       - run: npm pack --dry-run
+      - run: npm run verify:package

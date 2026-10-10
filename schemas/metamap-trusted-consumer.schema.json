@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-trusted-consumer.schema.json",
+  "title": "Externally controlled consumer trust 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "revision",
+    "mode",
+    "consumer",
+    "environment",
+    "stateDirectory",
+    "proposalRoots",
+    "principals",
+    "keys",
+    "grants"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mode": {
+      "const": "governed"
+    },
+    "consumer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stateDirectory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proposalRoots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "principals": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-governance.schema.json#/$defs/principal"
+      },
+      "minItems": 1
+    },
+    "keys": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-governance.schema.json#/$defs/key"
+      },
+      "minItems": 0
+    },
+    "grants": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-governance.schema.json#/$defs/grant"
+      },
+      "minItems": 0
+    }
+  }
+}

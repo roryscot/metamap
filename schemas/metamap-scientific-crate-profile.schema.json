@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-scientific-crate-profile.schema.json",
+  "title": "MetaMap single-source scientific RO-Crate 1.2 profile settings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "name",
+    "description",
+    "datePublished",
+    "consumer",
+    "environment",
+    "rawInputs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "datePublished": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "consumer": { "type": "string", "minLength": 1 },
+    "environment": { "type": "string", "minLength": 1 },
+    "rawInputs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "externalOriginal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "name", "description"],
+      "properties": {
+        "uri": { "type": "string", "pattern": "^https?://[^\\s]+$" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

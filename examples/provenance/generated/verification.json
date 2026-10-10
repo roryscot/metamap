@@ -1,0 +1,18 @@
+{
+  "active": "not-evaluated",
+  "authentication": "not-evaluated",
+  "authorizationNow": "not-evaluated",
+  "comparisonKeepsRejectedRiskUnknown": true,
+  "explicitLocalRediscovery": "current",
+  "graphReplayVerified": true,
+  "nativeModulesExecuted": true,
+  "offlineRediscovery": "unavailable",
+  "policyProfile": "2.0.0",
+  "rawInputsEmbedded": false,
+  "receiptTamperingDetected": true,
+  "rejectedReplayVerified": true,
+  "replayProfile": "3.0.0",
+  "sourceCaptureProfile": "1.0.0",
+  "sources": ["network", "schema"],
+  "totalCost": 5
+}

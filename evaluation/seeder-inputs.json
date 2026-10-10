@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "source": "Seeder packages/metamaps",
+  "sourceContextCommit": "8ce88adf817c3817326dfe298a573066eae15be6",
+  "pinMeaning": "File digests pin the actual inputs; the commit supplies context and is not a claim that these files are unchanged from that commit.",
+  "inputs": [
+    {
+      "path": "web-routes.graph.json",
+      "digest": "sha256:661a77fd9e6a821685a31c568c77ee1364ba7feab7e6412e0525bc1c9ba4b3cc"
+    },
+    {
+      "path": "web-routes.viability.json",
+      "digest": "sha256:a50cd2d90b8f173d68f7a56e488b32b5e68bcb84f75a9abc197030eea557943f"
+    },
+    {
+      "path": "web-routes.projection.json",
+      "digest": "sha256:32db802f85bba4acf1020f91bca3f5a69498afa813571b92e8b09dd3b5820fe8"
+    },
+    {
+      "path": "generated/application-topology.graph.json",
+      "digest": "sha256:124952823f74981737d04039ea929e08e31d5420f475493640b3a99dcfff9aac"
+    },
+    {
+      "path": "generated/application-topology.viability.json",
+      "digest": "sha256:4f172a477e7cff0c9963ba571ec5f6e170e79465453231adc75df330c7b2274d"
+    },
+    {
+      "path": "application-topology.projection.json",
+      "digest": "sha256:0969f82bbb9a83f2a6c0179f674287b4bf790df36327d91bdfe098c115a3b33c"
+    },
+    {
+      "path": "scripts/generate-application-topology.mjs",
+      "digest": "sha256:d65da0b80e395c4db2b40d8267d37fe38d444870948a4088aac3282f40f468f4"
+    }
+  ]
+}

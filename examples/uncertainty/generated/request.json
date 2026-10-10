@@ -1,0 +1,47 @@
+{
+  "assessments": [
+    {
+      "assessor": "consumer-owner",
+      "dimension": "identity",
+      "evidence": ["urn:uncertainty:evidence:0"],
+      "id": "urn:uncertainty:assessment:0",
+      "sourceRevision": "1",
+      "status": "supported",
+      "subject": "urn:example:consumer-service"
+    },
+    {
+      "assessor": "service-owner",
+      "dimension": "identity",
+      "evidence": ["urn:uncertainty:evidence:1"],
+      "id": "urn:uncertainty:assessment:1",
+      "sourceRevision": "1",
+      "status": "supported",
+      "subject": "urn:example:service-schema"
+    }
+  ],
+  "bounds": { "maxDepth": 4, "maxDerivations": 16 },
+  "context": { "environment": "example" },
+  "derivations": [],
+  "evidence": [
+    {
+      "confidence": 0.2,
+      "id": "urn:uncertainty:evidence:0",
+      "kind": "uncertainty:identity",
+      "producer": "consumer-owner",
+      "result": "supports",
+      "subjects": ["urn:example:consumer-service"]
+    },
+    {
+      "confidence": 0.2,
+      "id": "urn:uncertainty:evidence:1",
+      "kind": "uncertainty:identity",
+      "producer": "service-owner",
+      "result": "supports",
+      "subjects": ["urn:example:service-schema"]
+    }
+  ],
+  "law": "urn:metamap:example:law:dependency-chain",
+  "premises": ["urn:example:consumer-service", "urn:example:service-schema"],
+  "resultId": "urn:example:consumer-schema",
+  "schemaVersion": "1.0.0"
+}

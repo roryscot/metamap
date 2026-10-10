@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-composition-result.schema.json",
+  "title": "Metamap correspondence composition result",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "issues",
+        "status",
+        "mapping",
+        "derivation"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "subjectId": {
+                "$ref": "#/$defs/identifier"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "status": {
+          "const": "proposed"
+        },
+        "mapping": {
+          "$ref": "#/$defs/mapping"
+        },
+        "derivation": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "issues", "status"],
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "subjectId": {
+                "$ref": "#/$defs/identifier"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "status": {
+          "enum": ["rejected", "unsupported", "unknown", "incomplete"]
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "mapping": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json#/$defs/mapping"
+    }
+  }
+}

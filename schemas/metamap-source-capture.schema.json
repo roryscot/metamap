@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-capture.schema.json",
+  "title": "Complete captured Metamap source records",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "config",
+    "adapters",
+    "relationPacks",
+    "graph"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "config": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-config/v1.schema.json"
+    },
+    "adapters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceId",
+          "adapter",
+          "adapterVersion",
+          "inputs",
+          "document",
+          "diagnostics"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "adapter": {
+            "type": "string",
+            "minLength": 1
+          },
+          "adapterVersion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "digest"],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              }
+            }
+          },
+          "document": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json"
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["severity", "code", "message"],
+              "properties": {
+                "severity": {
+                  "enum": ["warning", "error"]
+                },
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "subjectId": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "relationPacks": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-relation-pack/v1.schema.json"
+          },
+          {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/relation-pack-v2.schema.json"
+          }
+        ]
+      }
+    },
+    "graph": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json"
+    }
+  }
+}

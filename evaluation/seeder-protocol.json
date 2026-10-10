@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "evaluationTime": "2026-09-18T00:00:00.000Z",
+  "repetitions": 3,
+  "scope": "Bounded pilot of the replay/comparison additions on pinned consumer data. The direct baseline shares the existing compiler and constraint semantics; this is not an independent test that the Metamap kernel beats every simpler graph.",
+  "baseline": "Direct compileMetamap, compileProjection, stable-ID diff, and runtime-entry comparison, supplied the same graph, policy, packs, context, time, and projection specification.",
+  "metrics": [
+    "admission accuracy",
+    "missed required runtime changes",
+    "false runtime-change flags on binding-only controls",
+    "median comparison time in milliseconds"
+  ],
+  "notMeasured": [
+    "human review effort",
+    "independent kernel advantage",
+    "population-level error rates"
+  ],
+  "expansionGate": "An advantage in held-out correctness or runtime-change localization at no additional false rejections must be demonstrated before broader scope. A tie does not satisfy this gate. Timing is reported as overhead, not a replacement for correctness.",
+  "cases": [
+    {
+      "id": "route-endpoint-removal",
+      "fixture": "routes",
+      "split": "held-out-consumer",
+      "operation": "remove-endpoint",
+      "expectedAdmission": false,
+      "expectedRuntimeChange": null,
+      "requirement": "Every route has exactly one endpoint"
+    },
+    {
+      "id": "route-endpoint-ambiguity",
+      "fixture": "routes",
+      "split": "held-out-consumer",
+      "operation": "duplicate-endpoint",
+      "expectedAdmission": false,
+      "expectedRuntimeChange": null,
+      "requirement": "Endpoint linkage is unique"
+    },
+    {
+      "id": "route-policy-swap",
+      "fixture": "routes",
+      "split": "held-out-consumer",
+      "operation": "swap-authorization",
+      "expectedAdmission": true,
+      "expectedRuntimeChange": true,
+      "requirement": "Different authorization targets remain inspectable while preserving policy-reference coverage"
+    },
+    {
+      "id": "route-stable-move",
+      "fixture": "routes",
+      "split": "held-out-consumer",
+      "operation": "move-locator",
+      "expectedAdmission": true,
+      "expectedRuntimeChange": true,
+      "requirement": "Stable identities survive a locator move; projected locator changes remain visible"
+    },
+    {
+      "id": "route-metadata-control",
+      "fixture": "routes",
+      "split": "held-out-consumer",
+      "operation": "metadata",
+      "expectedAdmission": true,
+      "expectedRuntimeChange": false,
+      "requirement": "Administrative metadata changes only bindings"
+    },
+    {
+      "id": "topology-implementation-removal",
+      "fixture": "topology",
+      "split": "held-out-consumer",
+      "operation": "remove-implementation",
+      "expectedAdmission": false,
+      "expectedRuntimeChange": null,
+      "requirement": "Every selected semantic route has one implementation"
+    },
+    {
+      "id": "topology-provider-removal",
+      "fixture": "topology",
+      "split": "held-out-consumer",
+      "operation": "remove-provider-context",
+      "expectedAdmission": false,
+      "expectedRuntimeChange": null,
+      "requirement": "Observed providers supply a context and consumers resolve required contexts"
+    },
+    {
+      "id": "topology-policy-swap",
+      "fixture": "topology",
+      "split": "held-out-consumer",
+      "operation": "swap-authorization",
+      "expectedAdmission": true,
+      "expectedRuntimeChange": true,
+      "requirement": "Authorization target changes are observable without implicit approval"
+    },
+    {
+      "id": "topology-metadata-control",
+      "fixture": "topology",
+      "split": "held-out-consumer",
+      "operation": "metadata",
+      "expectedAdmission": true,
+      "expectedRuntimeChange": false,
+      "requirement": "Administrative metadata does not manufacture runtime entry changes"
+    }
+  ],
+  "projectionPreparation": "Match the pinned consumer generator: topology projection selection adds the sorted routing:route IDs from the pinned web route graph before either path evaluates it. The template alone is not the actual consumer selection."
+}

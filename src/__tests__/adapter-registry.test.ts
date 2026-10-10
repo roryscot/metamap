@@ -79,6 +79,7 @@ describe("adapter registry", () => {
       "metamap-shard",
       "nextjs-app-router",
       "prisma",
+      "sssom-tsv",
       "typescript-zod",
     ]);
   });

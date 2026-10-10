@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../schemas/metamap-config.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "urn:bindings:graph",
+  "label": "Independently owned native consumer bindings",
+  "namespace": "bindings",
+  "repository": "bindings-example",
+  "repositoryRoot": ".",
+  "sources": [
+    {
+      "id": "contract",
+      "adapter": "owned-routing-shard",
+      "path": "contract/graph.json",
+      "ownedDirectory": "contract",
+      "owner": "team:contract",
+      "coverage": [
+        {
+          "kind": "routing:schema",
+          "relation": "routing:accepts"
+        }
+      ]
+    },
+    {
+      "id": "service",
+      "adapter": "owned-routing-shard",
+      "path": "service/graph.json",
+      "ownedDirectory": "service",
+      "owner": "team:service",
+      "coverage": [
+        {
+          "kind": "routing:handler",
+          "relation": "routing:handled_by"
+        },
+        {
+          "kind": "routing:endpoint",
+          "relation": "routing:exposed_as"
+        }
+      ]
+    },
+    {
+      "id": "consumer",
+      "adapter": "owned-routing-shard",
+      "path": "consumer/graph.json",
+      "ownedDirectory": "consumer",
+      "owner": "team:consumer"
+    }
+  ],
+  "correspondences": [],
+  "outputs": {
+    "graph": "generated/graph.json",
+    "snapshot": "generated/snapshot.json",
+    "report": "generated/report.md",
+    "documentation": "generated/graph.md",
+    "cache": ".cache/bindings"
+  },
+  "policy": {
+    "baselineChanges": "error",
+    "unconfiguredStructures": "ignore"
+  }
+}

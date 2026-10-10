@@ -1,0 +1,42 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-receipt.schema.json",
+    "adapter": { "id": "metamap-shard", "version": "1.0.0" },
+    "configDigest": "sha256:12adfa3dad5e9eb3658f07ce46cc7fdf11b76ddacab8b0dd8d3f5949774f8777",
+    "digest": "sha256:c5383b760793156daa95b339c75a47c2f24b4f07fa79e933f0be07947b8573e6",
+    "id": "urn:metamap:source-receipt:c5383b760793156daa95b339c75a47c2f24b4f07fa79e933f0be07947b8573e6",
+    "inputs": [
+      {
+        "digest": "sha256:0d2faae0ddc896ccd6f4630d3ccb1b9f590a56d0fa40934fd0e91f8473d582ce",
+        "path": "sources/network.json"
+      }
+    ],
+    "schemaVersion": "1.0.0",
+    "shard": {
+      "digest": "sha256:b88fdd14f21bec17a3890bc2deb8ed4ec17e1afd71465ac1dbc01efddef6df0a",
+      "id": "urn:provenance:source:network"
+    },
+    "source": "network",
+    "sourceRevision": "network-r1"
+  },
+  {
+    "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-receipt.schema.json",
+    "adapter": { "id": "metamap-shard", "version": "1.0.0" },
+    "configDigest": "sha256:c052a833e03836cd0e454d4eca42e841f07c10d19526065b531907453e674b97",
+    "digest": "sha256:567f8c0148968db71a5086bac154f294679a7ecde3cf40deba09b5c840575e2b",
+    "id": "urn:metamap:source-receipt:567f8c0148968db71a5086bac154f294679a7ecde3cf40deba09b5c840575e2b",
+    "inputs": [
+      {
+        "digest": "sha256:1e7ebccb787e6f7273e1a9da22e69072f3ad3abccc5706a36c22c09025cc5233",
+        "path": "sources/schema.json"
+      }
+    ],
+    "schemaVersion": "1.0.0",
+    "shard": {
+      "digest": "sha256:61b4cb568ee8fb74e3fd1d657f81f7e5c18ae39787d597583a1e97f31c7ffd5c",
+      "id": "urn:provenance:source:schema"
+    },
+    "source": "schema",
+    "sourceRevision": "schema-r1"
+  }
+]

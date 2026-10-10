@@ -1,9 +1,9 @@
 import { AdapterRegistry } from "./adapters/registry.js";
 import type { AdapterResult } from "./adapters/types.js";
-import type { LoadedMetamapConfig } from "./config.js";
+import type { LoadedMetamapConfig, MetamapConfig } from "./config.js";
 import { type DriftIssue } from "./correspondence.js";
 import { type GraphDiff } from "./diff.js";
-import type { MetamapDocument, ValidationResult } from "./model.js";
+import type { MetamapDocument, RelationPack, ValidationResult } from "./model.js";
 import { RelationRegistry } from "./relations.js";
 declare const SNAPSHOT_VERSION = "1.0.0";
 export interface MetamapSnapshot {
@@ -39,12 +39,23 @@ export interface WorkspaceCheck extends WorkspaceDiscovery {
 }
 export interface WorkspaceOptions {
     useCache?: boolean;
+    /** Disable all cache writes for an explicitly read-only rediscovery. */
+    writeCache?: boolean;
+    /** Source captures use portable repo: pack URIs; legacy workspace output keeps its format. */
+    portablePackUris?: boolean;
     /** Programmatic extension point for consumer-supplied adapters. */
     adapterRegistry?: AdapterRegistry;
     /** Additional pre-registered relation semantics. */
     relationRegistry?: RelationRegistry;
 }
+export interface ConfiguredRelationPack {
+    configuredPath: string;
+    pack: RelationPack;
+}
+export declare function makeWorkspaceSnapshot(graph: MetamapDocument, adapters: readonly AdapterResult[], configDigest: string): MetamapSnapshot;
 export declare function discoverWorkspace(loaded: LoadedMetamapConfig, options?: WorkspaceOptions): Promise<WorkspaceDiscovery>;
+/** Reconstruct captured adapter outputs without discovery, cache or output I/O. */
+export declare function assembleWorkspace(config: MetamapConfig, adapters: readonly AdapterResult[], configuredRelationPacks: readonly ConfiguredRelationPack[], relationRegistry: RelationRegistry, options?: Pick<WorkspaceOptions, "portablePackUris">): WorkspaceDiscovery;
 export declare function checkWorkspace(loaded: LoadedMetamapConfig, options?: WorkspaceOptions): Promise<WorkspaceCheck>;
 export declare function writeWorkspaceOutputs(loaded: LoadedMetamapConfig, discovery: WorkspaceDiscovery): Promise<void>;
 export declare function workspaceHasErrors(discovery: WorkspaceDiscovery): boolean;

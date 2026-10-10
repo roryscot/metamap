@@ -6,6 +6,8 @@ import { RelationRegistry } from "./relations.js";
 import { stableJson, valueDigest } from "./stable.js";
 import { validateViableGeneration } from "./viability.js";
 import { validateMetamapDocument } from "./validator.js";
+import { compileSemanticProjection } from "./semantic-projection.js";
+import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
 export const METAMAP_PROJECTION_SPEC_VERSION = "1.0.0";
 export const METAMAP_PROJECTION_VERSION = "1.0.0";
 const Ajv2020 = Ajv2020Module.default;
@@ -158,12 +160,29 @@ function activeMappingIndexes(document, activeMappingIds) {
     }
     return { outgoing, incoming };
 }
-/**
- * Resolve a declarative static projection against exactly one viable
- * generation. Stale generations, inactive links, ambiguity, missing required
- * slots, kind mismatches, and undeclared relations fail closed.
- */
 export function compileProjection(document, generation, spec, options = {}) {
+    if (generation.schemaVersion === "2.0.0" && spec.schemaVersion === "2.0.0")
+        return compileSemanticProjection(document, generation, spec, options, compileLegacyProjection);
+    if (generation.schemaVersion !== "1.0.0" || spec.schemaVersion !== "1.0.0")
+        return {
+            status: "rejected",
+            issues: [
+                issue("PROJECTION_VERSION_MISMATCH", "Generation and projection specification must use the same supported profile"),
+            ],
+        };
+    if (options.semanticPolicy ||
+        options.relationRegistry?.executablePacks().length ||
+        document.mappings.some((mapping) => mapping.attributes &&
+            Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE)))
+        return {
+            status: "rejected",
+            issues: [
+                issue("EXECUTABLE_PROJECTION_REQUIRED", "Typed policy inputs, executable packs and proof claims require the version 2 projection profile"),
+            ],
+        };
+    return compileLegacyProjection(document, generation, spec, options);
+}
+function compileLegacyProjection(document, generation, spec, options = {}) {
     const relationRegistry = options.relationRegistry ?? new RelationRegistry();
     const specValidation = validateProjectionSpec(spec);
     const generationValidation = validateViableGeneration(generation);

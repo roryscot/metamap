@@ -1,0 +1,275 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection-v2.schema.json",
+  "digest": "sha256:cb99e4d7d40c5db2af2d0ab74573e935a48d3055aabdc383577b5b363258718a",
+  "entries": [
+    {
+      "slots": [
+        {
+          "cardinality": "one-or-more",
+          "direction": "outgoing",
+          "mappings": [
+            "urn:example:consumer-schema",
+            "urn:example:consumer-service"
+          ],
+          "name": "dependencies",
+          "relation": "example:depends",
+          "targets": [
+            {
+              "id": "urn:example:schema",
+              "kind": "configuration",
+              "label": "schema"
+            },
+            {
+              "id": "urn:example:service",
+              "kind": "configuration",
+              "label": "service"
+            }
+          ]
+        }
+      ],
+      "subject": {
+        "attributes": { "path": "/network/:networkId" },
+        "id": "urn:example:consumer",
+        "kind": "configuration",
+        "label": "consumer"
+      }
+    }
+  ],
+  "generation": {
+    "digest": "sha256:2d692cae8b588e2d519dd82f12c9687b87ac138084332bd6abee617708f7d329",
+    "id": "urn:metamap:generation:2d692cae8b588e2d519dd82f12c9687b87ac138084332bd6abee617708f7d329"
+  },
+  "graph": {
+    "digest": "sha256:a323a62f8cb20962d8df4d3fa337f49e92fb1cad6f746aa9e64c31792b540e6f",
+    "id": "urn:metamap:example:dependency-graph"
+  },
+  "id": "urn:metamap:projection:cb99e4d7d40c5db2af2d0ab74573e935a48d3055aabdc383577b5b363258718a",
+  "schemaVersion": "2.0.0",
+  "semantic": {
+    "consumer": "urn:metamap:example:network-consumer",
+    "dependencies": [
+      {
+        "derivation": {
+          "digest": "sha256:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726",
+          "id": "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+        },
+        "mapping": "urn:example:consumer-schema",
+        "premises": [
+          "urn:example:consumer-service",
+          "urn:example:service-schema"
+        ]
+      },
+      { "mapping": "urn:example:consumer-service", "premises": [] },
+      { "mapping": "urn:example:service-schema", "premises": [] }
+    ],
+    "derivations": [
+      {
+        "digest": "sha256:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726",
+        "id": "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+      }
+    ],
+    "risk": {
+      "budget": {
+        "digest": "sha256:e0dff8b5e3c33c8e84360a15a2f1c5da2234404fd153b74744abb7aa08bc5e99",
+        "id": "urn:uncertainty:budget"
+      },
+      "classifications": [
+        {
+          "classification": "derived",
+          "cost": 0,
+          "mapping": "urn:example:consumer-schema"
+        },
+        {
+          "classification": "declared-directional",
+          "cost": 2,
+          "mapping": "urn:example:consumer-service"
+        },
+        {
+          "classification": "declared-directional",
+          "cost": 3,
+          "mapping": "urn:example:service-schema"
+        }
+      ],
+      "inferredMappings": ["urn:example:consumer-schema"],
+      "lossyMappings": [],
+      "status": "evaluated",
+      "totalCost": 5,
+      "uncertainty": [
+        {
+          "dimensions": [
+            {
+              "assessments": [
+                "urn:uncertainty:assessment:0",
+                "urn:uncertainty:assessment:1"
+              ],
+              "dimension": "identity",
+              "evidence": [
+                "urn:uncertainty:evidence:0",
+                "urn:uncertainty:evidence:1"
+              ],
+              "measurementModels": [],
+              "sourceRevisions": ["1"],
+              "status": "supported"
+            },
+            {
+              "assessments": [],
+              "dimension": "context",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "provenance",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "completeness",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "causal-relevance",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "conflicting-authority",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            }
+          ],
+          "mapping": "urn:example:consumer-schema"
+        },
+        {
+          "dimensions": [
+            {
+              "assessments": ["urn:uncertainty:assessment:0"],
+              "dimension": "identity",
+              "evidence": ["urn:uncertainty:evidence:0"],
+              "measurementModels": [],
+              "sourceRevisions": ["1"],
+              "status": "supported"
+            },
+            {
+              "assessments": [],
+              "dimension": "context",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "provenance",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "completeness",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "causal-relevance",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "conflicting-authority",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            }
+          ],
+          "mapping": "urn:example:consumer-service"
+        },
+        {
+          "dimensions": [
+            {
+              "assessments": ["urn:uncertainty:assessment:1"],
+              "dimension": "identity",
+              "evidence": ["urn:uncertainty:evidence:1"],
+              "measurementModels": [],
+              "sourceRevisions": ["1"],
+              "status": "supported"
+            },
+            {
+              "assessments": [],
+              "dimension": "context",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "provenance",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "completeness",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "causal-relevance",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            },
+            {
+              "assessments": [],
+              "dimension": "conflicting-authority",
+              "evidence": [],
+              "measurementModels": [],
+              "sourceRevisions": [],
+              "status": "unknown"
+            }
+          ],
+          "mapping": "urn:example:service-schema"
+        }
+      ]
+    },
+    "usedMappings": [
+      "urn:example:consumer-schema",
+      "urn:example:consumer-service",
+      "urn:example:service-schema"
+    ]
+  },
+  "spec": {
+    "digest": "sha256:73ea398d51b1766c1bf301c294431fef2ee1d53095b966749b15df603e3a90ab",
+    "id": "urn:metamap:example:dependency-projection"
+  }
+}

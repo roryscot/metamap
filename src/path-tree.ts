@@ -15,6 +15,13 @@ import {
   validateProjectionSpec,
 } from "./projection.js";
 import { stableJson, valueDigest } from "./stable.js";
+import { compileSemanticPathTree } from "./semantic-path-tree.js";
+import type {
+  SemanticPathTree,
+  SemanticPathTreeResult,
+  SemanticProjection,
+  SemanticProjectionSpec,
+} from "./semantic-projection-model.js";
 
 export const METAMAP_PATH_TREE_VERSION = "1.0.0" as const;
 
@@ -249,6 +256,37 @@ function ensureChild(
  * or identities.
  */
 export function compilePathTree(
+  projection: SemanticProjection,
+  spec: SemanticProjectionSpec,
+): SemanticPathTreeResult;
+export function compilePathTree(
+  projection: MetamapProjection,
+  spec: MetamapProjectionSpec,
+): PathTreeCompilationResult;
+export function compilePathTree(
+  projection: MetamapProjection | SemanticProjection,
+  spec: MetamapProjectionSpec | SemanticProjectionSpec,
+): PathTreeCompilationResult | SemanticPathTreeResult;
+export function compilePathTree(
+  projection: MetamapProjection | SemanticProjection,
+  spec: MetamapProjectionSpec | SemanticProjectionSpec,
+): PathTreeCompilationResult | SemanticPathTreeResult {
+  if (projection.schemaVersion === "2.0.0" && spec.schemaVersion === "2.0.0")
+    return compileSemanticPathTree(projection, spec, compileLegacyPathTree);
+  if (projection.schemaVersion !== "1.0.0" || spec.schemaVersion !== "1.0.0")
+    return {
+      status: "rejected",
+      issues: [
+        issue(
+          "PATH_TREE_VERSION_MISMATCH",
+          "Projection and path-tree specification must use the same supported version",
+        ),
+      ],
+    };
+  return compileLegacyPathTree(projection, spec);
+}
+
+function compileLegacyPathTree(
   projection: MetamapProjection,
   spec: MetamapProjectionSpec,
 ): PathTreeCompilationResult {
@@ -551,7 +589,7 @@ export function hydratePathTree<T extends PathTreeNode>(
 
 /** Emit a dependency-free nested path tree with a hydrate helper. */
 export function emitTypeScriptPathTree(
-  pathTree: MetamapPathTree,
+  pathTree: MetamapPathTree | SemanticPathTree,
   options: { exportName?: string } = {},
 ): string {
   const exportName = options.exportName ?? "pathTree";

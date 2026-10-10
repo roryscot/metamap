@@ -1,4 +1,5 @@
 import { type MetamapProjection, type MetamapProjectionSpec, type PathTreeDelimiter, type ProjectedEntity, type ProjectionIssue } from "./projection.js";
+import type { SemanticPathTree, SemanticPathTreeResult, SemanticProjection, SemanticProjectionSpec } from "./semantic-projection-model.js";
 export declare const METAMAP_PATH_TREE_VERSION: "1.0.0";
 export interface PathTreeOccupant {
     id: string;
@@ -42,7 +43,9 @@ export type PathTreeCompilationResult = {
  * owned by the selected subjects; the compiler never infers them from labels
  * or identities.
  */
+export declare function compilePathTree(projection: SemanticProjection, spec: SemanticProjectionSpec): SemanticPathTreeResult;
 export declare function compilePathTree(projection: MetamapProjection, spec: MetamapProjectionSpec): PathTreeCompilationResult;
+export declare function compilePathTree(projection: MetamapProjection | SemanticProjection, spec: MetamapProjectionSpec | SemanticProjectionSpec): PathTreeCompilationResult | SemanticPathTreeResult;
 export declare function validatePathTree(value: unknown): {
     valid: boolean;
     issues: ProjectionIssue[];
@@ -58,7 +61,7 @@ export declare function hydratePathTree<T extends PathTreeNode>(tree: T, params:
     requiredParams?: readonly string[];
 }): T;
 /** Emit a dependency-free nested path tree with a hydrate helper. */
-export declare function emitTypeScriptPathTree(pathTree: MetamapPathTree, options?: {
+export declare function emitTypeScriptPathTree(pathTree: MetamapPathTree | SemanticPathTree, options?: {
     exportName?: string;
 }): string;
 //# sourceMappingURL=path-tree.d.ts.map

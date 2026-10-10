@@ -14,6 +14,19 @@ import type {
 import { isReferenceIdentifier, isRelationIdentifier } from "./references.js";
 import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
+import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
+import { compileSemanticMetamap } from "./semantic.js";
+import { evaluateGovernedActivation } from "./governance.js";
+import type {
+  GovernedActivationRequest,
+  GovernedActivationResult,
+  GovernedActivationState,
+  GovernedInMemoryHost,
+} from "./activation-model.js";
+import type {
+  MetamapSemanticPolicy,
+  SemanticCompilationResult,
+} from "./semantic-model.js";
 import { validateMetamapDocument } from "./validator.js";
 import {
   METAMAP_GENERATION_VERSION,
@@ -199,7 +212,7 @@ function knownGraphSubjects(document: MetamapDocument): Set<string> {
   ]);
 }
 
-function selectorMatches(
+export function selectorMatches(
   mapping: StructuralMapping,
   selector: MappingViabilitySelector,
   entityKinds: ReadonlyMap<string, string>,
@@ -556,10 +569,12 @@ function contradictionIssues(
   document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   activeMappings: ReadonlySet<string>,
+  handledEvidence: ReadonlySet<string> = new Set(),
 ): ViabilityIssue[] {
   const mappingIds = new Set(document.mappings.map((entry) => entry.id));
   return policy.evidence.flatMap((entry) => {
-    if (entry.result !== "contradicts") return [];
+    if (entry.result !== "contradicts" || handledEvidence.has(entry.id))
+      return [];
     const activeSubjects = entry.subjects.filter(
       (subject) => !mappingIds.has(subject) || activeMappings.has(subject),
     );
@@ -708,8 +723,65 @@ function deepFreeze<T>(value: T): T {
  */
 export function compileMetamap(
   document: MetamapDocument,
+  policy: MetamapSemanticPolicy,
+  options?: CompilationRuntimeOptions,
+): SemanticCompilationResult;
+export function compileMetamap(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy,
+  options?: CompilationRuntimeOptions,
+): CompilationResult;
+export function compileMetamap(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
+  options?: CompilationRuntimeOptions,
+): CompilationResult | SemanticCompilationResult;
+export function compileMetamap(
+  document: MetamapDocument,
+  policy: MetamapViabilityPolicy | MetamapSemanticPolicy,
+  options: CompilationRuntimeOptions = {},
+): CompilationResult | SemanticCompilationResult {
+  if (policy.schemaVersion === "2.0.0")
+    return compileSemanticMetamap(document, policy, options, {
+      compile: compileLegacyMetamap,
+      declarations: (graph, view) =>
+        resolvedDeclarations(graph, view).byMapping,
+    });
+  const registry = options.relationRegistry ?? new RelationRegistry();
+  if (
+    registry.executablePacks().length > 0 ||
+    document.mappings.some(
+      (mapping) =>
+        mapping.attributes &&
+        Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE),
+    )
+  ) {
+    const impact = analyzeImpact(document, {
+      changedSubjects: options.changedSubjects ?? [],
+      policy,
+      registry,
+    });
+    return {
+      status: "rejected",
+      issues: [
+        issue(
+          "EXECUTABLE_POLICY_REQUIRED",
+          "Executable packs and proof claims require the version 2 policy profile",
+          policy.id,
+        ),
+      ],
+      impact,
+      quarantinedSubjects: impact.affectedSubjects,
+    };
+  }
+  return compileLegacyMetamap(document, policy, options);
+}
+
+function compileLegacyMetamap(
+  document: MetamapDocument,
   policy: MetamapViabilityPolicy,
   options: CompilationRuntimeOptions = {},
+  handledEvidence: ReadonlySet<string> = new Set(),
 ): CompilationResult {
   const relationRegistry = options.relationRegistry ?? new RelationRegistry();
   const constraintRegistry =
@@ -752,7 +824,7 @@ export function compileMetamap(
   );
   const state = activeMappingState(document, policy, context, resolution);
   issues.push(
-    ...contradictionIssues(document, policy, state.active),
+    ...contradictionIssues(document, policy, state.active, handledEvidence),
     ...evaluateConstraints(
       document,
       policy,
@@ -832,21 +904,104 @@ export function compileMetamap(
  */
 export class MetamapActivator {
   private generation?: ViableGeneration;
+  #governedState?: GovernedActivationState;
+  #governedHost?: GovernedInMemoryHost;
 
   constructor(
     private readonly relationRegistry = new RelationRegistry(),
     private readonly constraintRegistry = new ConstraintRegistry(),
-  ) {}
+    governedHost?: GovernedInMemoryHost,
+  ) {
+    this.#governedHost = governedHost;
+  }
 
   get current(): ViableGeneration | undefined {
     return this.generation;
   }
 
+  get governedCurrent(): GovernedActivationState | undefined {
+    return this.#governedState;
+  }
+
+  activate(request: GovernedActivationRequest): GovernedActivationResult;
   activate(
     document: MetamapDocument,
     policy: MetamapViabilityPolicy,
+    options?: CompileOptions,
+  ): ActivationResult;
+
+  activate(
+    value: MetamapDocument | GovernedActivationRequest,
+    policy?: MetamapViabilityPolicy,
     options: CompileOptions = {},
-  ): ActivationResult {
+  ): ActivationResult | GovernedActivationResult {
+    if (policy === undefined) {
+      if (!this.#governedHost || this.#governedHost.mode !== "governed")
+        return {
+          status: "rejected",
+          activated: false,
+          issues: [
+            {
+              code: "GOVERNANCE_HOST_REQUIRED",
+              message:
+                "The consumer must select governed mode outside the request",
+            },
+          ],
+        };
+      let result: GovernedActivationResult;
+      try {
+        result = evaluateGovernedActivation(
+          value,
+          {
+            trustedConfiguration: this.#governedHost.configuration(),
+            now: (
+              this.#governedHost.clock ?? (() => new Date().toISOString())
+            )(),
+          },
+          this.#governedState,
+        );
+      } catch (error) {
+        return {
+          status: "rejected",
+          activated: false,
+          issues: [
+            {
+              code: "GOVERNANCE_HOST_UNAVAILABLE",
+              message: error instanceof Error ? error.message : String(error),
+            },
+          ],
+          ...(this.#governedState ? { current: this.#governedState } : {}),
+        };
+      }
+      if (result.status === "activated") this.#governedState = result.current;
+      return result;
+    }
+    const document = value as MetamapDocument;
+    if (
+      this.#governedHost ||
+      (policy as { schemaVersion: string }).schemaVersion !== "1.0.0"
+    ) {
+      const impact = analyzeImpact(document, {
+        changedSubjects: options.changedSubjects ?? [],
+        registry: this.relationRegistry,
+      });
+      return {
+        activated: false,
+        current: this.generation,
+        compilation: {
+          status: "rejected",
+          issues: [
+            issue(
+              "PROTECTED_ACTIVATION_REQUIRED",
+              "Governed consumers and version 2 candidates require exact protected approval",
+              policy.id,
+            ),
+          ],
+          impact,
+          quarantinedSubjects: impact.affectedSubjects,
+        },
+      };
+    }
     const compilation = compileMetamap(document, policy, {
       ...options,
       relationRegistry: this.relationRegistry,

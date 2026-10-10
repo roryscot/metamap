@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-sssom-source.schema.json",
+  "title": "SSSOM entity TSV source configuration 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "adapter", "path", "formatVersion", "sourceRevision"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "adapter": { "const": "sssom-tsv" },
+    "path": { "type": "string", "minLength": 1 },
+    "metadataPath": { "type": "string", "minLength": 1 },
+    "formatVersion": { "const": "1.0.0" },
+    "sourceRevision": { "type": "string", "minLength": 1 },
+    "recordIdColumn": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "provenance": { "type": "object" }
+  },
+  "$comment": "An opt-in specialization of the unchanged open MetamapConfig1 source contract. Inputs are local paths; the adapter performs no remote fetching."
+}

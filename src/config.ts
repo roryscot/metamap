@@ -4,6 +4,8 @@ import { dirname, resolve } from "node:path";
 import type { AnySchema, ErrorObject } from "ajv";
 import Ajv2020Module from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
+import { parseSssomSourceConfig } from "./sssom.js";
+import type { JsonObject } from "./model.js";
 
 export const METAMAP_CONFIG_VERSION = "1.0.0" as const;
 
@@ -35,6 +37,18 @@ export interface LegacySourcesConfig extends MetamapSourceConfig {
   id: string;
   adapter: "legacy-sources";
   path: string;
+}
+
+export interface SssomSourceConfig extends MetamapSourceConfig {
+  id: string;
+  adapter: "sssom-tsv";
+  path: string;
+  metadataPath?: string;
+  formatVersion: "1.0.0";
+  sourceRevision: string;
+  recordIdColumn?: string;
+  /** Explicit caller-supplied source-selection/attribution context, never trust. */
+  provenance?: JsonObject;
 }
 
 export interface JsonReferenceConfig {
@@ -272,7 +286,9 @@ export function parseMetamapConfig(value: unknown): MetamapConfig {
     const id = requireString(source, "id", context);
     if (sourceIds.has(id)) throw new Error(`Duplicate source id ${id}`);
     sourceIds.add(id);
-    if (
+    if (source.adapter === "sssom-tsv") {
+      parseSssomSourceConfig(source);
+    } else if (
       source.adapter === "prisma" ||
       source.adapter === "legacy-sources" ||
       source.adapter === "metamap-shard"

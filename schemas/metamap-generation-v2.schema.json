@@ -1,0 +1,293 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-generation-v2.schema.json",
+  "title": "Metamap checked semantic generation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "evaluatedAt",
+    "graph",
+    "policy",
+    "context",
+    "activeMappings",
+    "inactiveMappings",
+    "evidence",
+    "waiversApplied",
+    "semantic"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "2.0.0"
+    },
+    "id": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+    },
+    "digest": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/digest"
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/digest"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+        },
+        "digest": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/digest"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/contextValue"
+      }
+    },
+    "activeMappings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+      }
+    },
+    "inactiveMappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason"],
+        "properties": {
+          "id": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+          },
+          "reason": {
+            "enum": ["when-not-satisfied", "inhibited"]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+      }
+    },
+    "waiversApplied": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json#/$defs/identifier"
+      }
+    },
+    "semantic": {
+      "$ref": "#/$defs/semantic"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "packBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "digest"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mapping", "premises"],
+      "properties": {
+        "mapping": {
+          "$ref": "#/$defs/identifier"
+        },
+        "premises": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "derivation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "digest"],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/identifier"
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        }
+      }
+    },
+    "semantic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interpretation",
+        "packs",
+        "derivations",
+        "derivationLimits",
+        "declarations",
+        "dependencies",
+        "assessments",
+        "uncertaintyRequirements",
+        "uncertainty",
+        "riskBudgets",
+        "riskEvaluation"
+      ],
+      "properties": {
+        "interpretation": {
+          "const": "declared-law-application"
+        },
+        "packs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["binding", "value"],
+            "properties": {
+              "binding": {
+                "$ref": "#/$defs/packBinding"
+              },
+              "value": {
+                "oneOf": [
+                  {
+                    "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-relation-pack/v1.schema.json"
+                  },
+                  {
+                    "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/relation-pack-v2.schema.json"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "derivations": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json"
+          },
+          "maxItems": 10000
+        },
+        "derivationLimits": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-viability-v2.schema.json#/$defs/bounds"
+        },
+        "declarations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mapping", "declaration"],
+            "properties": {
+              "mapping": {
+                "$ref": "#/$defs/identifier"
+              },
+              "declaration": {
+                "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-viability.schema.json#/$defs/mappingDeclaration"
+              }
+            }
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
+          }
+        },
+        "assessments": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-viability-v2.schema.json#/$defs/assessment"
+          }
+        },
+        "uncertaintyRequirements": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-viability-v2.schema.json#/$defs/requirement"
+          }
+        },
+        "uncertainty": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mapping", "dimensions"],
+            "properties": {
+              "mapping": {
+                "$ref": "#/$defs/identifier"
+              },
+              "dimensions": {
+                "type": "array",
+                "items": {
+                  "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json#/$defs/uncertainty"
+                },
+                "minItems": 6,
+                "maxItems": 6
+              }
+            }
+          }
+        },
+        "riskBudgets": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-viability-v2.schema.json#/$defs/budget"
+          }
+        },
+        "riskEvaluation": {
+          "enum": ["not-evaluated", "available-for-projection"]
+        }
+      }
+    }
+  }
+}

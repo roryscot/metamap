@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:bindings:shard:consumer",
+  "namespace": "bindings-consumer",
+  "revision": "1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:routing",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:bindings:consumer:api",
+      "kind": "routing:consumer",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:consumer"
+      }
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:bindings:mapping:handler",
+      "relation": "routing:handled_by",
+      "sources": ["urn:bindings:command:create-user"],
+      "targets": ["urn:bindings:handler:create-user"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:consumer"
+      }
+    },
+    {
+      "id": "urn:bindings:mapping:input",
+      "relation": "routing:accepts",
+      "sources": ["urn:bindings:command:create-user"],
+      "targets": ["urn:bindings:schema:create-user"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:consumer"
+      }
+    },
+    {
+      "id": "urn:bindings:mapping:endpoint-production",
+      "relation": "routing:exposed_as",
+      "sources": ["urn:bindings:command:create-user"],
+      "targets": ["urn:bindings:endpoint:production"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:consumer"
+      }
+    },
+    {
+      "id": "urn:bindings:mapping:endpoint-development",
+      "relation": "routing:exposed_as",
+      "sources": ["urn:bindings:command:create-user"],
+      "targets": ["urn:bindings:endpoint:development"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:consumer"
+      }
+    }
+  ],
+  "authorities": [
+    {
+      "id": "urn:bindings:authority:binding",
+      "concept": "urn:bindings:command:create-user",
+      "source": "urn:bindings:consumer:api",
+      "facts": ["binding"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:consumer"
+      }
+    }
+  ]
+}

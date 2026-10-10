@@ -3,6 +3,7 @@ import Ajv2020Module from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
 import { collapseProjectedSlots, validateExportName, validateProjection, validateProjectionSpec, } from "./projection.js";
 import { stableJson, valueDigest } from "./stable.js";
+import { compileSemanticPathTree } from "./semantic-path-tree.js";
 export const METAMAP_PATH_TREE_VERSION = "1.0.0";
 const PATH_PARAM = /^(?::[A-Za-z][A-Za-z0-9_]*|\*[A-Za-z][A-Za-z0-9_]*\??)$/;
 const PATH_SEGMENT = /^(?:[A-Za-z0-9._~-]+|:[A-Za-z][A-Za-z0-9_]*|\*[A-Za-z][A-Za-z0-9_]*\??)$/;
@@ -131,12 +132,19 @@ function ensureChild(parent, segment, path) {
     parent[segment] = child;
     return child;
 }
-/**
- * Compile a nested path tree from a viable static projection. Paths are facts
- * owned by the selected subjects; the compiler never infers them from labels
- * or identities.
- */
 export function compilePathTree(projection, spec) {
+    if (projection.schemaVersion === "2.0.0" && spec.schemaVersion === "2.0.0")
+        return compileSemanticPathTree(projection, spec, compileLegacyPathTree);
+    if (projection.schemaVersion !== "1.0.0" || spec.schemaVersion !== "1.0.0")
+        return {
+            status: "rejected",
+            issues: [
+                issue("PATH_TREE_VERSION_MISMATCH", "Projection and path-tree specification must use the same supported version"),
+            ],
+        };
+    return compileLegacyPathTree(projection, spec);
+}
+function compileLegacyPathTree(projection, spec) {
     const specValidation = validateProjectionSpec(spec);
     const projectionValidation = validateProjection(projection);
     const issues = [

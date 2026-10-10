@@ -103,6 +103,12 @@ fail immediately.
 
 ### Semantic linking and static projections
 
+The compiler replay sidecar preserves the exact graph, policy, context, time,
+relation packs, and projection specifications together with the installed
+executor identity and original results. It reproduces evaluation without
+rediscovering sources or promoting a generation. Reproducibility is distinct
+from evidence truth, authenticated approval, and activation; see `REPLAY.md`.
+
 A viable generation says which mappings may exist in one explicit context. A
 projection specification says which semantic subjects to select and which
 named relation slots each subject must resolve. Slot cardinality is independent

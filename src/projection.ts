@@ -15,6 +15,17 @@ import { stableJson, valueDigest } from "./stable.js";
 import { validateViableGeneration } from "./viability.js";
 import type { ViableGeneration } from "./viability-model.js";
 import { validateMetamapDocument } from "./validator.js";
+import { compileSemanticProjection } from "./semantic-projection.js";
+import type {
+  MetamapSemanticPolicy,
+  SemanticGeneration,
+} from "./semantic-model.js";
+import type {
+  SemanticProjection,
+  SemanticProjectionResult,
+  SemanticProjectionSpec,
+} from "./semantic-projection-model.js";
+import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
 
 export const METAMAP_PROJECTION_SPEC_VERSION = "1.0.0" as const;
 export const METAMAP_PROJECTION_VERSION = "1.0.0" as const;
@@ -114,6 +125,8 @@ export type ProjectionCompilationResult =
 
 export interface ProjectionCompileOptions {
   relationRegistry?: RelationRegistry;
+  /** Full bound policy is required to recheck typed evidence in a v2 generation. */
+  semanticPolicy?: MetamapSemanticPolicy;
 }
 
 export interface TypeScriptProjectionOptions {
@@ -367,6 +380,69 @@ function activeMappingIndexes(
  * slots, kind mismatches, and undeclared relations fail closed.
  */
 export function compileProjection(
+  document: MetamapDocument,
+  generation: SemanticGeneration,
+  spec: SemanticProjectionSpec,
+  options?: ProjectionCompileOptions,
+): SemanticProjectionResult;
+export function compileProjection(
+  document: MetamapDocument,
+  generation: ViableGeneration,
+  spec: MetamapProjectionSpec,
+  options?: ProjectionCompileOptions,
+): ProjectionCompilationResult;
+export function compileProjection(
+  document: MetamapDocument,
+  generation: ViableGeneration | SemanticGeneration,
+  spec: MetamapProjectionSpec | SemanticProjectionSpec,
+  options?: ProjectionCompileOptions,
+): ProjectionCompilationResult | SemanticProjectionResult;
+export function compileProjection(
+  document: MetamapDocument,
+  generation: ViableGeneration | SemanticGeneration,
+  spec: MetamapProjectionSpec | SemanticProjectionSpec,
+  options: ProjectionCompileOptions = {},
+): ProjectionCompilationResult | SemanticProjectionResult {
+  if (generation.schemaVersion === "2.0.0" && spec.schemaVersion === "2.0.0")
+    return compileSemanticProjection(
+      document,
+      generation,
+      spec,
+      options,
+      compileLegacyProjection,
+    );
+  if (generation.schemaVersion !== "1.0.0" || spec.schemaVersion !== "1.0.0")
+    return {
+      status: "rejected",
+      issues: [
+        issue(
+          "PROJECTION_VERSION_MISMATCH",
+          "Generation and projection specification must use the same supported profile",
+        ),
+      ],
+    };
+  if (
+    options.semanticPolicy ||
+    options.relationRegistry?.executablePacks().length ||
+    document.mappings.some(
+      (mapping) =>
+        mapping.attributes &&
+        Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE),
+    )
+  )
+    return {
+      status: "rejected",
+      issues: [
+        issue(
+          "EXECUTABLE_PROJECTION_REQUIRED",
+          "Typed policy inputs, executable packs and proof claims require the version 2 projection profile",
+        ),
+      ],
+    };
+  return compileLegacyProjection(document, generation, spec, options);
+}
+
+function compileLegacyProjection(
   document: MetamapDocument,
   generation: ViableGeneration,
   spec: MetamapProjectionSpec,
@@ -662,7 +738,7 @@ export function validateExportName(value: string): void {
 
 /** Emit a dependency-free, immutable TypeScript lookup table. */
 export function emitTypeScriptProjection(
-  projection: MetamapProjection,
+  projection: MetamapProjection | SemanticProjection,
   options: TypeScriptProjectionOptions = {},
 ): string {
   const exportName = options.exportName ?? "metamapProjection";

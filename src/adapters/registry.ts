@@ -4,6 +4,7 @@ import { LegacySourcesAdapter } from "./legacy-sources.js";
 import { MetamapShardAdapter } from "./metamap-shard.js";
 import { NextjsAppRouterAdapter } from "./nextjs-app-router.js";
 import { PrismaAdapter } from "./prisma.js";
+import { SssomTsvAdapter } from "./sssom-tsv.js";
 import type {
   AdapterContext,
   AdapterInput,
@@ -68,6 +69,7 @@ export function createDefaultAdapterRegistry(): AdapterRegistry {
     .register(new LegacySourcesAdapter())
     .register(new JsonCollectionsAdapter())
     .register(new MetamapShardAdapter())
+    .register(new SssomTsvAdapter())
     .register(new NextjsAppRouterAdapter());
 }
 

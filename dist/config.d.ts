@@ -1,3 +1,4 @@
+import type { JsonObject } from "./model.js";
 export declare const METAMAP_CONFIG_VERSION: "1.0.0";
 /**
  * Open source configuration passed unchanged to the selected adapter. Built-in
@@ -24,6 +25,17 @@ export interface LegacySourcesConfig extends MetamapSourceConfig {
     id: string;
     adapter: "legacy-sources";
     path: string;
+}
+export interface SssomSourceConfig extends MetamapSourceConfig {
+    id: string;
+    adapter: "sssom-tsv";
+    path: string;
+    metadataPath?: string;
+    formatVersion: "1.0.0";
+    sourceRevision: string;
+    recordIdColumn?: string;
+    /** Explicit caller-supplied source-selection/attribution context, never trust. */
+    provenance?: JsonObject;
 }
 export interface JsonReferenceConfig {
     property: string;

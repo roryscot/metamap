@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0.0",
+  "law": "urn:metamap:example:law:dependency-chain",
+  "premises": ["urn:example:consumer-service", "urn:example:service-schema"],
+  "resultId": "urn:example:consumer-schema",
+  "context": {
+    "environment": "example"
+  },
+  "bounds": {
+    "maxDepth": 4,
+    "maxDerivations": 16
+  },
+  "derivations": [],
+  "assessments": [],
+  "evidence": []
+}

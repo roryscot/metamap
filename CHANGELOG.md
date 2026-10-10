@@ -1,5 +1,108 @@
 # Changelog
 
+## Unreleased capability work
+
+- Add a local static inspection view over the same verified explanation report,
+  including binding, source, owner, proof, risk, change and alternative navigation.
+- Add the read-only `inspect` command and public HTML renderer, literal escaped
+  input, hash-bound fixed styles, keyboard disclosures and scrollable tables.
+  Accept saved explanation results without adding authority or activation.
+
+- Add shared read-only explanations over complete source-bound replay: stable
+  operation/mapping selection, captured owner/source/rule/evidence links, actual
+  slot/risk checks, original issue subjects and observed before/current changes.
+- Preserve recorded-versus-checked proofs, duplicate/missing states and focus
+  limits. Disclose existing impact limitations without inferring a unique cause,
+  authenticated current authority or active state. Verify supplied alternatives
+  through bounded repair and recompute the complete explanation when parsed.
+- Add the strict `explain` command, portable contracts and public API/command
+  example with source and existing-output preservation.
+
+- Add bounded read-only repair requests/results over complete source-bound
+  replay, with four explicit edit kinds, protected proposal facts, current
+  compiler/projection/counterfactual results and required approval actions.
+- Preserve graph-policy binding updates in complete returned patches; report
+  exact finite search coverage, cooperative cancellation and elapsed limits.
+  Rank viable proposals deterministically and restrict minimum claims to the
+  fully explored supplied space. No approval, source write or activation occurs.
+- Add the strict `repair` command, public contracts and a synthetic native
+  provider/path example with existing-file preservation and tampering checks.
+
+- Connect exact source-bound approvals to the governed overloads of both existing
+  activation interfaces. Add immutable activation/request/pointer contracts,
+  current trust/clock/baseline checks, authorized retry and fresh owner rollback.
+- Add the first Linux protected promoter, fixed stdin wrapper, protected consumer
+  read and atomic complete artifact publication. Test independent UID permissions,
+  concurrent/stale requests, actual process interruption and indeterminate
+  post-publication failure. Linux acceptance status is recorded in the build plan;
+  production signing, installation and consumer activation remain separate.
+
+- Add exact unapproved consumer proposals, generated output byte manifests and
+  domain-separated Ed25519 approvals over complete source-bound replay 3.0.
+  Verify current external identities, action/fact grants, baseline, environment,
+  trust revision/digest, revocation and complete approval validity intervals.
+- Require an externally registered owner for bootstrap, rollback, authority,
+  policy, budget, waiver and law changes. Agent/service grants cannot bypass
+  this with candidate-declared ownership or ordinary viability waivers.
+- Add the synthetic governance native example and public governance SDK/schema
+  exports. This pure P09 layer performs no activation; P10's protected promoter
+  and consumer permission boundary are described separately in ACTIVATION.md.
+
+- Bind complete source configurations, adapter outputs, input byte receipts,
+  emitted shards and source-composed graphs in source-capture 1.0 and explicit
+  replay/comparison 3.0. Preserve admitted and rejected evaluations and report
+  candidate/source differences without assigning source attribution to edits.
+- Add `sources`, `provenance` and `capture --source-capture`. Explicit current
+  inspection requires permitted local roots, detects source/component changes
+  and performs no cache/output/activation writes. Offline inspection reports
+  raw rediscovery and authentication/authorization as separate states.
+
+- Execute typed uncertainty across six independent dimensions using scoped,
+  revision-bound assessments and complete recorded evidence values. Preserve
+  unknown/conflicting premises, reject incompatible named models as unknown,
+  and never calculate a probability from scalar confidence.
+- Evaluate consumer-controlled correspondence costs over each projection's
+  unique checked dependency closure. Require explicit classifications, enforce
+  safe integer totals and lossy/inferred limits, and bind the selected budget.
+- Recheck typed projections against the exact original policy/evidence; add
+  `link --policy`, full typed capture/replay and risk/assessment comparisons.
+  Preserve published schema bytes and legacy outputs. Legacy v2 activation
+  remains blocked; governed requests use the explicit protected lifecycle.
+
+## 0.7.1
+
+- Keep comparison impact paths rooted in actual input changes and explicit
+  diagnostic seeds. Failing consumers no longer mask paths from a removed
+  provider mapping by seeding themselves.
+- Preserve original compiler issue subjects, admission decisions, captured
+  outputs, and all portable contract versions. Dependency paths explain declared
+  propagation; they do not prove a unique cause or add a producer-rule violation.
+- Evaluate producer-to-consumer links against the prior distribution and direct
+  checks with a frozen consumer protocol; retain the original failed pilot.
+
+## 0.7.0
+
+- Add a versioned compiler replay sidecar, capture/replay API, and CLI commands.
+- Bind replay to exact compiler/schema and transitive dependency contents,
+  source/distribution format, Node/ICU versions, and collation locale.
+- Preserve exact graph, policy, relation-pack contents, context, evaluation
+  time, changed subjects, and projection specifications.
+- Reproduce rejected compilation and projections without upgrading them to
+  admission; CLI replay exits nonzero for reproduced rejection.
+- Reject corrupted bundles, forged results, missing or substituted packs, and
+  incompatible executors. Version 1 supports built-in constraint evaluators.
+- Preserve existing graph, viability, generation, projection, and path-tree
+  contracts and identifiers.
+- Add a gated build plan and a disposable CLI round-trip example.
+- Add read-only comparison of two reproduced evaluations, with introduced and
+  resolved issues, evidence and mapping-state changes, runtime slot changes,
+  and declared dependency paths in both graphs.
+- Preserve unknown mapping state after rejection and distinguish failed
+  projections from hypothetical runtime entry removals.
+- Add a fixed acceptance corpus and an opt-in counterfactual report schema.
+- Record a pinned Seeder pilot against direct checks: equal observed correctness,
+  one shared producer-localization miss, and no satisfied expansion gate.
+
 ## 0.6.0
 
 - Explain the kernel as a versioned persistent hypergraph of correspondences

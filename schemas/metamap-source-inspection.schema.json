@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-source-inspection.schema.json",
+  "title": "Metamap recorded lineage and separate rediscovery state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capture",
+    "sourceGraph",
+    "evaluatedGraph",
+    "relationship",
+    "graphChanges",
+    "lineage",
+    "sourceRediscovery",
+    "authentication",
+    "authorizationNow",
+    "active"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "sourceGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "evaluatedGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "relationship": {
+      "enum": ["identical", "candidate-differs"]
+    },
+    "graphChanges": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changes", "counts"],
+      "properties": {
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["change", "kind", "id"],
+            "properties": {
+              "change": {
+                "enum": ["added", "removed", "changed"]
+              },
+              "kind": {
+                "enum": ["entity", "mapping", "authority"]
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+              },
+              "changedProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["added", "removed", "changed"],
+          "properties": {
+            "added": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "removed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "changed": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "receipts", "recordedInputDigests", "rawInputs"],
+      "properties": {
+        "status": {
+          "const": "verified-record-bindings"
+        },
+        "receipts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "recordedInputDigests": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "rawInputs": {
+          "const": "not-captured"
+        }
+      }
+    },
+    "sourceRediscovery": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "reason"],
+          "properties": {
+            "status": {
+              "const": "unavailable"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "currentCapture", "changes"],
+          "properties": {
+            "status": {
+              "enum": ["current", "changed"]
+            },
+            "currentCapture": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "digest"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              }
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope",
+                  "subject",
+                  "component",
+                  "beforeDigest",
+                  "afterDigest"
+                ],
+                "properties": {
+                  "scope": {
+                    "enum": ["workspace", "source"]
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "component": {
+                    "enum": [
+                      "source",
+                      "configuration",
+                      "adapter",
+                      "revision",
+                      "inputs",
+                      "shard",
+                      "relation-packs",
+                      "graph"
+                    ]
+                  },
+                  "beforeDigest": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^sha256:[a-f0-9]{64}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "afterDigest": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^sha256:[a-f0-9]{64}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "authentication": {
+      "const": "not-evaluated"
+    },
+    "authorizationNow": {
+      "const": "not-evaluated"
+    },
+    "active": {
+      "const": "not-evaluated"
+    }
+  }
+}

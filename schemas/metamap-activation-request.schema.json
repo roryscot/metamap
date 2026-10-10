@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-activation-request.schema.json",
+  "title": "Untrusted governed activation request1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "proposal", "approval", "files"],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "proposal": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-change-proposal.schema.json"
+    },
+    "approval": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-approval.schema.json"
+    },
+    "files": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9.-]*$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

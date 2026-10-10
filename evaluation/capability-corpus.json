@@ -1,0 +1,266 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "urn:metamap:evaluation:capability-corpus:2026-10-09",
+  "purpose": "Visible functional acceptance expectations; no reviewer-time or comparative-benefit claim",
+  "definedBeforeImplementation": "2026-10-09",
+  "consumerBindings": [
+    {
+      "id": "normal-binding",
+      "expected": "executed",
+      "operation": "urn:bindings:command:create-user",
+      "endpoint": "/users",
+      "displayName": "Ada"
+    },
+    {
+      "id": "moved-implementation",
+      "expected": "executed",
+      "sameSemanticId": true,
+      "locatorChanged": true,
+      "displayName": "Ada"
+    },
+    {
+      "id": "development-context",
+      "expected": "executed",
+      "endpoint": "/dev/users",
+      "displayName": "Ada"
+    },
+    {
+      "id": "missing-handler",
+      "expected": "rejected",
+      "code": "REQUIRED_MAPPING_MISSING",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "ambiguous-handler",
+      "expected": "rejected",
+      "code": "NON_UNIQUE_MAPPING_TARGET",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "missing-endpoint",
+      "expected": "rejected",
+      "code": "REQUIRED_MAPPING_MISSING",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "ambiguous-endpoint",
+      "expected": "rejected",
+      "code": "NON_UNIQUE_MAPPING_TARGET",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "missing-context",
+      "expected": "rejected",
+      "code": "CONTEXT_KEY_MISSING",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "conflicting-owners",
+      "expected": "rejected",
+      "code": "AUTHORITY_CONFLICT",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "narrow-delegation",
+      "expected": "executed",
+      "authorityFact": "implementation",
+      "displayName": "Ada"
+    },
+    {
+      "id": "widened-delegation",
+      "expected": "rejected",
+      "code": "DELEGATION_FACT_WIDENING",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "conflicting-shards",
+      "expected": "rejected",
+      "code": "SHARD_COMPOSITION_CONFLICT",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "unmapped-leaf",
+      "expected": "rejected",
+      "code": "UNMAPPED_OWNED_LEAF",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "owned-exclusion",
+      "expected": "executed",
+      "exclusionVisible": true,
+      "displayName": "Ada"
+    },
+    {
+      "id": "invalid-native-export",
+      "expected": "rejected",
+      "code": "UNRESOLVED_NATIVE_EXPORT",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "locator-escape",
+      "expected": "rejected",
+      "code": "NATIVE_LOCATOR_OUTSIDE_OWNER",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "symlink-escape",
+      "expected": "rejected",
+      "code": "NATIVE_LOCATOR_OUTSIDE_OWNER",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "native-byte-drift",
+      "expected": "rejected",
+      "code": "NATIVE_INPUT_DIGEST_MISMATCH",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "stale-generation",
+      "expected": "rejected",
+      "code": "STALE_PROJECTION_GENERATION",
+      "preserveArtifacts": true
+    },
+    {
+      "id": "new-implementation-identity",
+      "expected": "executed",
+      "newSemanticId": true,
+      "displayName": "Ada"
+    },
+    {
+      "id": "invalid-runtime-input",
+      "expected": "runtime-rejected",
+      "code": "INVALID_CREATE_USER_INPUT"
+    },
+    {
+      "id": "runtime-structure-change",
+      "expected": "runtime-rejected",
+      "code": "UNKNOWN_OPERATION"
+    }
+  ],
+  "laterMilestones": [
+    {
+      "id": "allowed-binary-chain",
+      "milestone": "M2",
+      "input": {
+        "relations": ["example:R", "example:S"],
+        "rule": {
+          "operation": "chain",
+          "operands": ["example:R", "example:S"],
+          "result": "example:T"
+        },
+        "endpoints": [
+          ["urn:a", "urn:b"],
+          ["urn:b", "urn:c"]
+        ]
+      },
+      "expected": {
+        "relation": "example:T",
+        "sources": ["urn:a"],
+        "targets": ["urn:c"],
+        "orderedPremises": true,
+        "authorityTransferred": false
+      }
+    },
+    {
+      "id": "forbidden-close-match-chain",
+      "milestone": "M2",
+      "input": {
+        "relations": ["skos:closeMatch", "skos:closeMatch"],
+        "profile": "normative-skos"
+      },
+      "expected": { "status": "unsupported", "exactIdentity": false }
+    },
+    {
+      "id": "changed-premise",
+      "milestone": "M2",
+      "input": {
+        "claimedPremiseDigest": "captured-before-change",
+        "currentPremise": "modified"
+      },
+      "expected": { "status": "rejected", "reason": "premise-digest-mismatch" }
+    },
+    {
+      "id": "unknown-required-uncertainty",
+      "milestone": "M3",
+      "input": {
+        "dimension": "identity",
+        "assessment": "unknown",
+        "allowedStates": ["supported"]
+      },
+      "expected": { "status": "rejected", "dimension": "identity" }
+    },
+    {
+      "id": "budget-boundaries",
+      "milestone": "M3",
+      "input": { "mappingCosts": [2, 3], "limits": [4, 5, 6] },
+      "expected": {
+        "statuses": ["rejected", "projected", "projected"],
+        "uniqueTotalCost": 5
+      }
+    },
+    {
+      "id": "repeated-dependency",
+      "milestone": "M3",
+      "input": {
+        "usedPaths": [["urn:m:a", "urn:m:b"], ["urn:m:a"]],
+        "costs": { "urn:m:a": 2, "urn:m:b": 3 }
+      },
+      "expected": { "totalCost": 5, "confidenceImproved": false }
+    },
+    {
+      "id": "stale-approval",
+      "milestone": "M4",
+      "input": {
+        "approvedManifest": "old-artifact-digest",
+        "candidateManifest": "new-artifact-digest"
+      },
+      "expected": { "status": "rejected", "activePointerChanged": false }
+    },
+    {
+      "id": "self-granted-owner",
+      "milestone": "M4",
+      "input": { "candidateAddsApprover": true, "externalGrant": false },
+      "expected": { "status": "rejected", "activePointerChanged": false }
+    },
+    {
+      "id": "benign-approved-rebinding",
+      "milestone": "M4",
+      "input": {
+        "change": "owned-implementation-locator",
+        "exactApproval": true,
+        "freshExternalGrant": true,
+        "matchingBase": true
+      },
+      "expected": { "status": "activated", "semanticIdPreserved": true }
+    },
+    {
+      "id": "bounded-repair",
+      "milestone": "M5",
+      "input": {
+        "allowedTemplate": "rebind-explicit-target",
+        "candidateLimit": 1
+      },
+      "expected": {
+        "sourceWrites": 0,
+        "activationWrites": 0,
+        "incompleteWhenLimitExceeded": true
+      }
+    },
+    {
+      "id": "unknown-causal-origin",
+      "milestone": "M6",
+      "input": { "failure": "uncaptured-source-change" },
+      "expected": { "causality": "unknown", "inventedOrigin": false }
+    },
+    {
+      "id": "distinct-scientific-assertions",
+      "milestone": "M7",
+      "input": { "sameEndpoints": true, "differentJustifications": true },
+      "expected": {
+        "mappingCount": 2,
+        "endpointDeduplication": false,
+        "lossReportRequired": true
+      }
+    }
+  ]
+}

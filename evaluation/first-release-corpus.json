@@ -1,0 +1,114 @@
+{
+  "version": "1.0.0",
+  "purpose": "Fixed contract regression cases, all visible during implementation. Labels describe policy admission and observable changes, not truth, human approval, or a held-out empirical trial.",
+  "cases": [
+    {
+      "id": "missing-handler",
+      "split": "development",
+      "fixture": "routing",
+      "requirement": "Every command has one active handler",
+      "mutation": "Remove the handler mapping and its viability declaration",
+      "expectedAdmission": false,
+      "expectedObservation": "Introduced missing-handler violation; rejected candidate does not imply activated removal"
+    },
+    {
+      "id": "ambiguous-handler",
+      "split": "development",
+      "fixture": "routing",
+      "requirement": "A command's handler is unique",
+      "mutation": "Add a distinct handler and a second handled_by mapping with a declaration",
+      "expectedAdmission": false,
+      "expectedObservation": "Introduced uniqueness violation"
+    },
+    {
+      "id": "authorization-change",
+      "split": "development",
+      "fixture": "routing",
+      "requirement": "An authorization target change is inspectable even if the policy permits it",
+      "mutation": "Replace the authorization target with another routing policy",
+      "expectedAdmission": true,
+      "expectedObservation": "Changed authorization slot and exact target IDs; no implicit approval claim"
+    },
+    {
+      "id": "lost-support",
+      "split": "development",
+      "fixture": "authority",
+      "requirement": "An active derivation needs conformance evidence",
+      "mutation": "Remove its only supporting evidence record",
+      "expectedAdmission": false,
+      "expectedObservation": "Lost recorded support and introduced evidence violation"
+    },
+    {
+      "id": "stable-locator-move",
+      "split": "development",
+      "fixture": "routing",
+      "requirement": "Physical moves preserve semantic identities",
+      "mutation": "Change a handler locator while preserving its ID",
+      "expectedAdmission": true,
+      "expectedObservation": "Changed locator, retained IDs, no added or removed graph records"
+    },
+    {
+      "id": "metadata-only",
+      "split": "development",
+      "fixture": "routing",
+      "requirement": "Unrelated graph metadata must not manufacture runtime target changes",
+      "mutation": "Add an administrative metadata note",
+      "expectedAdmission": true,
+      "expectedObservation": "Changed input binding, unchanged runtime entries"
+    },
+    {
+      "id": "missing-declaration",
+      "split": "additional-regression",
+      "fixture": "routing",
+      "requirement": "Every mapping has exactly one viability declaration",
+      "mutation": "Remove a mapping's policy declaration",
+      "expectedAdmission": false,
+      "expectedObservation": "Introduced policy coverage violation"
+    },
+    {
+      "id": "lossy-runtime-link",
+      "split": "additional-regression",
+      "fixture": "routing",
+      "requirement": "Runtime projection links are lossless by default",
+      "mutation": "Mark the handler mapping lossy",
+      "expectedAdmission": false,
+      "expectedObservation": "Graph may remain viable while projection rejects"
+    },
+    {
+      "id": "context-inhibition",
+      "split": "additional-regression",
+      "fixture": "authority",
+      "requirement": "Context changes can inhibit expression without changing identities",
+      "mutation": "Enable the declared maintenance context",
+      "expectedAdmission": true,
+      "expectedObservation": "Deactivated derivation with no graph-record changes"
+    },
+    {
+      "id": "authority-change",
+      "split": "additional-regression",
+      "fixture": "routing",
+      "requirement": "Loss of required canonical authority is rejected",
+      "mutation": "Remove the required routing-identity authority",
+      "expectedAdmission": false,
+      "expectedObservation": "Introduced authority violation with affected subjects"
+    },
+    {
+      "id": "projection-rule-change",
+      "split": "additional-regression",
+      "fixture": "routing",
+      "requirement": "Consumer slot requirements are compiler inputs",
+      "mutation": "Require an incompatible handler target kind in the projection",
+      "expectedAdmission": false,
+      "expectedObservation": "Changed projection specification and projection failure while graph compilation remains viable"
+    },
+    {
+      "id": "path-collision",
+      "split": "additional-regression",
+      "fixture": "path-tree",
+      "requirement": "Two runtime subjects cannot occupy one path",
+      "mutation": "Give two routes the same path attribute",
+      "expectedAdmission": false,
+      "expectedObservation": "Path-tree rejection remains distinct from graph and projection success"
+    }
+  ]
+}

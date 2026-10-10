@@ -1,0 +1,197 @@
+{
+  "version": "1.0.0",
+  "frozenBeforeImplementation": true,
+  "priorCommit": "51a63c97719b5e307fd69de4afaae6c3aa0c3fdf",
+  "evaluationTime": "2026-09-18T00:00:00.000Z",
+  "inputManifest": "seeder-inputs.json",
+  "scope": "Mechanism test of declared change-to-failure paths. Known first-pilot cases remain known regressions. New consumer mutations use familiar fault classes, not blind unseen classes.",
+  "methods": {
+    "previous": "Unmodified 0.7.0 distribution from priorCommit, with the same installed runtime dependencies",
+    "current": "Current reproduced counterfactual report",
+    "direct": "Same compiler, gates, packs and explicit inputs, stable-ID diff and compileMetamap impact separately seeded with each actual changed graph record. Direct checks have equivalent dependency-path information."
+  },
+  "gold": "Set admission and issue-subject requirements from the pinned consumer contracts and mutation targets, never observed evaluator output. The root-layout case selects the 21 semantic route IDs from the web graph that explicitly require the removed runtime context.",
+  "linkRule": "Every required error subject must have a before or after declared impact path whose first record is the actual changed mapping ID and whose last record is the error subject. The mapping record identifies its producer; the producer must have the same changed-mapping origin. One-node failure paths do not satisfy this rule. Metadata controls and equivalent replacement must introduce no errors.",
+  "metrics": [
+    "admission matches predeclared outcome",
+    "required issue-subject coverage",
+    "changed-mapping-to-producer and changed-mapping-to-failure path coverage",
+    "no introduced faults on valid controls",
+    "identical original compilation/projection outputs across prior and current executors"
+  ],
+  "expansionGate": "Preserve the original pilot gate and failed scores. A repair over the previous report is a mechanism improvement, not superiority to equivalent direct checks. A tie with direct checks does not open broader scope.",
+  "notMeasured": [
+    "human review effort",
+    "physical causation",
+    "minimal affected set",
+    "population error rates",
+    "independent kernel advantage"
+  ],
+  "cases": [
+    {
+      "id": "known-root-context-removal",
+      "split": "known-regression",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+      "expectedAdmission": false,
+      "requiredContext": "urn:seeder:web:context:runtime",
+      "goldRule": "Selected semantic routes requiring the removed runtime context",
+      "producerSubjects": ["urn:seeder:topology-container:web-app%3A.%3Alayout"]
+    },
+    {
+      "id": "provider-context-removal-1",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fadmin%2Flayout.tsx%3A%40%2Fcomponents%2Fui%2Fsidebar%3ASidebarProvider%3A110%3A6"
+      ]
+    },
+    {
+      "id": "provider-context-removal-2",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A29%3A6"
+      ]
+    },
+    {
+      "id": "provider-context-removal-3",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Ffeed%2Fpage.tsx%3A%40%2Ffeatures%2Fgame%3AGameProvider%3A30%3A8"
+      ]
+    },
+    {
+      "id": "provider-context-removal-4",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fauth%2FAuthProvider%3AAuthProvider%3A83%3A16"
+      ]
+    },
+    {
+      "id": "provider-context-removal-5",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Fcomponents%2Fchat%2FChatDrawerContext%3AChatDrawerProvider%3A87%3A24"
+      ]
+    },
+    {
+      "id": "provider-context-removal-6",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Fcommand-palette%2Fcommand-palette-context%3ACommandPaletteProvider%3A86%3A22"
+      ]
+    },
+    {
+      "id": "provider-context-removal-7",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Ffeatures%2Ftour%3ATourProvider%3A84%3A18"
+      ]
+    },
+    {
+      "id": "provider-context-removal-8",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fproviders%2Fquery-provider%3AQueryProvider%3A82%3A14"
+      ]
+    },
+    {
+      "id": "provider-context-removal-9",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Flayout.tsx%3A%40%2Flib%2Fwebsocket%2Fprovider%3AWebSocketProvider%3A85%3A20"
+      ]
+    },
+    {
+      "id": "provider-context-removal-10",
+      "split": "new-consumer-mutation",
+      "operation": "remove",
+      "mapping": "urn:seeder:mapping:web-app%3Aprovides-context%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6",
+      "expectedAdmission": false,
+      "goldRule": "The provider-totality constraint requires a context for every observed context-provider",
+      "expectedIssueSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+      ],
+      "producerSubjects": [
+        "urn:seeder:context-provider:web-app%3Apackages%2Fweb%2Fsrc%2Fapp%2Fvideo-feed%2Fpage.tsx%3A%40%2Ffeatures%2Ffeed-top-bar%3AFeedTopBarProvider%3A28%3A6"
+      ]
+    },
+    {
+      "id": "graph-metadata-control",
+      "split": "valid-control",
+      "operation": "metadata",
+      "expectedAdmission": true,
+      "expectedIssueSubjects": []
+    },
+    {
+      "id": "equivalent-provider-control",
+      "split": "valid-control",
+      "operation": "replace",
+      "mapping": "urn:seeder:mapping:application-topology%3Aroot-layout-runtime-context",
+      "expectedAdmission": true,
+      "expectedIssueSubjects": []
+    }
+  ]
+}

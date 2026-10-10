@@ -1,0 +1,362 @@
+{
+  "authorization": "legacy-ungoverned",
+  "coverage": [
+    {
+      "entityId": "urn:bindings:schema:create-user",
+      "mappings": ["urn:bindings:mapping:input"],
+      "owner": "team:contract",
+      "relation": "routing:accepts",
+      "sourceId": "contract"
+    },
+    {
+      "entityId": "urn:bindings:handler:create-user",
+      "mappings": ["urn:bindings:mapping:handler"],
+      "owner": "team:service",
+      "relation": "routing:handled_by",
+      "sourceId": "service"
+    },
+    {
+      "entityId": "urn:bindings:endpoint:production",
+      "mappings": ["urn:bindings:mapping:endpoint-production"],
+      "owner": "team:service",
+      "relation": "routing:exposed_as",
+      "sourceId": "service"
+    },
+    {
+      "entityId": "urn:bindings:endpoint:development",
+      "mappings": ["urn:bindings:mapping:endpoint-development"],
+      "owner": "team:service",
+      "relation": "routing:exposed_as",
+      "sourceId": "service"
+    }
+  ],
+  "generation": {
+    "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.3.0/schemas/metamap-generation.schema.json",
+    "activeMappings": [
+      "urn:bindings:mapping:endpoint-production",
+      "urn:bindings:mapping:handler",
+      "urn:bindings:mapping:input"
+    ],
+    "context": {
+      "environment": "production"
+    },
+    "digest": "sha256:d45d4a2355841db52a2d608b309bf447bf8beb2fd305ba0130a57d6ea71a06fa",
+    "evaluatedAt": "2026-10-09T00:00:00.000Z",
+    "evidence": [],
+    "graph": {
+      "digest": "sha256:58d2c4d9d5644d79d32634e3b3e5d1e1a44d875c2fe5435f7b6f0c8e78137c0d",
+      "id": "urn:bindings:graph",
+      "revision": "sha256:f70a2e552c52bbdae62eb684dedf51d05d2fd0b6efbf9f6cdeb3ca3b80f34375"
+    },
+    "id": "urn:metamap:generation:d45d4a2355841db52a2d608b309bf447bf8beb2fd305ba0130a57d6ea71a06fa",
+    "inactiveMappings": [
+      {
+        "id": "urn:bindings:mapping:endpoint-development",
+        "reason": "when-not-satisfied"
+      }
+    ],
+    "policy": {
+      "digest": "sha256:b043150e2bc440fa5cf73fbe96355f9b4a952852982ce2c0f83f5ba3c4488e69",
+      "id": "urn:bindings:policy"
+    },
+    "schemaVersion": "1.0.0",
+    "waiversApplied": []
+  },
+  "policy": {
+    "constraints": [
+      {
+        "id": "urn:bindings:constraint:handler-required",
+        "kind": "core:requires-mapping",
+        "parameters": {
+          "direction": "source",
+          "relation": "routing:handled_by"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:handler-unique",
+        "kind": "core:unique-target",
+        "parameters": {
+          "direction": "source",
+          "relation": "routing:handled_by"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:input-required",
+        "kind": "core:requires-mapping",
+        "parameters": {
+          "direction": "source",
+          "relation": "routing:accepts"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:input-unique",
+        "kind": "core:unique-target",
+        "parameters": {
+          "direction": "source",
+          "relation": "routing:accepts"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:endpoint-required",
+        "kind": "core:requires-mapping",
+        "parameters": {
+          "direction": "source",
+          "relation": "routing:exposed_as"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:endpoint-unique",
+        "kind": "core:unique-target",
+        "parameters": {
+          "direction": "source",
+          "relation": "routing:exposed_as"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:authority-operation-identity",
+        "kind": "core:requires-authority",
+        "parameters": {
+          "fact": "operation-identity"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:authority-input",
+        "kind": "core:requires-authority",
+        "parameters": {
+          "fact": "input"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:authority-implementation",
+        "kind": "core:requires-authority",
+        "parameters": {
+          "fact": "implementation"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:authority-endpoint",
+        "kind": "core:requires-authority",
+        "parameters": {
+          "fact": "endpoint"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      },
+      {
+        "id": "urn:bindings:constraint:authority-binding",
+        "kind": "core:requires-authority",
+        "parameters": {
+          "fact": "binding"
+        },
+        "subjects": ["urn:bindings:command:create-user"]
+      }
+    ],
+    "evidence": [],
+    "graph": {
+      "digest": "sha256:58d2c4d9d5644d79d32634e3b3e5d1e1a44d875c2fe5435f7b6f0c8e78137c0d",
+      "id": "urn:bindings:graph"
+    },
+    "id": "urn:bindings:policy",
+    "mappings": [
+      {
+        "coverage": "total",
+        "determinism": "deterministic",
+        "mapping": "urn:bindings:mapping:handler",
+        "reversibility": "irreversible"
+      },
+      {
+        "coverage": "total",
+        "determinism": "deterministic",
+        "mapping": "urn:bindings:mapping:input",
+        "reversibility": "irreversible"
+      },
+      {
+        "applicability": {
+          "when": {
+            "key": "environment",
+            "operator": "equals",
+            "value": "production"
+          }
+        },
+        "coverage": "total",
+        "determinism": "deterministic",
+        "mapping": "urn:bindings:mapping:endpoint-production",
+        "reversibility": "irreversible"
+      },
+      {
+        "applicability": {
+          "when": {
+            "key": "environment",
+            "operator": "equals",
+            "value": "development"
+          }
+        },
+        "coverage": "total",
+        "determinism": "deterministic",
+        "mapping": "urn:bindings:mapping:endpoint-development",
+        "reversibility": "irreversible"
+      }
+    ],
+    "schemaVersion": "1.0.0"
+  },
+  "projection": {
+    "$schema": "https://raw.githubusercontent.com/roryscot/metamap/v0.4.0/schemas/metamap-projection.schema.json",
+    "digest": "sha256:b3cd11a74a9b7e1e8e0cd668a31e7c5755f8627f19cf999e9b9b1bd98a5b5400",
+    "entries": [
+      {
+        "slots": [
+          {
+            "cardinality": "exactly-one",
+            "direction": "outgoing",
+            "mappings": ["urn:bindings:mapping:endpoint-production"],
+            "name": "endpoint",
+            "relation": "routing:exposed_as",
+            "targets": [
+              {
+                "attributes": {
+                  "environment": "production",
+                  "method": "POST",
+                  "path": "/users"
+                },
+                "id": "urn:bindings:endpoint:production",
+                "kind": "routing:endpoint"
+              }
+            ]
+          },
+          {
+            "cardinality": "exactly-one",
+            "direction": "outgoing",
+            "mappings": ["urn:bindings:mapping:handler"],
+            "name": "handler",
+            "relation": "routing:handled_by",
+            "targets": [
+              {
+                "id": "urn:bindings:handler:create-user",
+                "kind": "routing:handler",
+                "locators": [
+                  {
+                    "digest": "sha256:689adf3371d4bdce1c6af91d9c93354133a7c10719e794a8b1c93f30ee2d5c1b",
+                    "uri": "javascript:service/handlers/create-user.mjs#createUser"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "cardinality": "exactly-one",
+            "direction": "outgoing",
+            "mappings": ["urn:bindings:mapping:input"],
+            "name": "input",
+            "relation": "routing:accepts",
+            "targets": [
+              {
+                "id": "urn:bindings:schema:create-user",
+                "kind": "routing:schema",
+                "locators": [
+                  {
+                    "digest": "sha256:91ef94507725d4dd0b453a69687ae40428ced2b20875a023e980bd38982f5bf0",
+                    "uri": "javascript:contract/input-schema.mjs#validateCreateUser"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "id": "urn:bindings:command:create-user",
+          "kind": "routing:command"
+        }
+      }
+    ],
+    "generation": {
+      "digest": "sha256:d45d4a2355841db52a2d608b309bf447bf8beb2fd305ba0130a57d6ea71a06fa",
+      "id": "urn:metamap:generation:d45d4a2355841db52a2d608b309bf447bf8beb2fd305ba0130a57d6ea71a06fa"
+    },
+    "graph": {
+      "digest": "sha256:58d2c4d9d5644d79d32634e3b3e5d1e1a44d875c2fe5435f7b6f0c8e78137c0d",
+      "id": "urn:bindings:graph"
+    },
+    "id": "urn:metamap:projection:b3cd11a74a9b7e1e8e0cd668a31e7c5755f8627f19cf999e9b9b1bd98a5b5400",
+    "schemaVersion": "1.0.0",
+    "spec": {
+      "digest": "sha256:62989ec52328fd7921352194af0195cd79a50c5c4e0c6b7b4e4e6f0c1fd295d3",
+      "id": "urn:bindings:projection"
+    }
+  },
+  "runtimeArtifacts": [
+    {
+      "digest": "sha256:689adf3371d4bdce1c6af91d9c93354133a7c10719e794a8b1c93f30ee2d5c1b",
+      "path": "inputs/service/handlers/create-user.689adf3371d4bdce1c6af91d9c93354133a7c10719e794a8b1c93f30ee2d5c1b.mjs",
+      "sourcePath": "service/handlers/create-user.mjs"
+    },
+    {
+      "digest": "sha256:91ef94507725d4dd0b453a69687ae40428ced2b20875a023e980bd38982f5bf0",
+      "path": "inputs/contract/input-schema.91ef94507725d4dd0b453a69687ae40428ced2b20875a023e980bd38982f5bf0.mjs",
+      "sourcePath": "contract/input-schema.mjs"
+    }
+  ],
+  "snapshot": {
+    "configDigest": "sha256:26e97fe139cfdc817c1ebde6ab5fd343b8b8cb8be9098cade547f17f02ff10a9",
+    "counts": {
+      "authorities": 5,
+      "entities": 6,
+      "mappings": 4
+    },
+    "graphDigest": "sha256:58d2c4d9d5644d79d32634e3b3e5d1e1a44d875c2fe5435f7b6f0c8e78137c0d",
+    "graphId": "urn:bindings:graph",
+    "graphRevision": "sha256:f70a2e552c52bbdae62eb684dedf51d05d2fd0b6efbf9f6cdeb3ca3b80f34375",
+    "schemaVersion": "1.0.0",
+    "sources": [
+      {
+        "adapter": "owned-routing-shard",
+        "adapterVersion": "1.0.0",
+        "id": "contract",
+        "inputs": [
+          {
+            "digest": "sha256:1ca7076158886163ef3784e9ed29cc9afa1539376ecf650f271d3a65958044d7",
+            "path": "contract/graph.json"
+          },
+          {
+            "digest": "sha256:91ef94507725d4dd0b453a69687ae40428ced2b20875a023e980bd38982f5bf0",
+            "path": "contract/input-schema.mjs"
+          }
+        ]
+      },
+      {
+        "adapter": "owned-routing-shard",
+        "adapterVersion": "1.0.0",
+        "id": "service",
+        "inputs": [
+          {
+            "digest": "sha256:14307a958a364508e6f4c48dca7dfed25566380d934d200ae3a26096e8a7acfd",
+            "path": "service/graph.json"
+          },
+          {
+            "digest": "sha256:689adf3371d4bdce1c6af91d9c93354133a7c10719e794a8b1c93f30ee2d5c1b",
+            "path": "service/handlers/create-user.mjs"
+          }
+        ]
+      },
+      {
+        "adapter": "owned-routing-shard",
+        "adapterVersion": "1.0.0",
+        "id": "consumer",
+        "inputs": [
+          {
+            "digest": "sha256:ef38996cdacc47647937b2a1002d413884ea4f5a2cb2cd20363190bda1eb3bb8",
+            "path": "consumer/graph.json"
+          }
+        ]
+      }
+    ]
+  },
+  "status": "admitted"
+}

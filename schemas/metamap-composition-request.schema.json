@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-composition-request.schema.json",
+  "title": "Metamap bounded correspondence composition request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "law",
+    "premises",
+    "context",
+    "bounds",
+    "derivations",
+    "assessments",
+    "evidence"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "law": {
+      "$ref": "#/$defs/identifier"
+    },
+    "premises": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifier"
+      },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+    "bounds": {
+      "$ref": "#/$defs/bounds"
+    },
+    "resultId": {
+      "$ref": "#/$defs/identifier"
+    },
+    "derivations": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json"
+      },
+      "maxItems": 10000
+    },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-viability-v2.schema.json#/$defs/assessment"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-viability.schema.json#/$defs/evidence"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "jsonPrimitive": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "context": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/jsonPrimitive"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/jsonPrimitive"
+            }
+          }
+        ]
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxDepth", "maxDerivations"],
+      "properties": {
+        "maxDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        },
+        "maxDerivations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "authorities": [],
+  "entities": [
+    {
+      "attributes": { "path": "/network/:networkId" },
+      "id": "urn:example:consumer",
+      "kind": "configuration",
+      "label": "consumer"
+    },
+    {
+      "id": "urn:example:service",
+      "kind": "configuration",
+      "label": "service"
+    },
+    { "id": "urn:example:schema", "kind": "configuration", "label": "schema" }
+  ],
+  "id": "urn:metamap:example:dependency-graph",
+  "mappings": [
+    {
+      "cardinality": "one-to-one",
+      "id": "urn:example:consumer-service",
+      "lossiness": "lossless",
+      "provenance": { "assertedBy": "consumer-owner", "status": "declared" },
+      "relation": "example:depends",
+      "sources": ["urn:example:consumer"],
+      "targets": ["urn:example:service"]
+    },
+    {
+      "cardinality": "one-to-one",
+      "id": "urn:example:service-schema",
+      "lossiness": "lossless",
+      "provenance": { "assertedBy": "service-owner", "status": "declared" },
+      "relation": "example:depends",
+      "sources": ["urn:example:service"],
+      "targets": ["urn:example:schema"]
+    },
+    {
+      "attributes": {
+        "metamap:derivation": "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726"
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:consumer-schema",
+      "lossiness": "lossless",
+      "provenance": {
+        "assertedBy": "urn:metamap:example:law:dependency-chain",
+        "status": "inferred"
+      },
+      "relation": "example:depends",
+      "sources": ["urn:example:consumer"],
+      "targets": ["urn:example:schema"]
+    }
+  ],
+  "namespace": "dependency-example",
+  "relationPacks": [
+    {
+      "digest": "sha256:67fbdd6059757ace86ea70facda096b83f12011986aa30f15cc0892df081654a",
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "digest": "sha256:62b9ea2ead7915d9ff855230080cc4c0b0cc02552b4b287c50be12afdf0063d3",
+      "id": "urn:metamap:example:relation-pack:dependencies",
+      "version": "1.0.0"
+    }
+  ],
+  "revision": "1",
+  "schemaVersion": "2.0.0"
+}

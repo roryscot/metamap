@@ -1,6 +1,6 @@
 {
   "name": "@roryscot/metamap",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "license": "Apache-2.0",
   "description": "Language-neutral semantic linker, authority graph, and static projection compiler",
   "type": "module",
@@ -18,17 +18,33 @@
     "NOTICE",
     "README.md",
     "VISION.md",
+    "BUILD_PLAN.md",
+    "CONTRACTS.md",
+    "REPLAY.md",
+    "COUNTERFACTUAL.md",
     "ARCHITECTURE.md",
     "APPLICATION_TOPOLOGY.md",
     "ROUTING.md",
     "VIABILITY.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "RELATIONS.md",
+    "UNCERTAINTY.md",
+    "PROVENANCE.md",
+    "GOVERNANCE.md",
+    "ACTIVATION.md",
+    "REPAIR.md",
+    "DEBUGGER.md",
+    "standards",
+    "SCIENTIFIC_MAPPING.md",
+    "LIFECYCLE.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
+    "example:replay": "npm run build && node examples/replay/run.mjs",
+    "example:bindings": "npm run build && node examples/routing/bindings/build.mjs && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/routing/bindings/consumer/consumer.ts",
     "validate:example": "npm run build && node dist/cli.js validate examples/example-authority-graph.json",
     "example:generate": "npm run build && node dist/cli.js generate examples/workspace/metamap.config.json --no-cache",
     "example:check": "npm run build && node dist/cli.js check examples/workspace/metamap.config.json --no-cache",
@@ -37,12 +53,24 @@
     "example:routing": "npm run build && node dist/cli.js compile examples/routing/graph.json examples/routing/viability-policy.json examples/routing/generated/generation.json --relation-pack relation-packs/routing.json --as-of 2026-09-02T00:00:00.000Z && node dist/cli.js link examples/routing/graph.json examples/routing/generated/generation.json examples/routing/projection.json examples/routing/generated/command-router.json --relation-pack relation-packs/routing.json && node dist/cli.js link examples/routing/graph.json examples/routing/generated/generation.json examples/routing/projection.json examples/routing/generated/command-router.ts --format typescript --export commandRoutes --relation-pack relation-packs/routing.json && prettier --write examples/routing/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/routing/generated/command-router.ts",
     "example:path-tree": "npm run build && node dist/cli.js compile examples/path-tree/graph.json examples/path-tree/viability-policy.json examples/path-tree/generated/generation.json --relation-pack relation-packs/routing.json --as-of 2026-09-15T00:00:00.000Z && node dist/cli.js link examples/path-tree/graph.json examples/path-tree/generated/generation.json examples/path-tree/projection.json examples/path-tree/generated/routes.json --format path-tree --relation-pack relation-packs/routing.json && node dist/cli.js link examples/path-tree/graph.json examples/path-tree/generated/generation.json examples/path-tree/projection.json examples/path-tree/generated/routes.ts --format path-tree-typescript --export routes --relation-pack relation-packs/routing.json && prettier --write examples/path-tree/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/path-tree/generated/routes.ts",
     "example:topology": "npm run build && node dist/cli.js compile examples/application-topology/graph.json examples/application-topology/viability-policy.json examples/application-topology/generated/generation.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json --as-of 2026-09-08T00:00:00.000Z && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.json --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && node dist/cli.js link examples/application-topology/graph.json examples/application-topology/generated/generation.json examples/application-topology/projection.json examples/application-topology/generated/application-topology.ts --format typescript --export applicationTopology --relation-pack relation-packs/routing.json --relation-pack relation-packs/application-topology.json && prettier --write examples/application-topology/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/application-topology/generated/application-topology.ts",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "example:relations": "npm run build && node examples/relations/build.mjs && prettier --write examples/relations/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/relations/generated/dependency-bindings.ts examples/relations/generated/dependency-tree.ts",
+    "example:uncertainty": "npm run build && node examples/uncertainty/build.mjs && prettier --write examples/uncertainty/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/uncertainty/generated/network-bindings.ts examples/uncertainty/generated/network-tree.ts",
+    "example:provenance": "npm run build && node examples/provenance/build.mjs && prettier --write examples/provenance/generated && tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext examples/provenance/generated/network-bindings.ts examples/provenance/generated/network-tree.ts",
+    "example:governance": "npm run build && node examples/governance/run.mjs",
+    "example:repair": "npm run build && node examples/repair/run.mjs",
+    "example:explain": "npm run build && node examples/explanation/run.mjs",
+    "example:debugger": "npm run build && node examples/debugger/run.mjs",
+    "example:scientific-source": "npm run build && node examples/scientific-mapping/source.mjs",
+    "example:scientific": "npm run build && node examples/scientific-mapping/consumer.mjs",
+    "example:lifecycle": "npm run build && node examples/lifecycle/run.mjs",
+    "verify:package": "npm run build && node scripts/verify-package.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml": "2.9.1"
   },
   "devDependencies": {
     "@types/node": "^20.19.37",
@@ -106,6 +134,14 @@
       "import": "./dist/path-tree.js",
       "types": "./dist/path-tree.d.ts"
     },
+    "./replay": {
+      "import": "./dist/replay.js",
+      "types": "./dist/replay.d.ts"
+    },
+    "./counterfactual": {
+      "import": "./dist/counterfactual.js",
+      "types": "./dist/counterfactual.d.ts"
+    },
     "./schemas/metamap-graph.schema.json": "./schemas/metamap-graph.schema.json",
     "./schemas/metamap-config.schema.json": "./schemas/metamap-config.schema.json",
     "./schemas/relation-pack.schema.json": "./schemas/relation-pack.schema.json",
@@ -114,10 +150,155 @@
     "./schemas/metamap-projection-spec.schema.json": "./schemas/metamap-projection-spec.schema.json",
     "./schemas/metamap-projection.schema.json": "./schemas/metamap-projection.schema.json",
     "./schemas/metamap-path-tree.schema.json": "./schemas/metamap-path-tree.schema.json",
+    "./schemas/metamap-replay.schema.json": "./schemas/metamap-replay.schema.json",
+    "./schemas/metamap-counterfactual.schema.json": "./schemas/metamap-counterfactual.schema.json",
     "./relation-packs/core.json": "./relation-packs/core.json",
     "./relation-packs/research.json": "./relation-packs/research.json",
     "./relation-packs/routing.json": "./relation-packs/routing.json",
-    "./relation-packs/application-topology.json": "./relation-packs/application-topology.json"
+    "./relation-packs/application-topology.json": "./relation-packs/application-topology.json",
+    "./canonical": {
+      "import": "./dist/canonical.js",
+      "types": "./dist/canonical.d.ts"
+    },
+    "./derivation": {
+      "import": "./dist/derivation.js",
+      "types": "./dist/derivation.d.ts"
+    },
+    "./derivation-model": {
+      "import": "./dist/derivation-model.js",
+      "types": "./dist/derivation-model.d.ts"
+    },
+    "./semantic": {
+      "import": "./dist/semantic.js",
+      "types": "./dist/semantic.d.ts"
+    },
+    "./semantic-model": {
+      "import": "./dist/semantic-model.js",
+      "types": "./dist/semantic-model.d.ts"
+    },
+    "./schemas/relation-pack-v2.schema.json": "./schemas/relation-pack-v2.schema.json",
+    "./schemas/metamap-derivation.schema.json": "./schemas/metamap-derivation.schema.json",
+    "./schemas/metamap-composition-request.schema.json": "./schemas/metamap-composition-request.schema.json",
+    "./schemas/metamap-composition-result.schema.json": "./schemas/metamap-composition-result.schema.json",
+    "./schemas/metamap-viability-v2.schema.json": "./schemas/metamap-viability-v2.schema.json",
+    "./schemas/metamap-generation-v2.schema.json": "./schemas/metamap-generation-v2.schema.json",
+    "./semantic-projection-model": {
+      "import": "./dist/semantic-projection-model.js",
+      "types": "./dist/semantic-projection-model.d.ts"
+    },
+    "./semantic-projection": {
+      "import": "./dist/semantic-projection.js",
+      "types": "./dist/semantic-projection.d.ts"
+    },
+    "./semantic-path-tree": {
+      "import": "./dist/semantic-path-tree.js",
+      "types": "./dist/semantic-path-tree.d.ts"
+    },
+    "./semantic-replay-model": {
+      "import": "./dist/semantic-replay-model.js",
+      "types": "./dist/semantic-replay-model.d.ts"
+    },
+    "./semantic-replay": {
+      "import": "./dist/semantic-replay.js",
+      "types": "./dist/semantic-replay.d.ts"
+    },
+    "./semantic-counterfactual-model": {
+      "import": "./dist/semantic-counterfactual-model.js",
+      "types": "./dist/semantic-counterfactual-model.d.ts"
+    },
+    "./semantic-counterfactual": {
+      "import": "./dist/semantic-counterfactual.js",
+      "types": "./dist/semantic-counterfactual.d.ts"
+    },
+    "./schemas/metamap-projection-spec-v2.schema.json": "./schemas/metamap-projection-spec-v2.schema.json",
+    "./schemas/metamap-projection-v2.schema.json": "./schemas/metamap-projection-v2.schema.json",
+    "./schemas/metamap-path-tree-v2.schema.json": "./schemas/metamap-path-tree-v2.schema.json",
+    "./schemas/metamap-replay-v2.schema.json": "./schemas/metamap-replay-v2.schema.json",
+    "./schemas/metamap-counterfactual-v2.schema.json": "./schemas/metamap-counterfactual-v2.schema.json",
+    "./schemas/metamap-source-receipt.schema.json": "./schemas/metamap-source-receipt.schema.json",
+    "./schemas/metamap-snapshot.schema.json": "./schemas/metamap-snapshot.schema.json",
+    "./provenance": {
+      "import": "./dist/provenance.js",
+      "types": "./dist/provenance.d.ts"
+    },
+    "./provenance-model": {
+      "import": "./dist/provenance-model.js",
+      "types": "./dist/provenance-model.d.ts"
+    },
+    "./schemas/metamap-source-capture.schema.json": "./schemas/metamap-source-capture.schema.json",
+    "./schemas/metamap-source-inspection.schema.json": "./schemas/metamap-source-inspection.schema.json",
+    "./schemas/metamap-replay-v3.schema.json": "./schemas/metamap-replay-v3.schema.json",
+    "./schemas/metamap-counterfactual-v3.schema.json": "./schemas/metamap-counterfactual-v3.schema.json",
+    "./governance": {
+      "import": "./dist/governance.js",
+      "types": "./dist/governance.d.ts"
+    },
+    "./governance-model": {
+      "import": "./dist/governance-model.js",
+      "types": "./dist/governance-model.d.ts"
+    },
+    "./schemas/metamap-governance.schema.json": "./schemas/metamap-governance.schema.json",
+    "./schemas/metamap-trusted-consumer.schema.json": "./schemas/metamap-trusted-consumer.schema.json",
+    "./schemas/metamap-artifact-manifest.schema.json": "./schemas/metamap-artifact-manifest.schema.json",
+    "./schemas/metamap-change-proposal.schema.json": "./schemas/metamap-change-proposal.schema.json",
+    "./schemas/metamap-approval.schema.json": "./schemas/metamap-approval.schema.json",
+    "./activation-model": {
+      "import": "./dist/activation-model.js",
+      "types": "./dist/activation-model.d.ts"
+    },
+    "./schemas/metamap-activation-request.schema.json": "./schemas/metamap-activation-request.schema.json",
+    "./schemas/metamap-activation.schema.json": "./schemas/metamap-activation.schema.json",
+    "./schemas/metamap-active-pointer.schema.json": "./schemas/metamap-active-pointer.schema.json",
+    "./repair": {
+      "import": "./dist/repair.js",
+      "types": "./dist/repair.d.ts"
+    },
+    "./repair-model": {
+      "import": "./dist/repair-model.js",
+      "types": "./dist/repair-model.d.ts"
+    },
+    "./schemas/metamap-repair.schema.json": "./schemas/metamap-repair.schema.json",
+    "./schemas/metamap-repair-request.schema.json": "./schemas/metamap-repair-request.schema.json",
+    "./schemas/metamap-repair-result.schema.json": "./schemas/metamap-repair-result.schema.json",
+    "./explanation": {
+      "import": "./dist/explanation.js",
+      "types": "./dist/explanation.d.ts"
+    },
+    "./explanation-model": {
+      "import": "./dist/explanation-model.js",
+      "types": "./dist/explanation-model.d.ts"
+    },
+    "./schemas/metamap-explanation.schema.json": "./schemas/metamap-explanation.schema.json",
+    "./schemas/metamap-explanation-request.schema.json": "./schemas/metamap-explanation-request.schema.json",
+    "./schemas/metamap-explanation-result.schema.json": "./schemas/metamap-explanation-result.schema.json",
+    "./debugger": {
+      "import": "./dist/debugger.js",
+      "types": "./dist/debugger.d.ts"
+    },
+    "./sssom": {
+      "import": "./dist/sssom.js",
+      "types": "./dist/sssom.d.ts"
+    },
+    "./sssom-model": {
+      "import": "./dist/sssom-model.js",
+      "types": "./dist/sssom-model.d.ts"
+    },
+    "./sssom-tsv": {
+      "import": "./dist/adapters/sssom-tsv.js",
+      "types": "./dist/adapters/sssom-tsv.d.ts"
+    },
+    "./scientific-relations": {
+      "import": "./dist/scientific-relations.js",
+      "types": "./dist/scientific-relations.d.ts"
+    },
+    "./schemas/metamap-sssom-document.schema.json": "./schemas/metamap-sssom-document.schema.json",
+    "./schemas/metamap-sssom-source.schema.json": "./schemas/metamap-sssom-source.schema.json",
+    "./schemas/sssom-1.0.0.schema.json": "./schemas/sssom-1.0.0.schema.json",
+    "./scientific-crate": {
+      "import": "./dist/scientific-crate.js",
+      "types": "./dist/scientific-crate.d.ts"
+    },
+    "./schemas/metamap-scientific-crate-profile.schema.json": "./schemas/metamap-scientific-crate-profile.schema.json"
   },
   "repository": {
     "type": "git",

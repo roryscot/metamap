@@ -1,0 +1,229 @@
+{
+  "assessments": [
+    {
+      "assessor": "consumer-owner",
+      "dimension": "identity",
+      "evidence": ["urn:uncertainty:evidence:0"],
+      "id": "urn:uncertainty:assessment:0",
+      "sourceRevision": "1",
+      "status": "supported",
+      "subject": "urn:example:consumer-service"
+    },
+    {
+      "assessor": "service-owner",
+      "dimension": "identity",
+      "evidence": ["urn:uncertainty:evidence:1"],
+      "id": "urn:uncertainty:assessment:1",
+      "sourceRevision": "1",
+      "status": "supported",
+      "subject": "urn:example:service-schema"
+    }
+  ],
+  "constraints": [],
+  "derivationLimits": { "maxDepth": 4, "maxDerivations": 16 },
+  "derivations": [
+    {
+      "$schema": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json",
+      "context": { "environment": "example" },
+      "contextDigest": "sha256:4abe06bfb6c6b97913a58b9dd17b5cee81397238ed3ceeb372b4eddd94dc52b9",
+      "dependencies": [
+        {
+          "digest": "sha256:88c89f2984754b14e0d5ed6f4397bed16aedaeb6598e5166bee9a8a10cb96d33",
+          "id": "urn:example:consumer-service"
+        },
+        {
+          "digest": "sha256:d634f2df4730001431ced4bc34138ff3774e67a581d352678ebf2a93e193959b",
+          "id": "urn:example:service-schema"
+        },
+        {
+          "digest": "sha256:59f154023f7ec3f5d3f8612fec2597b9799f2337750aa1500145c3ead6c9f083",
+          "id": "urn:uncertainty:assessment:0"
+        },
+        {
+          "digest": "sha256:bea9d952b2ac64c909534af75a906de7b41f05923dbef8ae6661aec008d60f8b",
+          "id": "urn:uncertainty:assessment:1"
+        },
+        {
+          "digest": "sha256:8281a00dbc8efc76c126d069f4965d048b000d23f7b1ca564e49033fb0d4d17b",
+          "id": "urn:uncertainty:evidence:0"
+        },
+        {
+          "digest": "sha256:0d91ffddd260ec798f5a4b3046460eb8831e34a0e85bfda28611a15315371fc7",
+          "id": "urn:uncertainty:evidence:1"
+        }
+      ],
+      "depth": 1,
+      "derivationCount": 1,
+      "digest": "sha256:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726",
+      "id": "urn:metamap:derivation:6a57de7bc6566e713c19da00bb0cc767fd37cadf7876f116a248bc77ef8a4726",
+      "interpretation": "declared-law-application",
+      "premises": [
+        {
+          "digest": "sha256:88c89f2984754b14e0d5ed6f4397bed16aedaeb6598e5166bee9a8a10cb96d33",
+          "mapping": "urn:example:consumer-service"
+        },
+        {
+          "digest": "sha256:d634f2df4730001431ced4bc34138ff3774e67a581d352678ebf2a93e193959b",
+          "mapping": "urn:example:service-schema"
+        }
+      ],
+      "result": {
+        "cardinality": "one-to-one",
+        "id": "urn:example:consumer-schema",
+        "lossiness": "lossless",
+        "provenance": {
+          "assertedBy": "urn:metamap:example:law:dependency-chain",
+          "status": "inferred"
+        },
+        "relation": "example:depends",
+        "sources": ["urn:example:consumer"],
+        "targets": ["urn:example:schema"]
+      },
+      "rule": {
+        "id": "urn:metamap:example:law:dependency-chain",
+        "imports": [],
+        "pack": {
+          "digest": "sha256:62b9ea2ead7915d9ff855230080cc4c0b0cc02552b4b287c50be12afdf0063d3",
+          "id": "urn:metamap:example:relation-pack:dependencies",
+          "version": "1.0.0"
+        }
+      },
+      "schemaVersion": "1.0.0",
+      "uncertainty": [
+        {
+          "assessments": [
+            "urn:uncertainty:assessment:0",
+            "urn:uncertainty:assessment:1"
+          ],
+          "dimension": "identity",
+          "evidence": [
+            "urn:uncertainty:evidence:0",
+            "urn:uncertainty:evidence:1"
+          ],
+          "measurementModels": [],
+          "sourceRevisions": ["1"],
+          "status": "supported"
+        },
+        {
+          "assessments": [],
+          "dimension": "context",
+          "evidence": [],
+          "measurementModels": [],
+          "sourceRevisions": [],
+          "status": "unknown"
+        },
+        {
+          "assessments": [],
+          "dimension": "provenance",
+          "evidence": [],
+          "measurementModels": [],
+          "sourceRevisions": [],
+          "status": "unknown"
+        },
+        {
+          "assessments": [],
+          "dimension": "completeness",
+          "evidence": [],
+          "measurementModels": [],
+          "sourceRevisions": [],
+          "status": "unknown"
+        },
+        {
+          "assessments": [],
+          "dimension": "causal-relevance",
+          "evidence": [],
+          "measurementModels": [],
+          "sourceRevisions": [],
+          "status": "unknown"
+        },
+        {
+          "assessments": [],
+          "dimension": "conflicting-authority",
+          "evidence": [],
+          "measurementModels": [],
+          "sourceRevisions": [],
+          "status": "unknown"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "confidence": 0.2,
+      "id": "urn:uncertainty:evidence:0",
+      "kind": "uncertainty:identity",
+      "producer": "consumer-owner",
+      "result": "supports",
+      "subjects": ["urn:example:consumer-service"]
+    },
+    {
+      "confidence": 0.2,
+      "id": "urn:uncertainty:evidence:1",
+      "kind": "uncertainty:identity",
+      "producer": "service-owner",
+      "result": "supports",
+      "subjects": ["urn:example:service-schema"]
+    }
+  ],
+  "graph": {
+    "digest": "sha256:a323a62f8cb20962d8df4d3fa337f49e92fb1cad6f746aa9e64c31792b540e6f",
+    "id": "urn:metamap:example:dependency-graph"
+  },
+  "id": "urn:uncertainty:policy:strict",
+  "mappings": [
+    {
+      "coverage": "total",
+      "determinism": "deterministic",
+      "reversibility": "reversible",
+      "select": { "relations": ["example:depends"] }
+    }
+  ],
+  "riskBudgets": [
+    {
+      "classifications": [
+        {
+          "classification": "declared-directional",
+          "cost": 2,
+          "id": "urn:uncertainty:classification:0",
+          "select": { "ids": ["urn:example:consumer-service"] }
+        },
+        {
+          "classification": "declared-directional",
+          "cost": 3,
+          "id": "urn:uncertainty:classification:1",
+          "select": { "ids": ["urn:example:service-schema"] }
+        },
+        {
+          "classification": "derived",
+          "cost": 0,
+          "id": "urn:uncertainty:classification:2",
+          "select": { "ids": ["urn:example:consumer-schema"] }
+        }
+      ],
+      "consumer": "urn:metamap:example:network-consumer",
+      "id": "urn:uncertainty:budget",
+      "maximumInferredMappings": 1,
+      "maximumLossyMappings": 0,
+      "maximumTotalCost": 5,
+      "requireCompleteClassification": true,
+      "requireCompleteDependencies": true
+    }
+  ],
+  "schemaVersion": "2.0.0",
+  "uncertaintyRequirements": [
+    {
+      "allowedStates": ["supported"],
+      "dimension": "identity",
+      "id": "urn:uncertainty:requirement:identity",
+      "requireEvidence": true,
+      "select": { "ids": ["urn:example:consumer-schema"] }
+    },
+    {
+      "allowedStates": ["supported"],
+      "dimension": "completeness",
+      "id": "urn:uncertainty:requirement:completeness",
+      "requireEvidence": true,
+      "select": { "ids": ["urn:example:consumer-schema"] }
+    }
+  ]
+}

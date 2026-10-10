@@ -8,6 +8,9 @@ import { analyzeImpact } from "./impact.js";
 import { isReferenceIdentifier, isRelationIdentifier } from "./references.js";
 import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
+import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
+import { compileSemanticMetamap } from "./semantic.js";
+import { evaluateGovernedActivation } from "./governance.js";
 import { validateMetamapDocument } from "./validator.js";
 import { METAMAP_GENERATION_VERSION, METAMAP_VIABILITY_POLICY_VERSION, } from "./viability-model.js";
 const Ajv2020 = Ajv2020Module.default;
@@ -109,7 +112,7 @@ function knownGraphSubjects(document) {
         ...document.authorities.map((entry) => entry.id),
     ]);
 }
-function selectorMatches(mapping, selector, entityKinds) {
+export function selectorMatches(mapping, selector, entityKinds) {
     if (selector.ids && !selector.ids.includes(mapping.id))
         return false;
     if (selector.relations && !selector.relations.includes(mapping.relation)) {
@@ -303,10 +306,10 @@ function activeMappingState(document, policy, context, resolution) {
     inactive.sort((left, right) => left.id.localeCompare(right.id));
     return { active, inactive };
 }
-function contradictionIssues(document, policy, activeMappings) {
+function contradictionIssues(document, policy, activeMappings, handledEvidence = new Set()) {
     const mappingIds = new Set(document.mappings.map((entry) => entry.id));
     return policy.evidence.flatMap((entry) => {
-        if (entry.result !== "contradicts")
+        if (entry.result !== "contradicts" || handledEvidence.has(entry.id))
             return [];
         const activeSubjects = entry.subjects.filter((subject) => !mappingIds.has(subject) || activeMappings.has(subject));
         return activeSubjects.map((subject) => issue("CONTRADICTING_EVIDENCE", `${entry.id} contradicts active subject ${subject}`, subject));
@@ -400,11 +403,33 @@ function deepFreeze(value) {
     }
     return Object.freeze(value);
 }
-/**
- * Compile a graph and contextual policy into an immutable viable generation.
- * No generation is returned if any unwaived error remains.
- */
 export function compileMetamap(document, policy, options = {}) {
+    if (policy.schemaVersion === "2.0.0")
+        return compileSemanticMetamap(document, policy, options, {
+            compile: compileLegacyMetamap,
+            declarations: (graph, view) => resolvedDeclarations(graph, view).byMapping,
+        });
+    const registry = options.relationRegistry ?? new RelationRegistry();
+    if (registry.executablePacks().length > 0 ||
+        document.mappings.some((mapping) => mapping.attributes &&
+            Object.hasOwn(mapping.attributes, DERIVATION_ATTRIBUTE))) {
+        const impact = analyzeImpact(document, {
+            changedSubjects: options.changedSubjects ?? [],
+            policy,
+            registry,
+        });
+        return {
+            status: "rejected",
+            issues: [
+                issue("EXECUTABLE_POLICY_REQUIRED", "Executable packs and proof claims require the version 2 policy profile", policy.id),
+            ],
+            impact,
+            quarantinedSubjects: impact.affectedSubjects,
+        };
+    }
+    return compileLegacyMetamap(document, policy, options);
+}
+function compileLegacyMetamap(document, policy, options = {}, handledEvidence = new Set()) {
     const relationRegistry = options.relationRegistry ?? new RelationRegistry();
     const constraintRegistry = options.constraintRegistry ?? new ConstraintRegistry();
     const context = options.context ?? {};
@@ -433,7 +458,7 @@ export function compileMetamap(document, policy, options = {}) {
     const resolution = resolvedDeclarations(document, policy);
     issues.push(...validatePolicyBindings(document, policy, resolution), ...validateDeclaredSemantics(document, policy, relationRegistry, resolution), ...validateApplicabilityContext(document, policy, context, resolution));
     const state = activeMappingState(document, policy, context, resolution);
-    issues.push(...contradictionIssues(document, policy, state.active), ...evaluateConstraints(document, policy, state.active, relationRegistry, constraintRegistry));
+    issues.push(...contradictionIssues(document, policy, state.active, handledEvidence), ...evaluateConstraints(document, policy, state.active, relationRegistry, constraintRegistry));
     const waived = applyWaivers(issues, policy, evaluatedAt);
     issues = waived.issues;
     const failureSeeds = issues
@@ -496,14 +521,76 @@ export class MetamapActivator {
     relationRegistry;
     constraintRegistry;
     generation;
-    constructor(relationRegistry = new RelationRegistry(), constraintRegistry = new ConstraintRegistry()) {
+    #governedState;
+    #governedHost;
+    constructor(relationRegistry = new RelationRegistry(), constraintRegistry = new ConstraintRegistry(), governedHost) {
         this.relationRegistry = relationRegistry;
         this.constraintRegistry = constraintRegistry;
+        this.#governedHost = governedHost;
     }
     get current() {
         return this.generation;
     }
-    activate(document, policy, options = {}) {
+    get governedCurrent() {
+        return this.#governedState;
+    }
+    activate(value, policy, options = {}) {
+        if (policy === undefined) {
+            if (!this.#governedHost || this.#governedHost.mode !== "governed")
+                return {
+                    status: "rejected",
+                    activated: false,
+                    issues: [
+                        {
+                            code: "GOVERNANCE_HOST_REQUIRED",
+                            message: "The consumer must select governed mode outside the request",
+                        },
+                    ],
+                };
+            let result;
+            try {
+                result = evaluateGovernedActivation(value, {
+                    trustedConfiguration: this.#governedHost.configuration(),
+                    now: (this.#governedHost.clock ?? (() => new Date().toISOString()))(),
+                }, this.#governedState);
+            }
+            catch (error) {
+                return {
+                    status: "rejected",
+                    activated: false,
+                    issues: [
+                        {
+                            code: "GOVERNANCE_HOST_UNAVAILABLE",
+                            message: error instanceof Error ? error.message : String(error),
+                        },
+                    ],
+                    ...(this.#governedState ? { current: this.#governedState } : {}),
+                };
+            }
+            if (result.status === "activated")
+                this.#governedState = result.current;
+            return result;
+        }
+        const document = value;
+        if (this.#governedHost ||
+            policy.schemaVersion !== "1.0.0") {
+            const impact = analyzeImpact(document, {
+                changedSubjects: options.changedSubjects ?? [],
+                registry: this.relationRegistry,
+            });
+            return {
+                activated: false,
+                current: this.generation,
+                compilation: {
+                    status: "rejected",
+                    issues: [
+                        issue("PROTECTED_ACTIVATION_REQUIRED", "Governed consumers and version 2 candidates require exact protected approval", policy.id),
+                    ],
+                    impact,
+                    quarantinedSubjects: impact.affectedSubjects,
+                },
+            };
+        }
         const compilation = compileMetamap(document, policy, {
             ...options,
             relationRegistry: this.relationRegistry,

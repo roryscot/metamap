@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-derivation.schema.json",
+  "title": "Metamap checked correspondence derivation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "interpretation",
+    "rule",
+    "premises",
+    "result",
+    "context",
+    "contextDigest",
+    "dependencies",
+    "depth",
+    "derivationCount",
+    "uncertainty"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "interpretation": {
+      "const": "declared-law-application"
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "pack", "imports"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "pack": {
+          "$ref": "#/$defs/packBinding"
+        },
+        "imports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/packBinding"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "premises": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mapping", "digest"],
+        "properties": {
+          "mapping": {
+            "$ref": "#/$defs/identifier"
+          },
+          "digest": {
+            "$ref": "#/$defs/digest"
+          },
+          "derivation": {
+            "$ref": "#/$defs/binding"
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "result": {
+      "$ref": "#/$defs/mapping"
+    },
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+    "contextDigest": {
+      "$ref": "#/$defs/digest"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/binding"
+      },
+      "uniqueItems": true
+    },
+    "depth": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 128
+    },
+    "derivationCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "uncertainty": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/uncertainty"
+      },
+      "minItems": 6,
+      "maxItems": 6
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "jsonPrimitive": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "packBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "digest"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/jsonPrimitive"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/jsonPrimitive"
+            }
+          }
+        ]
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxDepth", "maxDerivations"],
+      "properties": {
+        "maxDepth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        },
+        "maxDerivations": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "status",
+        "evidence",
+        "assessments",
+        "measurementModels",
+        "sourceRevisions"
+      ],
+      "properties": {
+        "dimension": {
+          "enum": [
+            "identity",
+            "context",
+            "provenance",
+            "completeness",
+            "causal-relevance",
+            "conflicting-authority"
+          ]
+        },
+        "status": {
+          "enum": ["supported", "contradicted", "unknown", "not-applicable"]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "assessments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "measurementModels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "sourceRevisions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "mapping": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json#/$defs/mapping"
+    }
+  }
+}

@@ -8,6 +8,10 @@ without copying every source into one universal data model.
 
 See [VISION.md](VISION.md) for the longer-term direction: making Metamap a
 trust layer for governed, evidence-bearing relationships between systems.
+The [build plan](BUILD_PLAN.md) translates that direction into capability
+milestones, compatibility decisions, and observable acceptance checks.
+[Contract decisions](CONTRACTS.md) define the selected lifecycle, versioning,
+and digest boundaries for that implementation.
 
 The governing rule is:
 
@@ -121,6 +125,13 @@ static runtime views.
 - Executable constraints, first-class evidence, and exact expiring waivers.
 - Fail-closed compilation into immutable viable generations with causal impact
   paths and atomic last-known-good activation.
+- Exact compiler replay bundles that preserve inputs, executor identity, and
+  successful or rejected results without granting approval or activation.
+- Complete source captures and receipts that bind independent configurations,
+  input byte digests and emitted shards, with separate read-only current-source
+  inspection and explicit candidate/source differences.
+- Read-only counterfactual reports for explicit before/after evaluations,
+  including evidence, admission, dependency paths, and runtime-slot changes.
 - Cardinality-checked static projections that turn active semantic mappings
   into content-addressed JSON manifests, typed TypeScript lookup tables, or
   nested path trees with `_` templates and generated `:param` hydration.
@@ -154,8 +165,10 @@ npm run example:check
 npm run example:compile
 npm run example:research
 npm run example:routing
+npm run example:bindings
 npm run example:path-tree
 npm run example:topology
+npm run example:replay
 ```
 
 The runnable example under `examples/workspace/` maps a Zod `itemSchema` onto a
@@ -199,6 +212,9 @@ metamap check <metamap.config.json> [--no-cache]
 metamap diff <before.json> <after.json> [--relation-pack pack.json]...
 metamap trace <graph.json> <entity-id> [incoming|outgoing|both] [depth] [relation] [--relation-pack pack.json]...
 metamap authority <graph.json> <concept-id> <fact> [--relation-pack pack.json]...
+metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
+metamap replay <bundle.json>
+metamap compare <before.replay.json> <after.replay.json> [report.json]
 metamap migrate-sources <sources-of-truth.json> [output.json]
 ```
 
@@ -286,6 +302,12 @@ and never traverses the graph. See [ROUTING.md](ROUTING.md) and the runnable
 [`examples/routing`](examples/routing) project. Nested URL maps from the same
 generation are in [`examples/path-tree`](examples/path-tree).
 
+The [owned-source example](examples/routing/bindings/README.md) generates native
+consumer imports from separately owned operation/schema and handler/endpoint
+shards. It executes a real request and preserves the stable operation identity
+when the handler moves. The consumer's typed identity set is generated with its
+bindings; rejected candidates preserve the accepted artifacts and captured code.
+
 For exhaustive application routing, the application-topology pack maps the
 semantic route onto its framework implementation, nearest container, content,
 required contexts, policies, parameters, loaders, fallbacks, and hydration
@@ -342,6 +364,33 @@ The graph describes stable relationships. A separate viability policy declares
 which mappings may be expressed in a context and the guarantees, evidence, and
 constraints required before activation. See [VIABILITY.md](VIABILITY.md) for
 the complete fail-fast model and portable contracts.
+
+Use [REPLAY.md](REPLAY.md) to capture and reproduce an exact compiler evaluation.
+Use [COUNTERFACTUAL.md](COUNTERFACTUAL.md) to compare two reproduced candidates.
+Use [RELATIONS.md](RELATIONS.md) for explicit binary relation laws, bounded
+composition proposals, checked v2 admission and proof-carrying projections,
+path trees, replay and comparison. Its current integration boundaries are
+documented there. Use [UNCERTAINTY.md](UNCERTAINTY.md) for typed assessment
+propagation and consumer cost budgets.
+Use [PROVENANCE.md](PROVENANCE.md) for complete source captures, replay/comparison
+3.0 and explicitly permitted local rediscovery. Recorded lineage does not grant
+authentication, approval or activation.
+Use [GOVERNANCE.md](GOVERNANCE.md) for complete unapproved proposals, generated
+artifact byte manifests and exact externally scoped Ed25519 approval verification.
+Use [ACTIVATION.md](ACTIVATION.md) for the governed overloads of both activation
+interfaces, exact immutable state, protected consumer reads, and the first Linux
+dedicated promoter/permission profile. The plan records the verification status.
+Use [REPAIR.md](REPAIR.md) for bounded read-only proposals, exact candidate patches,
+honest search coverage and the separate approval required for a viable repair.
+Use [DEBUGGER.md](DEBUGGER.md) for shared captured explanations, original issue
+subjects, input change origins and read-only inspection of supplied alternatives.
+Use [SCIENTIFIC_MAPPING.md](SCIENTIFIC_MAPPING.md) for the bounded local SSSOM1.0
+profile, distinct scientific assertions, explicit exploratory consumer budgets,
+native lookup and source-bound RO-Crate1.2 export.
+Use [LIFECYCLE.md](LIFECYCLE.md) for the runnable consumer walkthrough, version migration
+and freshly approved rollback procedure.
+The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
+vision.
 
 ## Design boundaries
 

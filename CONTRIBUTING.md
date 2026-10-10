@@ -15,8 +15,20 @@ npm run example:check
 npm run example:compile
 npm run example:research
 npm run example:routing
+npm run example:bindings
+npm run example:relations
+npm run example:uncertainty
+npm run example:provenance
+npm run example:governance
+npm run example:repair
+npm run example:explain
+npm run example:debugger
+npm run example:scientific-source
+npm run example:scientific
+npm run example:lifecycle
 npm run example:path-tree
 npm run example:topology
+npm run example:replay
 ```
 
 Before opening a pull request, also run `npm pack --dry-run` and verify that
@@ -38,6 +50,49 @@ impact propagation, evidence, or waivers are also contract changes. New
 constraint kinds must include deterministic evaluator tests and documentation;
 unknown kinds must continue to fail closed.
 
+Published legacy schema bytes and compiled identities are pinned in
+`evaluation/legacy-compatibility.json`. Preserve those pins and the original
+evaluation protocols, scorers and results. New semantic profile artifacts use
+separate schema identities and JCS content binding; legacy graph references
+retain their old convention. See [CONTRACTS.md](CONTRACTS.md).
+
+Every new semantic input must be captured and recomputed in replay in the same
+increment. Test changed, missing and rehashed inputs, rejected candidates,
+mixed-version rejection and unknown result states. Projection and path-tree
+changes also require native checks of their generated TypeScript. Use
+`npm run example:relations` for the opt-in proof-carrying workflow.
+Use `npm run example:uncertainty` for typed evidence and consumer cost limits.
+Use `npm run example:provenance` for complete source receipt bindings, accepted
+and rejected replay 3.0, explicit read-only inspection and native outputs.
+Preserve published receipt/snapshot/replay schemas; new complete captures have
+their own schema identities. Test source/config/adapter/shard changes, rehashed
+receipt mismatches, unavailable raw inputs and denied local/symlink locators.
+
+Use `npm run example:governance` for exact external-owner approval and reviewed
+native artifact bytes. Approval changes must test published crypto/JCS vectors,
+independent signing, forgery, complete input/output tampering, scoped grants,
+current time/revocation, self-appointed ownership and stale protected baselines.
+Do not substitute verifier success for P10's consumer permission and activation
+transaction tests. Synthetic signing keys stay in memory; never add private
+credentials or production trust material to examples or test records.
+
+After SDK edits, build the distribution before running distribution-backed
+native/CLI acceptance tests. Normal npm test includes the protected activation
+suite. Its Linux cases require a root test host or passwordless sudo and use
+only disposable owner-controlled /tmp fixtures with a distinct unprivileged UID.
+Temporary synthetic fixture keys remain private to that host and are removed;
+never print or retain them in verification records. Non-Linux skips establish
+only portable coverage. [ACTIVATION.md](ACTIVATION.md) defines the first host
+profile, actual permission checks, crash/retry/rollback behavior and assumptions.
+No privileged CI workflow edits or production installation are needed.
+
+Use `npm run example:repair` for supplied provider restoration, unchanged
+proof/risk checks, native consumer execution and the actual read-only command.
+Repair contract changes must test scoped/protected edits, duplicate-only removal,
+missing-only declarations, tampered/rehashed evaluations, exact finite coverage,
+ranking, limits and interruption. Viability never grants approval; no source or
+active-state write is permitted. [REPAIR.md](REPAIR.md) defines this first profile.
+
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather
 than physical paths as identity.
@@ -50,7 +105,25 @@ causal `impactDirection` for every relation intended for viable activation.
 
 ## Pull requests
 
+Run `npm run example:lifecycle` and `npm run verify:package` when changing the
+lifecycle or package surface. The package check installs the actual archive in a
+disposable external consumer and imports all public exports before executing
+and typechecking the governed walkthrough.
+
 Keep changes focused, explain the structural invariant being changed, and add a
 regression test for behavior changes. Do not silently convert unresolved
 candidate authority into canonical authority or infer semantic equivalence from
 names.
+
+Use `npm run example:explain` for the shared API/command report, missing provider
+origin, verified supplied alternatives and source/existing-file preservation.
+Explanation changes must test rejected/unknown/ambiguous captures, exact pack
+bindings, original issue subjects, independent input changes, whole-projection
+risk, unavailable current authorization and rehashed report tampering. Run build
+before distribution-backed tests. Use `npm run example:debugger` for the verified
+static renderer and actual inspection command. Renderer changes also require
+actual browser checks of navigation, keyboard focus/disclosures/table scrolling,
+desktop and narrow layout, escaped input, unwanted requests, and rejected,
+unknown, ambiguous, empty and truncated states. Inspect the screenshots before
+accepting layout; structured command output alone does not satisfy browser
+acceptance. Restore temporary viewport/tracing state afterward.

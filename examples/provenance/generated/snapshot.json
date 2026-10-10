@@ -1,0 +1,32 @@
+{
+  "configDigest": "sha256:a5959318d42a0618135f50a946c313380b337a29611098b5694099cfe758f011",
+  "counts": { "authorities": 0, "entities": 3, "mappings": 2 },
+  "graphDigest": "sha256:033d157fab80ff5c80784b63e467cbc5f8b91cb69e6ab28a1015dd8b848cb7ec",
+  "graphId": "urn:provenance:workspace",
+  "graphRevision": "sha256:afad89c885db91eb4100d8f2f8edfae0f641c194eaf53161f6049d09aab5d66b",
+  "schemaVersion": "1.0.0",
+  "sources": [
+    {
+      "adapter": "metamap-shard",
+      "adapterVersion": "1.0.0",
+      "id": "network",
+      "inputs": [
+        {
+          "digest": "sha256:0d2faae0ddc896ccd6f4630d3ccb1b9f590a56d0fa40934fd0e91f8473d582ce",
+          "path": "sources/network.json"
+        }
+      ]
+    },
+    {
+      "adapter": "metamap-shard",
+      "adapterVersion": "1.0.0",
+      "id": "schema",
+      "inputs": [
+        {
+          "digest": "sha256:1e7ebccb787e6f7273e1a9da22e69072f3ad3abccc5706a36c22c09025cc5233",
+          "path": "sources/schema.json"
+        }
+      ]
+    }
+  ]
+}

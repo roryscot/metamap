@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "2.0.0",
+  "id": "urn:provenance:source:schema",
+  "namespace": "dependency-example",
+  "revision": "schema-r1",
+  "entities": [
+    {
+      "id": "urn:example:schema",
+      "kind": "configuration",
+      "label": "schema"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "urn:example:service-schema",
+      "relation": "example:depends",
+      "sources": ["urn:example:service"],
+      "targets": ["urn:example:schema"],
+      "cardinality": "one-to-one",
+      "lossiness": "lossless",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "service-owner"
+      }
+    }
+  ],
+  "authorities": []
+}

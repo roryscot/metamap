@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../../schemas/metamap-graph.schema.json",
+  "schemaVersion": "2.0.0",
+  "id": "urn:bindings:shard:contract",
+  "namespace": "bindings-contract",
+  "revision": "1",
+  "relationPacks": [
+    {
+      "id": "urn:metamap:relation-pack:core",
+      "version": "1.0.0"
+    },
+    {
+      "id": "urn:metamap:relation-pack:routing",
+      "version": "1.0.0"
+    }
+  ],
+  "entities": [
+    {
+      "id": "urn:bindings:command:create-user",
+      "kind": "routing:command",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:contract"
+      }
+    },
+    {
+      "id": "urn:bindings:schema:create-user",
+      "kind": "routing:schema",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:contract"
+      },
+      "locators": [
+        {
+          "uri": "javascript:contract/input-schema.mjs#validateCreateUser",
+          "digest": "sha256:91ef94507725d4dd0b453a69687ae40428ced2b20875a023e980bd38982f5bf0"
+        }
+      ]
+    }
+  ],
+  "mappings": [],
+  "authorities": [
+    {
+      "id": "urn:bindings:authority:operation",
+      "concept": "urn:bindings:command:create-user",
+      "source": "urn:bindings:command:create-user",
+      "facts": ["operation-identity"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:contract"
+      }
+    },
+    {
+      "id": "urn:bindings:authority:input",
+      "concept": "urn:bindings:command:create-user",
+      "source": "urn:bindings:schema:create-user",
+      "facts": ["input"],
+      "mode": "canonical",
+      "provenance": {
+        "status": "declared",
+        "assertedBy": "team:contract"
+      }
+    }
+  ]
+}

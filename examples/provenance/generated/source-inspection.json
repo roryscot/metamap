@@ -1,0 +1,42 @@
+{
+  "active": "not-evaluated",
+  "authentication": "not-evaluated",
+  "authorizationNow": "not-evaluated",
+  "capture": {
+    "digest": "sha256:bb0227b7d9be174b8ad84644db3ae5e49d03e8fadc74f74932b49e364c7ac455",
+    "id": "urn:metamap:source-capture:bb0227b7d9be174b8ad84644db3ae5e49d03e8fadc74f74932b49e364c7ac455"
+  },
+  "evaluatedGraph": {
+    "digest": "sha256:605e41932f32dc6aac4b0268c43e4c71cab1596bc52c79e72529aa2f81d23893",
+    "id": "urn:provenance:workspace"
+  },
+  "graphChanges": {
+    "changes": [
+      {
+        "change": "added",
+        "id": "urn:example:consumer-schema",
+        "kind": "mapping"
+      }
+    ],
+    "counts": { "added": 1, "changed": 0, "removed": 0 }
+  },
+  "lineage": {
+    "rawInputs": "not-captured",
+    "receipts": [
+      "urn:metamap:source-receipt:c5383b760793156daa95b339c75a47c2f24b4f07fa79e933f0be07947b8573e6",
+      "urn:metamap:source-receipt:567f8c0148968db71a5086bac154f294679a7ecde3cf40deba09b5c840575e2b"
+    ],
+    "recordedInputDigests": 2,
+    "status": "verified-record-bindings"
+  },
+  "relationship": "candidate-differs",
+  "schemaVersion": "1.0.0",
+  "sourceGraph": {
+    "digest": "sha256:033d157fab80ff5c80784b63e467cbc5f8b91cb69e6ab28a1015dd8b848cb7ec",
+    "id": "urn:provenance:workspace"
+  },
+  "sourceRediscovery": {
+    "reason": "Raw source inputs are not embedded; current rediscovery requires a separately authorized local workspace",
+    "status": "unavailable"
+  }
+}

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import Ajv2020Module from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
+import { parseSssomSourceConfig } from "./sssom.js";
 export const METAMAP_CONFIG_VERSION = "1.0.0";
 const Ajv2020 = Ajv2020Module.default;
 const addFormats = addFormatsModule.default;
@@ -75,7 +76,10 @@ export function parseMetamapConfig(value) {
         if (sourceIds.has(id))
             throw new Error(`Duplicate source id ${id}`);
         sourceIds.add(id);
-        if (source.adapter === "prisma" ||
+        if (source.adapter === "sssom-tsv") {
+            parseSssomSourceConfig(source);
+        }
+        else if (source.adapter === "prisma" ||
             source.adapter === "legacy-sources" ||
             source.adapter === "metamap-shard") {
             requireString(source, "path", context);

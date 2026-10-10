@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-replay.schema.json",
+  "title": "Metamap compiler replay bundle",
+  "description": "Exact compiler inputs, installed executor identity, and captured results. Reproducibility does not establish truth, approval, or activation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "compiler",
+    "constraintExecutor",
+    "inputs",
+    "expected"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "compiler": {
+      "$ref": "#/$defs/compiler"
+    },
+    "constraintExecutor": {
+      "const": "builtin"
+    },
+    "inputs": {
+      "$ref": "#/$defs/inputs"
+    },
+    "expected": {
+      "$ref": "#/$defs/outputs"
+    }
+  },
+  "$defs": {
+    "compiler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "format",
+        "digest",
+        "runtime",
+        "dependencies"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "format": {
+          "enum": ["source", "distribution"]
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["node", "icu", "locale"],
+          "properties": {
+            "node": {
+              "type": "string",
+              "minLength": 1
+            },
+            "icu": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locale": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version", "digest"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "digest": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph",
+        "policy",
+        "relationPacks",
+        "context",
+        "evaluatedAt",
+        "changedSubjects",
+        "projections"
+      ],
+      "properties": {
+        "graph": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-graph/v2.schema.json"
+        },
+        "policy": {
+          "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-viability.schema.json"
+        },
+        "relationPacks": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-relation-pack/v1.schema.json"
+          }
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "evaluatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "changedSubjects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          },
+          "uniqueItems": true
+        },
+        "projections": {
+          "type": "array",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection-spec/v1.schema.json"
+          }
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compilation", "projections"],
+      "properties": {
+        "compilation": {
+          "$ref": "#/$defs/compilation"
+        },
+        "projections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["specId", "result"],
+            "properties": {
+              "specId": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+              },
+              "result": {
+                "$ref": "#/$defs/projectionResult"
+              },
+              "pathTree": {
+                "$ref": "#/$defs/pathTreeResult"
+              }
+            }
+          }
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "code", "message"],
+      "properties": {
+        "severity": {
+          "enum": ["error", "warning"]
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjectId": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "causalPath": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "waivedBy": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        }
+      }
+    },
+    "projectionIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "code", "message"],
+      "properties": {
+        "severity": {
+          "const": "error"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjectId": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changedSubjects", "affectedSubjects", "paths"],
+      "properties": {
+        "changedSubjects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "affectedSubjects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+          }
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["subjectId", "path"],
+            "properties": {
+              "subjectId": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+              },
+              "path": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "compilation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "generation", "issues", "impact"],
+          "properties": {
+            "status": {
+              "const": "viable"
+            },
+            "generation": {
+              "$ref": "https://raw.githubusercontent.com/roryscot/metamap/v0.2.0/schemas/metamap-generation.schema.json"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/issue"
+              }
+            },
+            "impact": {
+              "$ref": "#/$defs/impact"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "issues", "impact", "quarantinedSubjects"],
+          "properties": {
+            "status": {
+              "const": "rejected"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/issue"
+              }
+            },
+            "impact": {
+              "$ref": "#/$defs/impact"
+            },
+            "quarantinedSubjects": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "projectionResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "projection", "issues"],
+          "properties": {
+            "status": {
+              "const": "projected"
+            },
+            "projection": {
+              "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-projection/v1.schema.json"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/projectionIssue"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "issues"],
+          "properties": {
+            "status": {
+              "const": "rejected"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/projectionIssue"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pathTreeResult": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "pathTree", "issues"],
+          "properties": {
+            "status": {
+              "const": "projected"
+            },
+            "pathTree": {
+              "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-path-tree.schema.json"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/projectionIssue"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "issues"],
+          "properties": {
+            "status": {
+              "const": "rejected"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/projectionIssue"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

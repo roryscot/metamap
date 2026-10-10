@@ -1,0 +1,73 @@
+{
+  "$schema": "./schemas/metamap-graph.schema.json",
+  "authorities": [],
+  "entities": [
+    {
+      "attributes": { "path": "/network/:networkId" },
+      "id": "urn:example:consumer",
+      "kind": "configuration",
+      "label": "consumer"
+    },
+    {
+      "id": "urn:example:service",
+      "kind": "configuration",
+      "label": "service"
+    },
+    { "id": "urn:example:schema", "kind": "configuration", "label": "schema" }
+  ],
+  "id": "urn:provenance:workspace",
+  "label": "Metamap",
+  "mappings": [
+    {
+      "cardinality": "one-to-one",
+      "id": "urn:example:consumer-service",
+      "lossiness": "lossless",
+      "provenance": { "assertedBy": "consumer-owner", "status": "declared" },
+      "relation": "example:depends",
+      "sources": ["urn:example:consumer"],
+      "targets": ["urn:example:service"]
+    },
+    {
+      "cardinality": "one-to-one",
+      "id": "urn:example:service-schema",
+      "lossiness": "lossless",
+      "provenance": { "assertedBy": "service-owner", "status": "declared" },
+      "relation": "example:depends",
+      "sources": ["urn:example:service"],
+      "targets": ["urn:example:schema"]
+    },
+    {
+      "attributes": {
+        "metamap:derivation": "urn:metamap:derivation:9ac2096d397fb573004fc1d545a93f7ffc792e30c1e698f4bfd49310d34e75c5"
+      },
+      "cardinality": "one-to-one",
+      "id": "urn:example:consumer-schema",
+      "lossiness": "lossless",
+      "provenance": {
+        "assertedBy": "urn:metamap:example:law:dependency-chain",
+        "status": "inferred"
+      },
+      "relation": "example:depends",
+      "sources": ["urn:example:consumer"],
+      "targets": ["urn:example:schema"]
+    }
+  ],
+  "metadata": {
+    "composedFrom": [
+      "urn:provenance:workspace:discovered",
+      "urn:dependency-example:metamap-shard:urn%3Aprovenance%3Aworkspace%3Adeclared"
+    ]
+  },
+  "namespace": "dependency-example",
+  "relationPacks": [
+    {
+      "digest": "sha256:62b9ea2ead7915d9ff855230080cc4c0b0cc02552b4b287c50be12afdf0063d3",
+      "id": "urn:metamap:example:relation-pack:dependencies",
+      "uri": "repo:..%2Frelations%2Fpack.json",
+      "version": "1.0.0"
+    },
+    { "id": "urn:metamap:relation-pack:core", "version": "1.0.0" }
+  ],
+  "revision": "sha256:afad89c885db91eb4100d8f2f8edfae0f641c194eaf53161f6049d09aab5d66b",
+  "schemaVersion": "2.0.0"
+}
