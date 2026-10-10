@@ -68,6 +68,16 @@ Do not substitute verifier success for P10's consumer permission and activation
 transaction tests. Synthetic signing keys stay in memory; never add private
 credentials or production trust material to examples or test records.
 
+After SDK edits, build the distribution before running distribution-backed
+native/CLI acceptance tests. Normal npm test includes the protected activation
+suite. Its Linux cases require a root test host or passwordless sudo and use
+only disposable owner-controlled /tmp fixtures with a distinct unprivileged UID.
+Temporary synthetic fixture keys remain private to that host and are removed;
+never print or retain them in verification records. Non-Linux skips establish
+only portable coverage. [ACTIVATION.md](ACTIVATION.md) defines the first host
+profile, actual permission checks, crash/retry/rollback behavior and assumptions.
+No privileged CI workflow edits or production installation are needed.
+
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather
 than physical paths as identity.

@@ -3,8 +3,10 @@
 P09 implements the pure proposal/approval layer of M4. It can authenticate an
 Ed25519 approval against separately supplied current consumer trust, action/fact
 grants, baseline and clock. It performs no activation or filesystem writes.
-P10 must enforce that these inputs and the active state are controlled by a
-dedicated protected promoter. Both existing legacy promoters still reject v2.
+P10 connects these checks to the existing activation interfaces and a first
+Linux protected promoter profile. [ACTIVATION.md](ACTIVATION.md) specifies the
+actual host boundary and its acceptance checks. Legacy promotion still rejects
+v2; an incoming request cannot select governance or fall back to legacy mode.
 
 A library caller that controls its own trust configuration can appoint its own
 owner and verify its own signature. The protected consumer boundary must prevent
@@ -126,9 +128,9 @@ consumer execution. It never uses production credentials or active state.
 Full exact replay remains executor/runtime specific, including the captured
 baseline; changing that environment requires an explicit migration.
 
-P10 remains responsible for protected configuration/state permissions, both
-activation interfaces, serialized stale-base checks, idempotent retry and
-separately approved rollback, complete immutable staging, atomic manifest
-replacement, interruption/concurrency tests and the consumer permission boundary.
+P10's lifecycle and tests are documented in [ACTIVATION.md](ACTIVATION.md), including
+both existing interfaces, complete immutable staging, atomic publication,
+serialized stale-base checks, authorized retry and fresh owner rollback.
 Rejecting a new activation after revocation is separate from retiring a previously
-active generation. M4 is incomplete until those checks pass.
+active generation. M4 requires the actual Linux permission/transaction checks,
+not only the portable verifier tests; the controlling plan records their status.

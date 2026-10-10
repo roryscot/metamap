@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { adaptLegacySourcesOfTruth, isLegacySourceOfTruthDocument, } from "./adapters/source-of-truth.js";
 import { MetamapGraph, MetamapValidationError } from "./graph.js";
 import { parseEvaluationContext } from "./context.js";
-import { promoteMetamapGeneration } from "./activation.js";
+import { promoteMetamapGeneration, readGovernedActivationRequestStream, readProtectedGovernedActivation, } from "./activation.js";
 import { loadMetamapConfig } from "./config.js";
 import { diffMetamapDocuments } from "./diff.js";
 import { loadRelationPack } from "./relation-pack.js";
@@ -30,6 +30,8 @@ function usage() {
   metamap compose <graph.json> <composition-request.json> [proposal.json] [--relation-pack pack.json]...
   metamap compile <graph.json> <policy.json> [output.json] [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
   metamap promote <graph.json> <policy.json> <current-generation.json> [--context context.json] [--as-of timestamp] [--changed id]... [--relation-pack pack.json]...
+  metamap protected-promote <absolute-protected-trust.json> < request.json
+  metamap active <absolute-protected-trust.json>
   metamap impact <graph.json> <policy.json> <subject-id...> [--context context.json] [--as-of timestamp] [--relation-pack pack.json]...
   metamap link <graph.json> <generation.json> <projection-spec.json> [output] [--policy policy.json] [--format json|typescript|path-tree|path-tree-typescript] [--export name] [--relation-pack pack.json]...
   metamap sources <metamap.config.json> [capture.json] --allow-root local-root...
@@ -126,6 +128,25 @@ function printProjectionIssues(issues) {
 }
 async function main(args) {
     const [command, ...rest] = args;
+    if (command === "protected-promote" || command === "active") {
+        if (rest.length !== 1 || !rest[0] || rest[0].startsWith("--")) {
+            console.error(usage());
+            return 2;
+        }
+        if (command === "active") {
+            const current = await readProtectedGovernedActivation(rest[0]);
+            process.stdout.write(canonicalJson(current ? { status: "active", current } : { status: "empty" }) + "\n");
+            return 0;
+        }
+        // A fixed owner wrapper supplies argv/code/environment. The proposer supplies only stdin data.
+        const result = await promoteMetamapGeneration(await readGovernedActivationRequestStream(process.stdin), { mode: "governed", trustPath: rest[0] });
+        process.stdout.write(canonicalJson(result) + "\n");
+        return result.status === "indeterminate"
+            ? 3
+            : result.status === "rejected"
+                ? 1
+                : 0;
+    }
     if (command === "compose") {
         const parsed = parseArguments(rest, new Set(["--relation-pack"]));
         const [graphPath, requestPath, outputPath, ...extra] = parsed.positionals;

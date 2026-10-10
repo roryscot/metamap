@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-activation.schema.json",
+  "title": "Complete accepted activation manifest1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "digest",
+    "consumer",
+    "environment",
+    "artifacts",
+    "proposal",
+    "approval",
+    "acceptedTrust",
+    "previousManifest",
+    "activatedAt"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "consumer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifacts": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-artifact-manifest.schema.json"
+    },
+    "proposal": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-change-proposal.schema.json"
+    },
+    "approval": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-approval.schema.json"
+    },
+    "acceptedTrust": {
+      "$ref": "https://raw.githubusercontent.com/roryscot/metamap/main/schemas/metamap-trusted-consumer.schema.json"
+    },
+    "previousManifest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "activatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    }
+  }
+}

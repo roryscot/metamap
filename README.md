@@ -371,14 +371,15 @@ Use [RELATIONS.md](RELATIONS.md) for explicit binary relation laws, bounded
 composition proposals, checked v2 admission and proof-carrying projections,
 path trees, replay and comparison. Its current integration boundaries are
 documented there. Use [UNCERTAINTY.md](UNCERTAINTY.md) for typed assessment
-propagation and consumer cost budgets. Protected promotion remains a later
-build increment.
+propagation and consumer cost budgets.
 Use [PROVENANCE.md](PROVENANCE.md) for complete source captures, replay/comparison
 3.0 and explicitly permitted local rediscovery. Recorded lineage does not grant
 authentication, approval or activation.
 Use [GOVERNANCE.md](GOVERNANCE.md) for complete unapproved proposals, generated
 artifact byte manifests and exact externally scoped Ed25519 approval verification.
-The protected activation and consumer permission boundary remain P10.
+Use [ACTIVATION.md](ACTIVATION.md) for the governed overloads of both activation
+interfaces, exact immutable state, protected consumer reads, and the first Linux
+dedicated promoter/permission profile. The plan records the verification status.
 The [build plan](BUILD_PLAN.md) records the remaining gated work toward the
 vision.
 

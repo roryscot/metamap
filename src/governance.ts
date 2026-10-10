@@ -17,6 +17,14 @@ import { parseSourceReplayBundle } from "./semantic-replay.js";
 import { contentDigest } from "./stable.js";
 import type { SourceReplayBundle } from "./semantic-replay-model.js";
 import type {
+  GovernedActivationContext,
+  GovernedActivationManifest,
+  GovernedActivationRequest,
+  GovernedActivationResult,
+  GovernedActivationState,
+  GovernedActivePointer,
+} from "./activation-model.js";
+import type {
   ApprovalPayload,
   CreateGovernedProposalOptions,
   GovernedArtifactManifest,
@@ -70,6 +78,9 @@ for (const name of [
   "metamap-artifact-manifest",
   "metamap-change-proposal",
   "metamap-approval",
+  "metamap-activation-request",
+  "metamap-activation",
+  "metamap-active-pointer",
 ])
   ajv.addSchema(schema(name));
 
@@ -892,6 +903,176 @@ export function verifyGovernedApproval(
           message: error instanceof Error ? error.message : String(error),
         },
       ],
+    };
+  }
+}
+
+/** A proposal is data only: no incoming file path, clock or trust root is used. */
+export function parseGovernedActivationRequest(
+  value: unknown,
+): GovernedActivationRequest {
+  const request = checked<GovernedActivationRequest>(
+    value,
+    "metamap-activation-request",
+  );
+  parseGovernedChangeProposal(request.proposal);
+  parseSignedGovernedApproval(request.approval);
+  verifyGovernedArtifactBytes(request.proposal, request.files);
+  return freeze(request);
+}
+export function parseGovernedActivationRequestJson(
+  text: string,
+): GovernedActivationRequest {
+  return parseGovernedActivationRequest(parseStrictJson(text));
+}
+/**
+ * Checks historical integrity, using the trust recorded by the protected host.
+ * This record is not a substitute for current external trust or protected storage.
+ */
+export function parseGovernedActivationManifest(
+  value: unknown,
+): GovernedActivationManifest {
+  const manifest = checked<GovernedActivationManifest>(
+    value,
+    "metamap-activation",
+  );
+  checkAddress(manifest, "activation");
+  instant(manifest.activatedAt);
+  const proposal = parseGovernedChangeProposal(manifest.proposal);
+  if (
+    manifest.consumer !== proposal.consumer ||
+    manifest.environment !== proposal.environment ||
+    !equal(manifest.artifacts, proposal.artifacts) ||
+    manifest.previousManifest !== (proposal.baseline?.manifestDigest ?? null)
+  )
+    fail(
+      "GOVERNANCE_ACTIVATION_CONTENT_MISMATCH",
+      "Activation does not bind its complete approved candidate and baseline",
+    );
+  const verification = verifyGovernedApproval(proposal, manifest.approval, {
+    trustedConfiguration: manifest.acceptedTrust,
+    baseline: proposal.baseline,
+    now: manifest.activatedAt,
+  });
+  if (verification.status === "rejected")
+    fail(verification.issues[0].code, verification.issues[0].message);
+  return freeze(manifest);
+}
+export function parseGovernedActivePointer(
+  value: unknown,
+): GovernedActivePointer {
+  const pointer = checked<GovernedActivePointer>(
+    value,
+    "metamap-active-pointer",
+  );
+  if (
+    pointer.manifest.id !==
+    "urn:metamap:activation:" + pointer.manifest.digest.slice(7)
+  )
+    fail("GOVERNANCE_CONTENT_MISMATCH", "Invalid active manifest identity");
+  return freeze(pointer);
+}
+/** Obtain a baseline from the host's complete verified active state. */
+export function governedActivationBaseline(
+  current?: GovernedActivationState,
+): GovernedBaseline | null {
+  if (!current) return null;
+  const manifest = parseGovernedActivationManifest(current.manifest);
+  verifyGovernedArtifactBytes(manifest.proposal, current.files);
+  return freeze({
+    manifestDigest: manifest.digest,
+    replay: manifest.proposal.candidate,
+  });
+}
+/** Shared lifecycle evaluator for the existing memory and persistent promoters. */
+export function evaluateGovernedActivation(
+  value: unknown,
+  context: GovernedActivationContext,
+  previous?: GovernedActivationState,
+): GovernedActivationResult {
+  try {
+    const request = parseGovernedActivationRequest(value);
+    const config = parseTrustedConsumerConfiguration(
+      context.trustedConfiguration,
+    );
+    instant(context.now);
+    const baseline = governedActivationBaseline(previous);
+    if (
+      previous &&
+      equal(previous.manifest.proposal, request.proposal) &&
+      equal(previous.manifest.approval, request.approval) &&
+      equal(previous.files, request.files)
+    ) {
+      // An exact retry performs no deployment. It must still be currently authorized.
+      const verified = verifyGovernedApproval(
+        request.proposal,
+        request.approval,
+        {
+          trustedConfiguration: config,
+          baseline: previous.manifest.proposal.baseline,
+          now: context.now,
+        },
+      );
+      if (verified.status === "rejected")
+        return {
+          status: "rejected",
+          activated: false,
+          issues: verified.issues,
+          current: previous,
+        };
+      return { status: "already-active", activated: false, current: previous };
+    }
+    const verified = verifyGovernedApproval(
+      request.proposal,
+      request.approval,
+      {
+        trustedConfiguration: config,
+        baseline,
+        now: context.now,
+      },
+    );
+    if (verified.status === "rejected")
+      return {
+        status: "rejected",
+        activated: false,
+        issues: verified.issues,
+        ...(previous ? { current: previous } : {}),
+      };
+    const manifest = parseGovernedActivationManifest(
+      addressed(
+        {
+          schemaVersion: "1.0.0" as const,
+          consumer: request.proposal.consumer,
+          environment: request.proposal.environment,
+          artifacts: request.proposal.artifacts,
+          proposal: request.proposal,
+          approval: request.approval,
+          acceptedTrust: config,
+          previousManifest: baseline?.manifestDigest ?? null,
+          activatedAt: context.now,
+        },
+        "activation",
+      ),
+    );
+    return freeze({
+      status: "activated",
+      activated: true,
+      current: { manifest, files: request.files },
+    });
+  } catch (error) {
+    return {
+      status: "rejected",
+      activated: false,
+      issues: [
+        {
+          code:
+            error instanceof GovernanceError
+              ? error.code
+              : "GOVERNANCE_INVALID_INPUT",
+          message: error instanceof Error ? error.message : String(error),
+        },
+      ],
+      ...(previous ? { current: previous } : {}),
     };
   }
 }

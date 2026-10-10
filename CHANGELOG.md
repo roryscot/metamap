@@ -2,6 +2,15 @@
 
 ## Unreleased capability work
 
+- Connect exact source-bound approvals to the governed overloads of both existing
+  activation interfaces. Add immutable activation/request/pointer contracts,
+  current trust/clock/baseline checks, authorized retry and fresh owner rollback.
+- Add the first Linux protected promoter, fixed stdin wrapper, protected consumer
+  read and atomic complete artifact publication. Test independent UID permissions,
+  concurrent/stale requests, actual process interruption and indeterminate
+  post-publication failure. Linux acceptance status is recorded in the build plan;
+  production signing, installation and consumer activation remain separate.
+
 - Add exact unapproved consumer proposals, generated output byte manifests and
   domain-separated Ed25519 approvals over complete source-bound replay 3.0.
   Verify current external identities, action/fact grants, baseline, environment,
@@ -11,7 +20,7 @@
   this with candidate-declared ownership or ordinary viability waivers.
 - Add the synthetic governance native example and public governance SDK/schema
   exports. This pure P09 layer performs no activation; P10's protected promoter
-  and consumer permission boundary remain outstanding.
+  and consumer permission boundary are described separately in ACTIVATION.md.
 
 - Bind complete source configurations, adapter outputs, input byte receipts,
   emitted shards and source-composed graphs in source-capture 1.0 and explicit
@@ -31,8 +40,8 @@
   safe integer totals and lossy/inferred limits, and bind the selected budget.
 - Recheck typed projections against the exact original policy/evidence; add
   `link --policy`, full typed capture/replay and risk/assessment comparisons.
-  Preserve published schema bytes and legacy outputs. V2 activation remains
-  blocked pending the protected governance boundary.
+  Preserve published schema bytes and legacy outputs. Legacy v2 activation
+  remains blocked; governed requests use the explicit protected lifecycle.
 
 ## 0.7.1
 

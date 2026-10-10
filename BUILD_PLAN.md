@@ -25,8 +25,11 @@ boundary remains P10. Source capture/P08 is
 locally implemented and verified, including exact source-bound replay,
 read-only inspection and native consumer execution. P09's pure proposal and
 authenticated approval layer is locally implemented and verified, including
-the full package/regression gate. M4's actual protected activation/permission boundary remains
-P10. M4–M8, including separate
+the full package/regression gate. P10's governed interfaces and first Linux
+protected promoter are implemented. The 24-command local gate passes with
+429 tests / 42 files and 16 Linux cases explicitly skipped on the Mac.
+Actual Linux permission/transaction CI acceptance remains pending.
+M4–M8, including separate
 Seeder adoption, remain outstanding. The full goal
 is active.
 
@@ -1093,6 +1096,40 @@ environment before crossing its activation or ingestion boundary.
   Both legacy promoters still block v2. No production signing, release, merge,
   consumer activation or human acceptance is inferred. M4/P10, M5–M8 and separate
   Seeder adoption remain outstanding; the full goal is active.
+
+### P10 — protected activation, verification in progress
+
+- Both existing activation interfaces now dispatch governed requests through the
+  shared P09 evaluator. The host supplies current trust and clock; the request
+  cannot supply either. A governed memory instance rejects the legacy overload.
+  Legacy APIs still reject v2. Complete immutable manifests bind candidate,
+  approved bytes, historical external trust, baseline and trusted decision time.
+- The first persistent profile uses an owner-controlled Linux promoter with
+  disjoint protected paths, regular no-follow files without hard links, private
+  kernel locking, immutable directories/manifests, byte/inventory rechecks,
+  current pre-commit authorization, and one atomic pointer. A fixed stdin wrapper
+  is supplied; no production configuration, credentials or installation is made.
+- Exact authorized retries preserve current state. Fresh owner approval is
+  required for rollback. Revocation prevents new activation without retiring
+  current state. Post-pointer sync/response failure reports indeterminate.
+  No discovered orphan or repair candidate is automatically applied.
+- The 19 portable lifecycle tests pass, including stale-base and fresh rollback.
+  Three portable transport/unsupported-platform checks pass locally. The Linux
+  tests are included in normal npm test and require actual separate UID writes,
+  native consumer execution, concurrency and real SIGKILL recovery at five phases.
+  They remain unverified on this Mac until Linux CI passes. Initial new fixture
+  locator and per-test timeout failures were corrected without relaxing semantic
+  validation or acceptance assertions. Type/build checks pass.
+- The full local 24-command regression gate passed: 429 tests / 42 files with
+  16 Linux cases skipped, 13 example commands, 45 previous command cases and three
+  native helpers, format/type/build, package and preservation checks. The package
+  contains 388 public files and excludes test/work/private fixture storage.
+  All 36 previously published schema/pack files, prior examples and original
+  evaluation files remain unchanged; the 17 source example outputs are byte-stable.
+  The additional Linux fixture privilege probe is covered by format/JavaScript
+  checks and awaits actual CI execution along with the transaction cases.
+- Exact-head Linux CI remains pending; M4 is not yet marked accepted. M5–M8 and
+  separate Seeder adoption remain outstanding; the full goal stays active.
 
 ## 19. Historical first release and localization cycle
 

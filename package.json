@@ -30,7 +30,8 @@
     "RELATIONS.md",
     "UNCERTAINTY.md",
     "PROVENANCE.md",
-    "GOVERNANCE.md"
+    "GOVERNANCE.md",
+    "ACTIVATION.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -227,7 +228,14 @@
     "./schemas/metamap-trusted-consumer.schema.json": "./schemas/metamap-trusted-consumer.schema.json",
     "./schemas/metamap-artifact-manifest.schema.json": "./schemas/metamap-artifact-manifest.schema.json",
     "./schemas/metamap-change-proposal.schema.json": "./schemas/metamap-change-proposal.schema.json",
-    "./schemas/metamap-approval.schema.json": "./schemas/metamap-approval.schema.json"
+    "./schemas/metamap-approval.schema.json": "./schemas/metamap-approval.schema.json",
+    "./activation-model": {
+      "import": "./dist/activation-model.js",
+      "types": "./dist/activation-model.d.ts"
+    },
+    "./schemas/metamap-activation-request.schema.json": "./schemas/metamap-activation-request.schema.json",
+    "./schemas/metamap-activation.schema.json": "./schemas/metamap-activation.schema.json",
+    "./schemas/metamap-active-pointer.schema.json": "./schemas/metamap-active-pointer.schema.json"
   },
   "repository": {
     "type": "git",

@@ -223,11 +223,24 @@ protected owner approval is required for authority, policy, waiver, budget, law,
 bootstrap and rollback actions. Trust-root mutations are outside the ordinary
 candidate schema and remain controlled by the external consumer owner.
 
-P09 returns verification results and performs no writes. P10 must enforce the
-consumer's protected configuration/state permissions and transaction; both
-existing activation interfaces continue rejecting v2. Verifier success does
-not establish human acceptance, active state or revocation of an already active
-generation.
+P09 returns verification results and performs no writes. P10 uses that same
+evaluator in the governed overloads of both existing activation interfaces.
+Activation-request 1.0 contains only proposal, approval and exact file bytes.
+Activation-manifest 1.0 binds the complete approved candidate, historical external
+trust, previous manifest and trusted decision time. Active-pointer 1.0 identifies
+one complete addressed manifest. All have separate new schema identities.
+The first persistent profile serializes immutable staging/publication through a
+Linux dedicated promoter with externally protected configuration/state and a
+current pre-commit approval check. See [ACTIVATION.md](ACTIVATION.md).
+
+Legacy overloads continue rejecting v2. A governed host cannot use the legacy
+overload as fallback, and a consumer reads only its externally fixed protected
+pointer. Identical retries require current authorization; rollback requires a
+fresh current-base owner approval. Post-publication durability/response failure
+is indeterminate, not rejection. Accepted trust is historical evidence and
+does not replace current external trust. Verifier success or an implementation
+alone does not establish human acceptance, release, production activation or
+retirement of an already active generation.
 
 ## Migration and fixed acceptance inputs
 

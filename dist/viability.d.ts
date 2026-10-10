@@ -1,6 +1,7 @@
 import { ConstraintRegistry } from "./constraints.js";
 import type { MetamapDocument, StructuralMapping } from "./model.js";
 import { RelationRegistry } from "./relations.js";
+import type { GovernedActivationRequest, GovernedActivationResult, GovernedActivationState, GovernedInMemoryHost } from "./activation-model.js";
 import type { MetamapSemanticPolicy, SemanticCompilationResult } from "./semantic-model.js";
 import { type ActivationResult, type CompilationResult, type CompileOptions, type MappingViabilitySelector, type MetamapViabilityPolicy, type ViabilityValidationResult, type ViableGeneration } from "./viability-model.js";
 export interface CompilationRuntimeOptions extends CompileOptions {
@@ -24,11 +25,14 @@ export declare function compileMetamap(document: MetamapDocument, policy: Metama
  * generation untouched and report the quarantined blast radius.
  */
 export declare class MetamapActivator {
+    #private;
     private readonly relationRegistry;
     private readonly constraintRegistry;
     private generation?;
-    constructor(relationRegistry?: RelationRegistry, constraintRegistry?: ConstraintRegistry);
+    constructor(relationRegistry?: RelationRegistry, constraintRegistry?: ConstraintRegistry, governedHost?: GovernedInMemoryHost);
     get current(): ViableGeneration | undefined;
+    get governedCurrent(): GovernedActivationState | undefined;
+    activate(request: GovernedActivationRequest): GovernedActivationResult;
     activate(document: MetamapDocument, policy: MetamapViabilityPolicy, options?: CompileOptions): ActivationResult;
 }
 /** Runtime assertion useful to callers accepting unknown JSON values. */

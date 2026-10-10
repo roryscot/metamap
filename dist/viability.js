@@ -10,6 +10,7 @@ import { RelationRegistry } from "./relations.js";
 import { valueDigest } from "./stable.js";
 import { DERIVATION_ATTRIBUTE } from "./derivation-model.js";
 import { compileSemanticMetamap } from "./semantic.js";
+import { evaluateGovernedActivation } from "./governance.js";
 import { validateMetamapDocument } from "./validator.js";
 import { METAMAP_GENERATION_VERSION, METAMAP_VIABILITY_POLICY_VERSION, } from "./viability-model.js";
 const Ajv2020 = Ajv2020Module.default;
@@ -520,15 +521,59 @@ export class MetamapActivator {
     relationRegistry;
     constraintRegistry;
     generation;
-    constructor(relationRegistry = new RelationRegistry(), constraintRegistry = new ConstraintRegistry()) {
+    #governedState;
+    #governedHost;
+    constructor(relationRegistry = new RelationRegistry(), constraintRegistry = new ConstraintRegistry(), governedHost) {
         this.relationRegistry = relationRegistry;
         this.constraintRegistry = constraintRegistry;
+        this.#governedHost = governedHost;
     }
     get current() {
         return this.generation;
     }
-    activate(document, policy, options = {}) {
-        if (policy.schemaVersion !== "1.0.0") {
+    get governedCurrent() {
+        return this.#governedState;
+    }
+    activate(value, policy, options = {}) {
+        if (policy === undefined) {
+            if (!this.#governedHost || this.#governedHost.mode !== "governed")
+                return {
+                    status: "rejected",
+                    activated: false,
+                    issues: [
+                        {
+                            code: "GOVERNANCE_HOST_REQUIRED",
+                            message: "The consumer must select governed mode outside the request",
+                        },
+                    ],
+                };
+            let result;
+            try {
+                result = evaluateGovernedActivation(value, {
+                    trustedConfiguration: this.#governedHost.configuration(),
+                    now: (this.#governedHost.clock ?? (() => new Date().toISOString()))(),
+                }, this.#governedState);
+            }
+            catch (error) {
+                return {
+                    status: "rejected",
+                    activated: false,
+                    issues: [
+                        {
+                            code: "GOVERNANCE_HOST_UNAVAILABLE",
+                            message: error instanceof Error ? error.message : String(error),
+                        },
+                    ],
+                    ...(this.#governedState ? { current: this.#governedState } : {}),
+                };
+            }
+            if (result.status === "activated")
+                this.#governedState = result.current;
+            return result;
+        }
+        const document = value;
+        if (this.#governedHost ||
+            policy.schemaVersion !== "1.0.0") {
             const impact = analyzeImpact(document, {
                 changedSubjects: options.changedSubjects ?? [],
                 registry: this.relationRegistry,
@@ -539,7 +584,7 @@ export class MetamapActivator {
                 compilation: {
                     status: "rejected",
                     issues: [
-                        issue("PROTECTED_ACTIVATION_REQUIRED", "Version 2 candidates require the protected activation boundary", policy.id),
+                        issue("PROTECTED_ACTIVATION_REQUIRED", "Governed consumers and version 2 candidates require exact protected approval", policy.id),
                     ],
                     impact,
                     quarantinedSubjects: impact.affectedSubjects,
