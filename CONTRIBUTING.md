@@ -78,6 +78,13 @@ only portable coverage. [ACTIVATION.md](ACTIVATION.md) defines the first host
 profile, actual permission checks, crash/retry/rollback behavior and assumptions.
 No privileged CI workflow edits or production installation are needed.
 
+Use `npm run example:repair` for supplied provider restoration, unchanged
+proof/risk checks, native consumer execution and the actual read-only command.
+Repair contract changes must test scoped/protected edits, duplicate-only removal,
+missing-only declarations, tampered/rehashed evaluations, exact finite coverage,
+ranking, limits and interruption. Viability never grants approval; no source or
+active-state write is permitted. [REPAIR.md](REPAIR.md) defines this first profile.
+
 Adapters must be deterministic. Their fingerprints must cover every input that
 can affect discovery, and emitted entities must use stable semantic IDs rather
 than physical paths as identity.

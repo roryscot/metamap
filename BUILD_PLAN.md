@@ -29,8 +29,9 @@ the full package/regression gate. P10's governed interfaces and first Linux
 protected promoter are implemented. Both local gates passed; the first
 Linux run exposed a native fixture module-context error, undersized new-case
 timers and blocked fixture RPC handling. Corrections and root-owned consumer
-storage hardening pass the local gate. Actual Linux acceptance remains pending.
-M4–M8, including separate
+storage hardening pass both the local gate and exact-head Linux acceptance at
+3ffb4cd. M4 is implemented and verified for the first root-owned Linux profile;
+production deployment and consumer acceptance are separate. M5–M8, including separate
 Seeder adoption, remain outstanding. The full goal
 is active.
 
@@ -767,8 +768,8 @@ replay, and silently breaking legacy behavior. The closed law vocabulary,
 consumer-defined budgets, explicit unknown states, version dispatch, and
 preserved legacy fixtures address those risks with observable checks.
 
-The next executable job is P10: protected activation using P09's exact
-proposals/approvals and the complete P08 provenance bindings. Every
+The current executable job is P11: bounded read-only repair using the existing
+compiler, complete source-bound replay and exact governance action classification. Every
 added semantic input must extend capture and comparison in the same increment.
 Governance or scientific work
 must resolve its actual trusted keys, owner grants, source/license, and consumer
@@ -778,19 +779,18 @@ environment before crossing its activation or ingestion boundary.
 
 - Activated: 2026-10-09, with no user-specified token budget.
 - Scope: all capability milestones M0–M8 and implementation changes P01–P17.
-- Current work: P10 protected activation and consumer permissions, following
-  locally verified P09 proposal/approval contracts. P08 is pushed with
-  exact-head CI success at `108963d`.
+- Current work: P11 bounded repair after M4's exact-head Linux acceptance at
+  `3ffb4cd`. P08/P09 are pushed and verified; protected activation is verified
+  for the first root-owned Linux profile.
 - Identity instruction supersession: the user's 2026-10-09 replacement
   instructions govern over the goal's earlier AveLyra wording; MetaMap uses Rory.
 - Locally implemented and verified: M0–M2 and M3/P06-P07 typed execution,
   including P03/P04 law admission and the M2/M3 portions of P05 downstream
   bindings. P05 continues as later semantic
   inputs land. Human acceptance, release and production activation are not
-  inferred. P08 is locally implemented and verified. Authenticated invalidation
-  of old approvals is verified in P09's pure current-state verifier; rejection
-  at actual activation and the protected consumer permission boundary remain
-  P10. M4–M8 remain outstanding.
+  inferred. P08 is locally implemented and verified. M4/P09-P10 also verifies
+  exact authenticated invalidation at the protected write boundary and actual
+  independent proposer/consumer permissions. M5–M8 remain outstanding.
 - Functional acceptance, compatibility, and authorization checks govern progress;
   deferred review-time metrics do not block implementation.
 - Goal completion requires the full scoped build and verification, not merely
@@ -1098,7 +1098,7 @@ environment before crossing its activation or ingestion boundary.
   consumer activation or human acceptance is inferred. M4/P10, M5–M8 and separate
   Seeder adoption remain outstanding; the full goal is active.
 
-### P10 — protected activation, verification in progress
+### P10 — protected activation, verified first Linux profile
 
 - Both existing activation interfaces now dispatch governed requests through the
   shared P09 evaluator. The host supplies current trust and clock; the request
@@ -1118,7 +1118,7 @@ environment before crossing its activation or ingestion boundary.
   Three portable transport/unsupported-platform checks pass locally. The Linux
   tests are included in normal npm test and require actual separate UID writes,
   native consumer execution, concurrency and real SIGKILL recovery at five phases.
-  They remain unverified on this Mac until Linux CI passes. Initial new fixture
+  Linux acceptance is recorded separately below. Initial new fixture
   locator and per-test timeout failures were corrected without relaxing semantic
   validation or acceptance assertions. Type/build checks pass.
 - The initial full local 24-command regression gate passed: 429 tests / 42 files with
@@ -1150,9 +1150,53 @@ environment before crossing its activation or ingestion boundary.
   cases remain skipped locally. All 39 now-published schema/pack files and
   prior examples/evaluation records are preserved; the 17 source outputs are
   byte-stable. Thirteen examples, 45 command cases, three native helpers and
-  the 388-file package inspection also pass. Exact-head Linux acceptance
-  remains pending; M4 is not accepted. M5–M8 and separate Seeder
+  the 388-file package inspection also pass.
+- Exact-head [Linux CI at 3ffb4cd](https://github.com/roryscot/metamap/actions/runs/38031196431)
+  passed: 445 tests / 42 files, one unsupported-platform skip and zero unhandled
+  errors. The separate unprivileged UID exercised all 24 denied operations,
+  writable proposal storage and the protected native consumer. The proposer-owned
+  valid-pointer regression passed, as did concurrent/stale-base cases, all five
+  actual SIGKILL phases, fresh rollback and indeterminate response handling.
+  M4 is implemented and verified for this first root-owned Linux profile;
+  this is synthetic acceptance, not production installation or owner acceptance.
+  M5–M8 and separate Seeder
   adoption remain outstanding; the full goal stays active.
+
+### P11 — bounded read-only repair, verification in progress
+
+- New request/result 1.0 contracts bind a verified rejected replay3, required
+  consumer projections, four explicit supplied edit kinds, allowed/protected
+  facts, finite candidate/edit/depth/time bounds and declared ordinal costs.
+  Source/policy requirements are preserved; graph-reference updates are explicit
+  in whole returned patches. Scope declarations never establish authorization.
+- The existing compiler/projector, capture/comparison and governance classifier
+  evaluate each candidate. Reports retain blocked and rejected attempts,
+  remaining failures, source/risk/runtime differences and required approval
+  actions. Every viable repair remains approval-required; none is applied.
+- Exact decimal finite-space counts, cooperative cancellation and elapsed
+  stops distinguish incomplete search from absence of a viable supplied repair.
+  Rank uses changed editable records, summed supplied costs and stable identity.
+  Minimum claims require the full supplied space; parsing recomputes candidates,
+  patch/outputs, classification, rank and coverage even after rehashing.
+- The strict new repair command creates only a new explicitly requested report;
+  it preserves existing files and exposes no apply/sign/trust/clock option.
+  The synthetic example restores the missing declared network provider, retains
+  proof/risk checks, executes native generated provider bindings and paths, and
+  checks actual command rejection and search limits.
+- The initial focused checks exposed a missing registered legacy issue schema
+  and a duplicate fixture whose distinct IDs legitimately deduplicated to one
+  projected target. Registration and an actually rejected duplicate-ID fixture
+  were corrected without changing existing projection semantics. The corrected
+  35 API checks and native/command workflow pass, including retained proof rejection
+  and ten actual command cases; type/build checks pass.
+- The full local 25-command gate passed: 465 tests / 44 files, with 17 Linux
+  permission cases explicitly skipped on this Mac. Fourteen examples, 45 previous
+  command cases, the ten new repair cases and native workflows pass. All 39
+  published schema/pack files, prior examples and original evaluation records
+  remain unchanged; the 17 source outputs are byte-stable. The 401-file public
+  package contains the new SDK/contracts/example and excludes private test/work
+  storage. Exact-head Linux CI remains pending; M5 is not marked verified. M6–M8 and separate
+  Seeder adoption remain outstanding; the full goal stays active.
 
 ## 19. Historical first release and localization cycle
 

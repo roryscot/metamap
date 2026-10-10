@@ -17,6 +17,7 @@ import { parseSemanticGeneration, parseSemanticPolicy } from "./semantic.js";
 import { parseSemanticProjectionSpec } from "./semantic-projection.js";
 import { captureReplayBundle, replayMetamap } from "./replay.js";
 import { compareMetamapBundles } from "./counterfactual.js";
+import { searchMetamapRepairs } from "./repair.js";
 import { parseSourceReplayBundle } from "./semantic-replay.js";
 import { captureWorkspaceSources, inspectCurrentSources, inspectSourceCapture, parseSourceCapture, } from "./provenance.js";
 import { validateMetamapDocument } from "./validator.js";
@@ -39,6 +40,7 @@ function usage() {
   metamap capture <graph.json> <policy.json> [bundle.json] --as-of timestamp [--source-capture capture.json] [--context context.json] [--changed id]... [--projection spec.json]... [--relation-pack pack.json]...
   metamap replay <bundle.json>
   metamap compare <before.replay.json> <after.replay.json> [report.json]
+  metamap repair <repair-request.json> [new-report.json]
   metamap generate <metamap.config.json> [--no-cache]
   metamap check <metamap.config.json> [--no-cache]
   metamap diff <before.json> <after.json> [--relation-pack pack.json]...
@@ -171,6 +173,44 @@ async function main(args) {
         else
             process.stdout.write(serialized);
         return 0;
+    }
+    if (command === "repair") {
+        const parsed = parseArguments(rest, new Set());
+        const [requestPath, outputPath] = parsed.positionals;
+        if (!requestPath || parsed.positionals.length > 2) {
+            console.error(usage());
+            return 2;
+        }
+        const bytes = await readFile(resolve(requestPath));
+        if (bytes.byteLength > 64 * 1024 * 1024)
+            throw new Error("Repair request exceeds 64 MiB");
+        const request = parseStrictJson(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+        const controller = new AbortController();
+        const cancel = () => controller.abort();
+        process.once("SIGINT", cancel);
+        try {
+            const result = await searchMetamapRepairs(request, {
+                signal: controller.signal,
+            });
+            const serialized = canonicalJson(result) + "\n";
+            if (outputPath && result.status === "searched")
+                await writeFile(resolve(outputPath), serialized, {
+                    encoding: "utf8",
+                    flag: "wx",
+                });
+            else
+                process.stdout.write(serialized);
+            if (result.status === "rejected")
+                return 1;
+            return result.report.status === "incomplete"
+                ? 3
+                : result.report.proposals.length
+                    ? 0
+                    : 1;
+        }
+        finally {
+            process.removeListener("SIGINT", cancel);
+        }
     }
     if (command === "compare") {
         const parsed = parseArguments(rest, new Set());

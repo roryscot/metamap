@@ -2,6 +2,16 @@
 
 ## Unreleased capability work
 
+- Add bounded read-only repair requests/results over complete source-bound
+  replay, with four explicit edit kinds, protected proposal facts, current
+  compiler/projection/counterfactual results and required approval actions.
+- Preserve graph-policy binding updates in complete returned patches; report
+  exact finite search coverage, cooperative cancellation and elapsed limits.
+  Rank viable proposals deterministically and restrict minimum claims to the
+  fully explored supplied space. No approval, source write or activation occurs.
+- Add the strict `repair` command, public contracts and a synthetic native
+  provider/path example with existing-file preservation and tampering checks.
+
 - Connect exact source-bound approvals to the governed overloads of both existing
   activation interfaces. Add immutable activation/request/pointer contracts,
   current trust/clock/baseline checks, authorized retry and fresh owner rollback.

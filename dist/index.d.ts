@@ -38,6 +38,8 @@ export * from "./projection.js";
 export * from "./path-tree.js";
 export * from "./replay.js";
 export * from "./counterfactual.js";
+export * from "./repair-model.js";
+export * from "./repair.js";
 export * from "./adapters/types.js";
 export * from "./adapters/prisma.js";
 export * from "./adapters/typescript-zod.js";

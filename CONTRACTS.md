@@ -244,6 +244,18 @@ retirement of an already active generation.
 
 ## Migration and fixed acceptance inputs
 
+Repair request/result 1.0 uses three new schema identities and requires exact
+source-bound replay3. Its four closed edit kinds return whole graph/policy
+patches and explicit graph-reference updates. They cannot change authority,
+evidence, constraints, budgets, waivers, proofs, source captures, context or
+projection specs. Supplied proposal scopes are never grants. Every viable repair
+remains approval-required; the existing governance classifier names its actions.
+Exact finite subset coverage, deterministic rank and minimum claims are checked
+again when parsing the result. Candidate/edit/time/cancellation exhaustion stays
+incomplete; a policy depth outside the request bound rejects without altering
+the policy. A synchronous checked step may overrun the cooperative deadline.
+No earlier replay is silently upgraded. [REPAIR.md](REPAIR.md) defines the profile.
+
 A v1 graph/policy continues through the existing compiler unchanged. A consumer
 opts into v2 policy and pack schemas, supplies typed assessments and its own
 requirements/cost rules, and explicitly includes any derived mapping and proof.
