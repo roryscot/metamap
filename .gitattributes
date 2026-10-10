@@ -1,0 +1,4 @@
+# These two sources are byte-pinned upstream evidence. TSV terminal tabs encode
+# empty cells; upstream schema whitespace is preserved with its source digest.
+examples/scientific-mapping/fixtures/mgi-subset.sssom.tsv -whitespace
+standards/sssom-1.0.0/sssom_schema.yaml -whitespace
